@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <url>
+    <loc>http://engineering.sendence.com/2017/02/hello-wallaroo/</loc>
+    <lastmod>2017-02-19T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://engineering.sendence.com/about/</loc>
+    <lastmod>2015-08-22T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://engineering.sendence.com/categories/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://engineering.sendence.com/categories/category-1/</loc>
+    <lastmod>2017-02-19T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://engineering.sendence.com/categories/category-2/</loc>
+    <lastmod>2017-02-19T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://engineering.sendence.com/post/</loc>
+    <lastmod>2017-02-19T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://engineering.sendence.com/</loc>
+    <lastmod>2017-02-19T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://engineering.sendence.com/tags/tag-1/</loc>
+    <lastmod>2017-02-19T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://engineering.sendence.com/tags/tag-2/</loc>
+    <lastmod>2017-02-19T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://engineering.sendence.com/tags/</loc>
+    <priority>0</priority>
+  </url>
+  
+</urlset>

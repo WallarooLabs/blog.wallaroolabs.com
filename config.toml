@@ -1,0 +1,48 @@
+baseurl = "http://engineering.sendence.com"
+languageCode = "en-us"
+title = "Sendence Engineering"
+theme = "sendence-hugo-steam-theme"
+# Enable Google Analytics be inserting your tracking code
+googleAnalytics = "UA-59652249-3"
+# Number of posts per page
+paginate = 5
+
+[permalinks]
+  post = "/:year/:month/:title/"
+
+[params]
+	title = "Sendence Engineering"
+	subtitle = "\"I wanna go fast\""
+	copyright = ""
+
+	# You can choose between green, orange, red and blue.
+	themecolor = "green"
+
+	# Link custom assets relative to /static
+	favicon   = "favicon.ico"
+	customCSS = []
+	customJS  = []
+
+	# To provide some metadata for search engines and the about section in the footer
+	# feel free to add a few information about you and your website.
+	name = "Sendence"
+	bio = ""
+	description = "Official blog of the Sendence Engineering team"
+
+	# Link your social networks (optional)
+	location = ""
+	twitter = "sendenceeng"
+	linkedin = "sendence"
+	googleplus = ""
+	facebook = ""
+	instagram = ""
+	github = "sendence"
+	gitlab = ""
+	bitbucket = ""
+
+	# Customize or translate the strings
+	keepReadingStr = "Keep reading"
+	backtotopStr = "Back to top"
+	shareStr = "Share"
+	pageNotFoundTitle = "404 - Page not found"
+	useSummaryIfNoDescription = true
