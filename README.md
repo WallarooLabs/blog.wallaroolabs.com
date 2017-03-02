@@ -71,6 +71,20 @@ hugo server --buildDrafts
 
 will render the website (including drafts) and start up a server. You can view the server running locally on [localhost:1313](http://localhost:1313).
 
+## Publishing your post
+
+When the time has come to publish your post, update the front-matter so that...
+
+* `date` is set to the current date and time
+* `draft` is set to `false`
+
+Then open a PR against this repo. Travis CI will verify that the post builds correctly. Once you know everything is building, find someone who will do a final review of your post and assign them as a reviewer.
+
+The final reviewer should check out your PR branch and verify that the post builds and that everything looks good, there are no broken images etc. Once they have verified everything is good they should
+
+* `Rebase and merge` the post using the GitHub UI
+* Delete the branch for the post using the GitHub UI
+
 ## More...
 
 If you need to learn more, talk to someone on the team, read the hugo documentaiton and check out the output from its help command.
