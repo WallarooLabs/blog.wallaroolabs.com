@@ -603,7 +603,10 @@ section.post-content li {
   text-align: right;
   padding-right: 6px;
 }
-
+.categories {
+  font-size: 16px;
+  margin-bottom: 0.6em;
+}
 p.backtotop {
   font-size: 16px;
   line-height: 20px;
