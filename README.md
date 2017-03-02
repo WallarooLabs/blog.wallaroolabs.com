@@ -26,8 +26,9 @@ When setting up your author info, be sure to include your avatar file in `static
 
 ## Creating a blog post
 
-First things first, its good to know the name of your post or at least a working title. This title will be used when picking a name for the post's file.
-If your title is "Hello Wallaroo" then you would create the post by running:
+First things first, its good to know the name of your post or at least a 
+working title. This title will be used when picking a name for the post's file.
+Create a feature branch for your post, I suggest using your post name as the branch name so, if your title was "Hello Wallaroo" then your branch would be called "hello-wallaroo". Once you are working on a new branch, you will need hugo to create your post file with our standard Sendence front-matter. If your title is "Hello Wallaroo" then you would create the post by running:
 
 ```bash
 hugo new post/hello-wallaroo.md
