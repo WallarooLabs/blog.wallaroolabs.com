@@ -3,7 +3,7 @@ languageCode = "en-us"
 title = "Sendence Engineering"
 theme = "sendence-hugo-steam-theme"
 # Enable Google Analytics be inserting your tracking code
-googleAnalytics = "UA-59652249-3"
+googleAnalytics = ""
 # Number of posts per page
 paginate = 5
 
