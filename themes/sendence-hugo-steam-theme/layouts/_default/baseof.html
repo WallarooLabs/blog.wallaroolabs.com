@@ -1,8 +1,13 @@
 {{ partial "head" . }}
 <body class="home-template">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TJB7NK4"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
     {{ partial "header" . }}
     {{ partial "navigation" . }}
-    
+
     <main class="content" role="main">
     {{ block "main" . }}{{ end }}
     </main>
