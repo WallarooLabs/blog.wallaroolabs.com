@@ -115,6 +115,6 @@ We are planning on releasing Wallaroo as open source in April of this year. Unti
 - Wallaroo basics including what a Wallaroo application looks like
 - A deeper dive into Wallaroo performance
 - Exactly-once processing 
-- How we used Lineage-drive Fault Injection to test Wallaroo
+- How we used Lineage-driven Fault Injection to test Wallaroo
 
 If you would like a demo or to talk about how Wallaroo can help your business today, please get in touch by emailing [hello@sendence.com](mailto:hello@sendence.com). Currently, Wallaroo has both C++ and [Pony](http://www.ponylang.org) APIs, with Go, Python, and JavaScript on the roadmap. We have a good solid core of the product in place and are looking to talk to you, our potential customers, to help us prioritize future work.
