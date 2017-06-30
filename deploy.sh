@@ -12,11 +12,16 @@ cd public/
 git init
 git config user.name "Engineering Blog Builder"
 git config user.email "noreply@sendence.com"
+
+echo -e "Fetching upstream..."
+
 git remote add upstream "https://$GH_TOKEN@github.com/sendence/engineering.sendence.com"
 git fetch upstream
 git reset upstream/master
 
 touch .
+
+echo -e "Committing and pushing to upstream..."
 
 git add -A .
 git commit -m "rebuild website from revision ${rev} of source branch"
