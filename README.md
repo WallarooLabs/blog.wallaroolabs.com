@@ -89,4 +89,3 @@ The final reviewer should check out your PR branch and verify that the post buil
 ## More...
 
 If you need to learn more, talk to someone on the team, read the hugo documentaiton and check out the output from its help command.
-
