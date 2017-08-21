@@ -1,16 +1,14 @@
 This is the source for the engineering.sendence.com blog.
 
-The blog is built using the [hugo static website engine](gohugo.io). It's hosted on GitHub pages and built and deployed using TravisCI.
+## Hugo
 
-## Installing Hugo
+The Pony website is generated using [Hugo]: a static website generator. If you are making larger changes to the site, you will need to install Hugo locally to verify your changes are working.
 
-If you are writing a blog post, you'll need a recent version of Hugo. On OSX, you can install by doing:
+Because the site is deploying using a remote server, you should make sure you are developing using whatever version the deploy server is currently run
 
-```bash
-brew update && brew install hugo
-```
+## engineering.sendence.com hosting
 
-Otherwise you can download the hugo binary [from their website](gohugo.io).
+Ponylang.org is hosted using [Netlify].
 
 ## Setting up your author info
 
@@ -79,13 +77,48 @@ When the time has come to publish your post, update the front-matter so that...
 * `date` is set to the current date and time
 * `draft` is set to `false`
 
-Then open a PR against this repo. Travis CI will verify that the post builds correctly. Once you know everything is building, find someone who will do a final review of your post and assign them as a reviewer.
+Then open a PR against this repo. Netlify offers "deploy previews" that allow you to view the results of a PR before it goes live. To see the preview, on the PR page select `Show all checks` and then click `Details` next to `deploy/netlify - Deploy preview is ready!` Once you know everything is building, find someone who will do a final review of your post and assign them as a reviewer.
 
 The final reviewer should check out your PR branch and verify that the post builds and that everything looks good, there are no broken images etc. Once they have verified everything is good they should
 
 * `Rebase and merge` the post using the GitHub UI
 * Delete the branch for the post using the GitHub UI
 
+## Developing locally with Hugo
+
+To do larger changes, you'll want to install Hugo locally so you can test your changes. For detailed instructions on using [Hugo], please refer to its website.
+
+For simpler tasks, once you have Hugo installed, you should be able to:
+
+```bash
+cd engineering.sendence.com
+hugo server
+```
+
+Which will start up a local webserver that will serve the Ponylang website on `http://localhost:1313`. Generated content will be placed in the `public` folder which is ignored by git. Do not check in any generated content to the `source` branch.
+
+Once you are happy with your changes, commit then and submit a PR. .
+
+## How to submit a pull request
+
+Once your content is done, please open a pull request against this repo with your changes. Based on the state of your particular PR, a number of requests for change might be requested:
+
+* Changes to the content
+* Changes to where the content is stored in the repo
+* Changes to how the content falls into the overall site organization
+* Changes to make sure that new content works across a variety of devices
+
+Be sure to keep your PR to a single topic or logical change. If you are working on multiple changes, make sure they are each on their own branch and that before creating a new branch that you are on the master branch (others multiple changes might end up in your pull request). To repeat, each PR should be for a single logical change. We request that you create a good commit messages as laid out in ['How to Write a Git Commit Message'](http://chris.beams.io/posts/git-commit/).
+
+If your PR is for a single logical change (which is should be) but spans multiple commits, we'll ask you to squash them into a single commit before we merge. Steve Klabnik wrote a handy guide for that: [How to squash commits in a GitHub pull request](http://blog.steveklabnik.com/posts/2012-11-08-how-to-squash-commits-in-a-github-pull-request).
+
+## Relative vs Absolute links
+
+Favor relative links for any content on engineering.sendence.com. Absolute links that point to `https://enginerring.sendence.com` don't play well with Netlify deploy previews. Absolute links will redirect you off the preview website and onto the live website. For this reason, relative links are preferred.
+
 ## More...
 
-If you need to learn more, talk to someone on the team, read the hugo documentaiton and check out the output from its help command.
+If you need to learn more, talk to someone on the team, read the hugo documentation and check out the output from its help command.
+
+[Hugo]: https://gohugo.io
+[Netlify]: https://www.netlify.com/.
