@@ -1,4 +1,4 @@
-baseurl = "http://engineering.sendence.com"
+baseurl = "https://engineering.sendence.com"
 languageCode = "en-us"
 title = "Sendence Engineering"
 theme = "sendence-hugo-steam-theme"
