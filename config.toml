@@ -1,6 +1,6 @@
-baseurl = "https://engineering.sendence.com"
+baseurl = "https://blog.wallaroolabs.com"
 languageCode = "en-us"
-title = "Sendence Engineering"
+title = "Wallaroo Labs Engineering"
 theme = "sendence-hugo-steam-theme"
 # Enable Google Analytics be inserting your tracking code
 googleAnalytics = ""
@@ -11,7 +11,7 @@ paginate = 5
   post = "/:year/:month/:title/"
 
 [params]
-	title = "Sendence Engineering"
+	title = "Wallaroo Labs"
 	subtitle = "\"I wanna go fast\""
 	copyright = ""
 
@@ -25,18 +25,18 @@ paginate = 5
 
 	# To provide some metadata for search engines and the about section in the footer
 	# feel free to add a few information about you and your website.
-	name = "Sendence"
+	name = "Wallaroo Labs"
 	bio = ""
-	description = "Official blog of the Sendence Engineering team"
+	description = "Official blog of the Wallaroo Labs Engineering team"
 
 	# Link your social networks (optional)
 	location = ""
-	twitter = "sendenceeng"
+	twitter = "wallaroolabs"
 	linkedin = "sendence"
 	googleplus = ""
 	facebook = ""
 	instagram = ""
-	github = "sendence"
+	github = "WallarooLabs"
 	gitlab = ""
 	bitbucket = ""
 
