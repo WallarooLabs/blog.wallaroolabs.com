@@ -1,5 +1,5 @@
 +++
-description = "An introduction to Wallaroo: Sendence's new high-throughput, low-latency, resilient, event-by-event data processing framework."
+description = "An introduction to Wallaroo: Wallaroo Labs's new high-throughput, low-latency, resilient, event-by-event data processing framework."
 title = "Hello Wallaroo!"
 date = "2017-03-19T00:00:00Z"
 author = "seantallen"
@@ -10,7 +10,7 @@ tags = ["exactly-once", "performance", "wallaroo"]
 +++
 > We handle the hard infrastructure problems so you don’t have to.
 
-Welcome to the Sendence Engineering blog. I'm writing today to introduce you to Wallaroo, the product we've been working on for a little over a year now. Wallaroo is a framework for writing event-by-event distributed data processing applications. We’ve designed it to handle demanding high-throughput, low-latency tasks where accuracy of results is key. If you are familiar with the “big data” landscape, Wallaroo falls into the “streaming data” category along with tools like Storm, Heron, and Samza. 
+Welcome to the Wallaroo Labs Engineering blog. I'm writing today to introduce you to Wallaroo, the product we've been working on for a little over a year now. Wallaroo is a framework for writing event-by-event distributed data processing applications. We’ve designed it to handle demanding high-throughput, low-latency tasks where accuracy of results is key. If you are familiar with the “big data” landscape, Wallaroo falls into the “streaming data” category along with tools like Storm, Heron, and Samza. 
 
 When we set out to build Wallaroo, we had a few goals in mind. We wanted to improve the state of the art for streaming data processing by providing better per-worker throughput, dramatically lower latencies, simpler state management, and an easier operational experience. In this post, I’m going to touch on some of these points but not all of them. Over the course of the coming weeks, we will have a number of more technical in-depth posts on various aspects of Wallaroo and how we built it. Today, I’m here to set the stage for those future posts and give you an idea of what we are building. To that end, this post will:
 
@@ -109,7 +109,7 @@ What we want to do is ensure that each message has been delivered at least once 
 
 ## Give Wallaroo a try
 
-We are planning on releasing Wallaroo as open source in April of this year. Until that time, if you are interested in learning more about Wallaroo, you can [join the Sendence Wallaroo mailing list](http://eepurl.com/cnE5Cv) or [follow us on twitter](https://twitter.com/sendenceeng) to stay up to date on the news about Wallaroo. We have some more technically in-depth blog posts planned including:
+We are planning on releasing Wallaroo as open source in April of this year. Until that time, if you are interested in learning more about Wallaroo, you can [join the Wallaroo mailing list](http://eepurl.com/cnE5Cv) or [follow us on twitter](https://twitter.com/wallaroolabs) to stay up to date on the news about Wallaroo. We have some more technically in-depth blog posts planned including:
 
 - Design principles and architecture
 - Wallaroo basics including what a Wallaroo application looks like
@@ -117,4 +117,4 @@ We are planning on releasing Wallaroo as open source in April of this year. Unti
 - Exactly-once processing 
 - How we used Lineage-driven Fault Injection to test Wallaroo
 
-If you would like a demo or to talk about how Wallaroo can help your business today, please get in touch by emailing [hello@sendence.com](mailto:hello@sendence.com). Currently, Wallaroo has both C++ and [Pony](http://www.ponylang.org) APIs, with Go, Python, and JavaScript on the roadmap. We have a good solid core of the product in place and are looking to talk to you, our potential customers, to help us prioritize future work.
+If you would like a demo or to talk about how Wallaroo can help your business today, please get in touch by emailing [hello@wallaroolabs.com](mailto:hello@wallaroolabs.com). Currently, Wallaroo has both C++ and [Pony](http://www.ponylang.org) APIs, with Go, Python, and JavaScript on the roadmap. We have a good solid core of the product in place and are looking to talk to you, our potential customers, to help us prioritize future work.
