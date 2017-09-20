@@ -46,4 +46,21 @@
 
     {{ "<!-- Stylesheet for theme color -->" | safeHTML }}
     {{ partial (printf "themes/%s-theme" .Site.Params.themecolor) . }}
+
+    <link href="https://fonts.googleapis.com/css?family=Archivo+Narrow|Playfair+Display" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Raleway:400,500,600" rel="stylesheet">
+    <style>
+    body {
+        font-family: '{{ replace .Site.Params.fontbody "+" " "}}';
+    }
+
+    .blog-title {
+        font-family: '{{ replace .Site.Params.fontlogo "+" " "}}';
+    }
+
+    h1, h2, h3,
+    h4, h5, h6 {
+        font-family: '{{ replace .Site.Params.fontheading "+" " "}}';
+    }
+    </style>
 </head>

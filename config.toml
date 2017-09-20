@@ -18,6 +18,10 @@ paginate = 5
 	# You can choose between green, orange, red and blue.
 	themecolor = "green"
 
+	fontbody = 'Archivo Narrow'
+	fontheading = 'Archivo Narrow'
+	fontlogo = 'Raleway'
+
 	# Link custom assets relative to /static
 	favicon   = "favicon.ico"
 	customCSS = []
