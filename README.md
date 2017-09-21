@@ -42,7 +42,7 @@ When you create a blog post using the above instructions, standard Wallaroo Labs
 +++
 title = "example"
 slug = "post-url-name"
-draft = true
+draft = false
 date = "2017-03-02T15:20:13-05:00"
 categories = ["category 1","category 2"]
 tags = ["tag 1","tag 2"]
@@ -55,8 +55,8 @@ Let's quickly run through each.
 
 * Title is the title of your post
 * Slug is used in the url. Once the post is published, this should never change. If you post is called "Hello Wallaroo" then the slug should be "hello-wallaroo"
-* Draft should be switched from `true` to `false` when you want the post published on the website.
-* Date at the time you change the value of `draft` to `true`, you should date to the current date and time.
+* Leave draft as false. That way it will appear in Netlify previews and on the site when we merge our PR.
+* Date you should date to the current date and time right before your PR is merged.
 * Categories are used to group a series of posts together. For example, our series of posts introducing the world to Wallaroo is under the category "Hello Wallaroo". Categories should be used for a related series of posts that you would expect benefit from being read in order. You can [check the website](http://blog.wallaroolabs.com/categories/) to see existing categories.
 * Tags are a free form way of orthogonally organizing posts. Example tags include "performance", "scaling", "wallaroo", "exactly-once" etc. Use whatever tags seem appropriate on your post. Before creating a new tag, [check the website](http://blog.wallaroolabs.com/tags/) to see if there is already an existing appropriate tag.
 * Description is a short description of your post. It is optional. If it exists, it will be used on the main index page as the summary of the post and in page metadata where it will be picked up by search engines, twitter and such.
@@ -65,17 +65,16 @@ Let's quickly run through each.
 ## Viewing your post
 
 ```bash
-hugo server --buildDrafts
+hugo server 
 ```
 
-will render the website (including drafts) and start up a server. You can view the server running locally on [localhost:1313](http://localhost:1313).
+will render the website and start up a server. You can view the server running locally on [localhost:1313](http://localhost:1313).
 
 ## Publishing your post
 
 When the time has come to publish your post, update the front-matter so that...
 
 * `date` is set to the current date and time
-* `draft` is set to `false`
 
 Then open a PR against this repo. Netlify offers "deploy previews" that allow you to view the results of a PR before it goes live. To see the preview, on the PR page select `Show all checks` and then click `Details` next to `deploy/netlify - Deploy preview is ready!` Once you know everything is building, find someone who will do a final review of your post and assign them as a reviewer.
 

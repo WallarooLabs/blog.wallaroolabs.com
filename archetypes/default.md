@@ -1,5 +1,5 @@
 +++
-draft = true
+draft = false
 slug = "post-url-name"
 author = "Author Name"
 description = "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Earum similique, ipsum officia amet blanditiis provident ratione nihil ipsam dolorem repellat."
