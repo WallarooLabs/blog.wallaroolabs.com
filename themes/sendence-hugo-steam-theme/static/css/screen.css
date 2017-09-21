@@ -1,12 +1,13 @@
-@import url('//fonts.googleapis.com/css?subset=latin,cyrillic-ext,latin-ext,cyrillic&family=Open+Sans+Condensed:300|Open+Sans:400,600,400italic,600italic|Merriweather:400,300,300italic,400italic,700,700italic|Roboto+Slab:400,300|Raleway:400,500,600|Archivo+Narrow');
+@import url('//fonts.googleapis.com/css?subset=latin,cyrillic-ext,latin-ext,cyrillic&family=Open+Sans+Condensed:300|Open+Sans:400,600,400italic,600italic|Merriweather:400,300,300italic,400italic,700,700italic|Roboto+Slab:400,300|Raleway:400,500,600|Archivo+Narrow|Proza+Libre:500,700');
 @import url('//netdna.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.css');
+/* === Core Styles === */
 /* === Core Styles === */
 
 body {
   background-color: #ffffff;
   font-size: 21px;
   font-weight: 100;
-  line-height: 1.6em;
+  line-height: 1.8em;
   margin: 0;
   padding: 0;
   -webkit-font-smoothing: subpixel-antialiased;
@@ -15,6 +16,7 @@ body {
 body * {
   max-height: 1000000em;
 }
+
 h1,
 h2,
 h3,
@@ -23,8 +25,10 @@ p,
 li,
 dt,
 dd {
-  font-family: 'Archivo Narrow', sans-serif;
+  font-family: 'Archivo Narrow', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
+
+
 h1,
 .post-meta {
   text-align: center;
@@ -47,7 +51,7 @@ dd {
   font-size: 21px;
   color: #555;
   font-weight: 400;
-  line-height: 28px;
+  line-height: 33px;
 }
 dt {
   font-weight: 400;
@@ -94,7 +98,7 @@ kbd {
 }
 h1 {
   color: #151515;
-  font-family: 'Archivo Narrow', sans-serif;
+  font-family: 'Archivo Narrow', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 36px;
   font-weight: 400;
   line-height: 42px;
@@ -118,7 +122,7 @@ article.preview {
   margin-bottom: 4em;
 }
 article.preview p.readmore {
-  font-family: 'Archivo Narrow', sans-serif;
+  font-family: 'Archivo Narrow', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   margin-top: 1em;
   text-transform: uppercase;
   font-weight: 400;
@@ -200,7 +204,7 @@ section.share p {
   margin: 0;
 }
 section.author h4 {
-  font-family: 'Archivo Narrow', sans-serif;
+  font-family: 'Archivo Narrow', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: 400;
   margin-bottom: 4px;
 }
@@ -209,7 +213,7 @@ section.share p.info {
   font-size: 16px;
   line-height: 20px;
   text-transform: uppercase;
-  font-family: 'Archivo Narrow', sans-serif;
+  font-family: 'Archivo Narrow', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 section.share p.info.prompt {
   top: -5px;
@@ -227,7 +231,7 @@ section.author p.bio {
   line-height: 1.2em;
 }
 blockquote {
-  font-family: 'Archivo Narrow', sans-serif;
+  font-family: 'Archivo Narrow', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 1.6em;
   font-weight: 300;
   line-height: 1.2em;
@@ -240,7 +244,7 @@ blockquote {
 }
 .post-meta {
   color: #95a5a6;
-  font-family: 'Archivo Narrow', sans-serif;
+  font-family: 'Archivo Narrow', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 18px;
   font-weight: 300;
   margin-top: 0.3em;
@@ -262,6 +266,7 @@ div.authorimage {
 }
 h1.post-title {
   margin-top: 35px;
+  font-family: 'Proza Libre', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 h1.post-title a,
 h1.blog-title a {
@@ -303,7 +308,7 @@ footer {
   text-align: center;
 }
 footer section {
-  font-family: 'Archivo Narrow', sans-serif;
+  font-family: 'Archivo Narrow', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: 300;
   font-size: 18px;
   margin: 0 auto;
@@ -335,7 +340,7 @@ nav ul {
 }
 nav ul li {
   display: inline-block;
-  font-family: 'Archivo Narrow', sans-serif;
+  font-family: 'Archivo Narrow', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 18px;
   font-weight: 300;
   margin: 0;
@@ -376,7 +381,7 @@ a.archive-link {
   border-bottom: 1px solid #ecf0f1;
   border-top: 1px solid #ecf0f1;
   display: block;
-  font-family: 'Archivo Narrow', sans-serif;
+  font-family: 'Archivo Narrow', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 24px;
   font-weight: 300;
   margin-bottom: 3em;
@@ -389,7 +394,7 @@ a.archive-link {
   position: relative;
   width: 100%;
   max-width: 600px;
-  font-family: 'Archivo Narrow', sans-serif;
+  font-family: 'Archivo Narrow', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   text-transform: uppercase;
   font-size: 20px;
   color: #596364;
@@ -446,7 +451,7 @@ a.archive-link {
   border: 1px solid rgba(0, 0, 0, 0.05) !important;
 }
 .gist .gist-file .gist-meta {
-  font-family: 'Archivo Narrow', sans-serif;
+  font-family: 'Archivo Narrow', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: 300 !important;
   text-transform: uppercase !important;
   display: none !important;
@@ -513,7 +518,7 @@ a.archive-link {
 /* Tables */
 table {
   width: 100%;
-  font-family: 'Archivo Narrow', sans-serif;
+  font-family: 'Archivo Narrow', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   border-collapse: collapse;
   margin: 1em 0 3em;
 }
@@ -564,7 +569,7 @@ section.post-content h4 {
   margin-bottom: -6px;
 }
 section.post-content h4 {
-  font-family: 'Archivo Narrow', sans-serif;
+  font-family: 'Archivo Narrow', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 23px;
   text-transform: uppercase;
   font-weight: 300;
@@ -586,7 +591,7 @@ pre {
 }
 
 blockquote p {
-  font-family: 'Archivo Narrow', sans-serif;
+  font-family: 'Archivo Narrow', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 0.65em;
   font-weight: 300;
   line-height: 1.55em;
@@ -614,7 +619,7 @@ p.backtotop {
   font-size: 16px;
   line-height: 20px;
   text-transform: uppercase;
-  font-family: 'Archivo Narrow', sans-serif;
+  font-family: 'Archivo Narrow', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   top: 5px;
   position: relative;
   text-align: left;
@@ -678,7 +683,7 @@ section.bloginfo {
 section.author .meta {
   font-size: 12px;
   line-height: 19px;
-  font-family: 'Archivo Narrow', sans-serif;
+  font-family: 'Archivo Narrow', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   color: #bbbbbb;
   padding-top: 7px;
   margin-left: 108px;
@@ -692,7 +697,7 @@ h1.posts-tagged {
   margin: -17px auto -17px;
   text-align: center;
   max-width: 600px;
-  font-family: 'Archivo Narrow', sans-serif;
+  font-family: 'Archivo Narrow', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   color: #596364;
   text-transform: uppercase;
   font-weight: 400;
