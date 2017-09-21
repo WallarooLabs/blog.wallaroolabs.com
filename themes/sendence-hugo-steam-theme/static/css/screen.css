@@ -1,4 +1,4 @@
-@import url('//fonts.googleapis.com/css?subset=latin,cyrillic-ext,latin-ext,cyrillic&family=Open+Sans+Condensed:300|Open+Sans:400,600,400italic,600italic|Merriweather:400,300,300italic,400italic,700,700italic|Roboto+Slab:400,300');
+@import url('//fonts.googleapis.com/css?subset=latin,cyrillic-ext,latin-ext,cyrillic&family=Open+Sans+Condensed:300|Open+Sans:400,600,400italic,600italic|Merriweather:400,300,300italic,400italic,700,700italic|Raleway:400,500,600|Roboto+Slab:400,300');
 @import url('//netdna.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.css');
 /* === Core Styles === */
 body {
@@ -22,7 +22,7 @@ p,
 li,
 dt,
 dd {
-  font-family: "Merriweather", "Open Sans", "Helvetica Neue", Helvetica, Arial, "Nimbus L", sans-serif;
+  font-family: "Raleway", "Open Sans", "Helvetica Neue", Helvetica, Arial, "Nimbus L", sans-serif;
 }
 h1,
 .post-meta {
@@ -92,7 +92,7 @@ kbd {
 }
 h1 {
   color: #151515;
-  font-family: "Roboto Slab", "Merriweather", "Open Sans", "Helvetica Neue", Helvetica, Arial, "Nimbus L", sans-serif;
+  font-family: "Raleway", "Merriweather", "Open Sans", "Helvetica Neue", Helvetica, Arial, "Nimbus L", sans-serif;
   font-size: 36px;
   font-weight: 400;
   line-height: 42px;
@@ -689,7 +689,7 @@ h1.posts-tagged {
   margin: -17px auto -17px;
   text-align: center;
   max-width: 600px;
-  font-family: "Open Sans Condensed", "Open Sans", "Helvetica Neue", Helvetica, Arial, "Nimbus L", sans-serif;
+  font-family: "Raleway", "Open Sans Condensed", "Open Sans", "Helvetica Neue", Helvetica, Arial, "Nimbus L", sans-serif;
   color: #596364;
   text-transform: uppercase;
   font-weight: 400;
