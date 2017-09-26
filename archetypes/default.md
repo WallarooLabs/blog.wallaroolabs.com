@@ -1,4 +1,6 @@
 +++
+title: "{{ replace .TranslationBaseName "-" " " | title }}"
+date: {{ .Date }}
 draft = false
 slug = "post-url-name"
 author = "Author Name"
