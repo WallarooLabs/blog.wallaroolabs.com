@@ -69,7 +69,7 @@ That's a simple, contrived example but the basic logic holds in the real world. 
  
 ## Give Wallaroo a try
  
-We are currently running a beta program for Wallaroo. If you are interested in giving Wallaroo a try, email us at [hello@wallaroolabs.com](mailto:hello@wallaroolabs.com). If you are interested in learning more about Wallaroo, you can [join the Wallaroo mailing list](http://eepurl.com/cnE5Cv) or [follow us on Twitter](https://twitter.com/wallaroolabs) to stay up to date on the news about Wallaroo. We have some more technically in-depth blog posts planned including:
+If you are interested in giving Wallaroo a try, email us at [hello@wallaroolabs.com](mailto:hello@wallaroolabs.com). If you are interested in learning more about Wallaroo, you can [join the Wallaroo mailing list](http://eepurl.com/cnE5Cv) or [follow us on Twitter](https://twitter.com/wallaroolabs) to stay up to date on the news about Wallaroo. We have some more technically in-depth blog posts planned including:
  
 - A look inside the implementation of our Python API
 - Wallaroo basics including what a Wallaroo application looks like
@@ -77,4 +77,4 @@ We are currently running a beta program for Wallaroo. If you are interested in g
 - Exactly-once processing 
 - How we use Lineage-driven Fault Injection to test Wallaroo
  
-If you would like a demo or to talk about how Wallaroo can help your business today, please get in touch by emailing [hello@wallaroolabs.com](mailto:hello@wallaroolabs.com). Currently, Wallaroo has C++, Python and Pony APIs, with Go and JavaScript on the roadmap. We have a good solid core of the product in place and are looking to talk to you, our potential customers, to help us prioritize future work.
+If you would like a demo or to talk about how Wallaroo can help your business today, please get in touch by emailing [hello@wallaroolabs.com](mailto:hello@wallaroolabs.com).

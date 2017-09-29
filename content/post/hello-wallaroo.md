@@ -109,7 +109,7 @@ What we want to do is ensure that each message has been delivered at least once 
 
 ## Give Wallaroo a try
 
-We are planning on releasing Wallaroo as open source in April of this year. Until that time, if you are interested in learning more about Wallaroo, you can [join the Wallaroo mailing list](http://eepurl.com/cnE5Cv) or [follow us on twitter](https://twitter.com/wallaroolabs) to stay up to date on the news about Wallaroo. We have some more technically in-depth blog posts planned including:
+If you are interested in learning more about Wallaroo, you can [join the Wallaroo mailing list](http://eepurl.com/cnE5Cv) or [follow us on twitter](https://twitter.com/wallaroolabs) to stay up to date on the news about Wallaroo. We have some more technically in-depth blog posts planned including:
 
 - Design principles and architecture
 - Wallaroo basics including what a Wallaroo application looks like
@@ -117,4 +117,4 @@ We are planning on releasing Wallaroo as open source in April of this year. Unti
 - Exactly-once processing 
 - How we used Lineage-driven Fault Injection to test Wallaroo
 
-If you would like a demo or to talk about how Wallaroo can help your business today, please get in touch by emailing [hello@wallaroolabs.com](mailto:hello@wallaroolabs.com). Currently, Wallaroo has both C++ and [Pony](http://www.ponylang.org) APIs, with Go, Python, and JavaScript on the roadmap. We have a good solid core of the product in place and are looking to talk to you, our potential customers, to help us prioritize future work.
+If you would like a demo or to talk about how Wallaroo can help your business today, please get in touch by emailing [hello@wallaroolabs.com](mailto:hello@wallaroolabs.com).
