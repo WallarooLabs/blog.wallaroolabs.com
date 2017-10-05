@@ -41,7 +41,7 @@ In this blog we wanted to share with you what we've learnt and approaches we hav
 
 ## Testing Wallaroo
 
-To find out more about Wallaroo, our ultrafast and elastic data processing engine for distributed applications, please check out our previous posts [Open Sourcing Wallaro](/2017/09/open-sourcing-wallaroo/), [Hello Wallaroo](/2017/03/hello-wallaroo/) and [What's the Secret Sauce](/2017/06/whats-the-secret-sauce/), or follow us on our [mailing list](https://groups.io/g/wallaroo).
+To find out more about Wallaroo, our ultrafast and elastic data processing engine for distributed applications, please check out our previous posts [Open Sourcing Wallaroo](/2017/09/open-sourcing-wallaroo/), [Hello Wallaroo](/2017/03/hello-wallaroo/) and [What's the Secret Sauce](/2017/06/whats-the-secret-sauce/), or follow us on our [mailing list](https://groups.io/g/wallaroo).
 The rest of this post will focus on a specific scenario, crash-recovery, to work through some of the approaches we tried when testing Wallaroo's in-memory state, and the pattern that we settled on for ensuring that Wallaroo's state remains correct in the face of failure events.
 
 When we set out to build Wallaroo, we wanted to use a [Test-Driven-Development](https://en.wikipedia.org/wiki/Test-driven_development) approach. However, as we already noted, distributed systems testing can be really hard.
