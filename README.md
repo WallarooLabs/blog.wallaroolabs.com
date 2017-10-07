@@ -2,13 +2,13 @@ This is the source for the blog.wallaroolabs.com blog.
 
 ## Hugo
 
-The Pony website is generated using [Hugo]: a static website generator. If you are making larger changes to the site, you will need to install Hugo locally to verify your changes are working.
+The Wallaroo Labs blog is generated using [Hugo]: a static website generator. If you are making larger changes to the site, you will need to install Hugo locally to verify your changes are working.
 
 Because the site is deploying using a remote server, you should make sure you are developing using whatever version the deploy server is currently run
 
 ## blog.wallaroolabs.com hosting
 
-Ponylang.org is hosted using [Netlify].
+blog.wallaroolabs.com is hosted using [Netlify].
 
 ## Setting up your author info
 
@@ -94,7 +94,7 @@ cd blog.wallaroolabs.com
 hugo server
 ```
 
-Which will start up a local webserver that will serve the Ponylang website on `http://localhost:1313`. Generated content will be placed in the `public` folder which is ignored by git. Do not check in any generated content to the `source` branch.
+Which will start up a local webserver that will serve the Wallaroo Labs blog on `http://localhost:1313`. Generated content will be placed in the `public` folder which is ignored by git. Do not check in any generated content to the `source` branch.
 
 Once you are happy with your changes, commit then and submit a PR. .
 
