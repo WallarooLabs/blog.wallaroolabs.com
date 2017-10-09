@@ -1,36 +1,18 @@
 # Scalable Event Processing in Python
 
-Python has been under-supported in the big data and streaming world,
-in spite of the fact that it is widely used in may other areas such as
-data science and machine learning. Consequently, many organizations
-end up in a situation where they either have to translate systems that
-were originally written in Python in a JVM language, or rely on
-systems that involve interprocess communication and lots of data
-serialization between the JVM and a Python interpreter. The first of
-these is error prone and often impossible due to a lack of similar
-libraries; the second is slow and sometimes difficult to reason
-about.
+Building an event processing system from scratch is hard. If you
+happen to use Java then there systems out there that take care of some
+of these issues for you, but if you're using Python then you're stuck
+with translating your designs into JVM language, or relying on systems
+that use interprocess communication and lots of serialization to pass
+data between between the JVM and a Python interpreter.
 
-Building and operating large-scale distributed data applications is
-hard, and if you start from scratch you have to address many
-infrastructure plumbing issues. You need to figure out how workers
-will communicate, what kinds of data they need to pass between each
-other, how data will get to the right place, how to handle dropped
-messages, how to recover from errors, how to redistribute data when
-the system scales up and down. Once you make all these decisions, you
-need to actually build the system and hope that you get everything
-right.
-
-To promote Python as a language on-par or even better than Java for
-most data applications means allowing people who are familiar with
-Python to quickly and easily build industrial-grade data processing
-applications using only Python and the libraries that they are already
-familiar with, and being able to scale them easily and operate them at
-low-cost.
-
-In this post we want to delve into Wallaroo, our open-source, highly
-elastic processing engine for big data, fast data and machine learning
-applications in Python, and other languages like GoLang and C++.
+This blog post will show you how to use Wallaroo's Python API to build
+elastic event processing applications. In a later blog post we will
+share details about how Machida, the program that runs Wallaroo Python
+applications, treats Python as a first class language by using an
+embedded interpreter to ensure that programs run with as little
+overhead as possible.
 
 ## Wallaroo -- Simplicity, Speed, and Scale
 
@@ -82,57 +64,27 @@ located. Scaling is transparent to the application developer.
 
 ## The Python API
 
-### Wallaroo's Core Abstractions
-
-In order to understand the Python API, it is important to understand
-Wallaroo's core abstractions:
-* State -- Accumulated result of data stored over the course of time.
-* Computation -- Code that transforms an input of some type In to an
-  output of some type Out (or optionally None if the input should be
-  filtered out).
-* State Computation -- Code that takes an input type In and a state
-  object of some type State, operates on that input and state
-  (possibly making state updates), and optionally producing an output
-  of some type Out.
-* Source -- Input point for data from external systems into an application.
-* Sink -- Output point from an application to external systems.
-* Decoder -- Code that transforms a stream of bytes from an external
-  system into a series of application input types.
-* Encoder -- Code that transforms an application output type into
-  bytes for sending to an external system.
-* Pipeline -- A sequence of computations and/or state computations
-  originating from a source and optionally terminating in a sink.
-* Application -- A collection of pipelines.
-
-These abstractions will be described more later.
-
 ### A Motivating Example
 
-The cannonical streaming data processing application is word count, in
+The canonical streaming data processing application is word count, in
 which a stream of input text is analyzed and the total number of times
 each word has been seen is reported. This description is broad enough
 to allow developers to make different design tradeoffs in their
-implementations.
+implementations. You can
+find
+[this example](https://github.com/WallarooLabs/wallaroo/blob/release/examples/python/word_count/word_count.py) in
+it's entirety in
+our
+[GitHub repository](https://github.com/WallarooLabs/wallaroo/tree/release).
 
 For this example we will make the following assumptions:
 * Incoming messages will come from a TCP connection and be sent to
   another TCP connection.
 * Words are sent to the system in messages that can contain zero or
   more words.
-* Incoming messages consist of a string of bytes that start with a
-  32-bit big-endian integer that indicates the number of remaining
-  bytes in the payload.
+* Incoming messages consist of a string.
 * Outgoing messages consist of a word and the number of times that
   word has been seen in the event stream.
-
-For example the following string would represent a message:
-
-```
-"\x00\x00\x00\x2cMy solitude is cheered by that elegant hope."
-```
-
-The first four bytes are the length, and the remainder represents the
-words to add to the count.
 
 ```
 // INSERT GRAPHIC OF THIS OR SOMETHING
@@ -157,7 +109,7 @@ Encode
 |
 | bytes
 v
-outgoing mesage
+outgoing message
 ```
 
 In our example we will also split the state (the number of times each
@@ -165,6 +117,30 @@ word has been seen) into 26 partitions, where each partition handles
 words that start with different letters. For example "acorn" and
 "among" would go to the "a" partition, while "bacon" would go to the
 "b" partition.
+
+### Wallaroo's Core Abstractions
+
+In order to understand the Python API, it is important to understand
+Wallaroo's core abstractions:
+* State -- Accumulated result of data stored over the course of time.
+* Computation -- Code that transforms an input of some type In to an
+  output of some type Out (or optionally None if the input should be
+  filtered out).
+* State Computation -- Code that takes an input type In and a state
+  object of some type State, operates on that input and state
+  (possibly making state updates), and optionally producing an output
+  of some type Out.
+* Source -- Input point for data from external systems into an application.
+* Sink -- Output point from an application to external systems.
+* Decoder -- Code that transforms a stream of bytes from an external
+  system into a series of application input types.
+* Encoder -- Code that transforms an application output type into
+  bytes for sending to an external system.
+* Pipeline -- A sequence of computations and/or state computations
+  originating from a source and optionally terminating in a sink.
+* Application -- A collection of pipelines.
+
+These abstractions will be described more later.
 
 ### Application Setup
 
