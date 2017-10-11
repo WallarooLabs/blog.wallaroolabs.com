@@ -4,7 +4,7 @@ date = 2017-10-12T12:00:00-04:00
 draft = false
 slug = "go-python-go-stream-processing-for-python"
 author = "aturley"
-description = "Wallaroo’s Python API"
+description = "Wallaroo’s Python API let's you write distributed stream processing applications in your favorite language, Python."
 tags = [
     "wallaroo",
     "python",
@@ -17,7 +17,7 @@ categories = [
 
 We've been hard at work for 18 months on [a new processing engine called Wallaroo](https://github.com/wallaroolabs/wallaroo/tree/release) for deploying and operating big data, fast data, and machine learning applications. We designed Wallaroo to make the infrastructure virtually disappear, so you get rapid deployment and easy-to-operate applications. It provides a simple model for building fast applications that scale automatically across any number of workers.
 
-With Wallaroo, you focus on your business algorithms, not your infrastructure, and you can use the Python libraries you’re already familiar with. Wallaroo uses an embedded Python interpreter to run your code rather than calling out to a separate Python process, which makes your application run faster. Wallaroo isn’t built on the JVM, which provides advantages that we will cover in a later blog post. And finally, [Wallaroo is open-source](https://blog.wallaroolabs.com/2017/09/open-sourcing-wallaroo/). 
+With Wallaroo, you focus on your business algorithms, not your infrastructure, and you can use the Python libraries you’re already familiar with. Wallaroo uses an embedded Python interpreter to run your code rather than calling out to a separate Python process, which makes your application run faster. Wallaroo isn’t built on the JVM, which provides advantages that we will cover in a later blog post. And finally, [Wallaroo is open-source](https://blog.wallaroolabs.com/2017/09/open-sourcing-wallaroo/).
 
 This blog post will show you how to use [Wallaroo's Python API](https://docs.wallaroolabs.com/book/python/api.html) to build elastic event-by-event processing applications.
 
@@ -293,6 +293,3 @@ our [GitHub repository](https://github.com/wallaroolabs/wallaroo) and
 get to know Wallaroo to see if it can help you with the problems
 you're trying to solve. And we hope to hear back from you about the
 great things you've done with it.
-
-
-
