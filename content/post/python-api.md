@@ -36,6 +36,7 @@ our
 [GitHub repository](https://github.com/WallarooLabs/wallaroo/tree/release).
 
 For this example we will make the following assumptions:
+
 * Incoming messages will come from a TCP connection and be sent to
   another TCP connection.
 * Words are sent to the system in messages that can contain zero or
@@ -59,6 +60,7 @@ This application will process messages as they arrive. This contrasts with some 
 
 In order to understand the Python API, it is important to understand
 Wallaroo's core abstractions:
+
 * State -- Accumulated result of data stored over the course of time.
 * Computation -- Code that transforms an input to an
   output.
