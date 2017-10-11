@@ -94,10 +94,11 @@ def application_setup(args):
 
     ab = wallaroo.ApplicationBuilder("Word Count Application")
     ab.new_pipeline("Split and Count",
-                    wallaroo.TCPSourceConfig(in_host, in_port, Decoder()))
+                    wallaroo.TCPSourceConfig(in_host, in_port, 
+                                             Decoder()))
     ab.to_parallel(Split)
-    ab.to_state_partition(CountWord(), WordTotalsBuilder(), "word totals",
-        WordPartitionFunction(), word_partitions)
+    ab.to_state_partition(CountWord(), WordTotalsBuilder(), 
+        "word totals", WordPartitionFunction(), word_partitions)
     ab.to_sink(wallaroo.TCPSinkConfig(out_host, out_port, Encoder()))
     return ab.build()
 ```
