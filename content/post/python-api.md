@@ -1,77 +1,35 @@
-# Scalable Event Processing in Python
++++
+title= "Go Python, Go! Stream Processing for Python"
+date = 2017-10-12T12:00:00-04:00
+draft = false
+slug = "go-python-go-stream-processing-for-python"
+author = "aturley"
+description = "Wallaroo’s Python API"
+tags = [
+    "wallaroo",
+    "python",
+    "api"
+]
+categories = [
+    "Python API"
+]
++++
 
-Building an event processing system from scratch is hard. If you
-happen to use Java then there systems out there that take care of some
-of these issues for you, but if you're using Python then you're stuck
-with translating your designs into JVM language, or relying on systems
-that use interprocess communication and lots of serialization to pass
-data between between the JVM and a Python interpreter.
+We've been hard at work for 18 months on [a new processing engine called Wallaroo](https://github.com/wallaroolabs/wallaroo/tree/release) for deploying and operating big data, fast data, and machine learning applications. We designed Wallaroo to make the infrastructure virtually disappear, so you get rapid deployment and easy-to-operate applications. It provides a simple model for building fast applications that scale automatically across any number of workers.
 
-This blog post will show you how to use Wallaroo's Python API to build
-elastic event processing applications. In a later blog post we will
-share details about how Machida, the program that runs Wallaroo Python
-applications, treats Python as a first class language by using an
-embedded interpreter to ensure that programs run with as little
-overhead as possible.
+With Wallaroo, you focus on your business algorithms, not your infrastructure, and you can use the Python libraries you’re already familiar with. Wallaroo uses an embedded Python interpreter to run your code rather than calling out to a separate Python process, which makes your application run faster. Wallaroo isn’t built on the JVM, which provides advantages that we will cover in a later blog post. And finally, [Wallaroo is open-source](https://blog.wallaroolabs.com/2017/09/open-sourcing-wallaroo/). 
 
-## Wallaroo -- Simplicity, Speed, and Scale
-
-Wallaroo is a framework for building event driven distributed data
-processing applications. It provides a simple model for building fast
-systems that scale almost infinitely.
-
-### Simplicity
-
-It takes care of the scale-aware pieces of
-the system, the state management, and the message delivery guarantees
-that developers would have to think about if they were creating their
-own system from scratch. Its philosophy is that the framework should
-take care of the hard parts of distributed event processing so that
-the application developers can spend their time focused on solving the
-problems that are important to their business.
-
-### Speed
-
-Wallaroo provides true stream processing, not microbatching. Each
-message that enters the system is processed immediately. This means
-that message processing latencies (the time from when a message is
-received to when it is finished processing) are very low when compared
-to microbatching systems that send batches of messages through the
-system at intervals. When milliseconds count, you want a system that
-produces results as quickly as possible.
-
-Wallaroo applications store their own state, which can be accessed and
-updated in response to incoming messages. Messages are routed to the
-worker that stores the state that is required to process a
-message. This design discourages the use of external data stores and
-caches in favor of local state, which means that message processing
-doesn't require communication with other services over a network.
-
-### Scale
-
-Wallaroo applications are able to scale almost infinitely. They are
-able to do this because Wallaroo stores application state in small
-pieces that workers can read and updated without coordinating with
-other workers. Since there is no coordination, it doesn't matter
-whether two pieces of state exist on the same worker or on separate
-workers on different computers. When more computers are added to a
-system to scale it up, those pieces of state can be easily moved from
-one computer to another and their new location will have no impact on
-the speed of the system. And because the Wallaroo framework is
-responsible for delivering messages, the application developer doesn't
-have to worry about keeping track of where the pieces of state are
-located. Scaling is transparent to the application developer.
+This blog post will show you how to use [Wallaroo's Python API](https://docs.wallaroolabs.com/book/python/api.html) to build elastic event-by-event processing applications.
 
 ## The Python API
 
 ### A Motivating Example
 
-The canonical streaming data processing application is word count, in
+The canonical streaming data processing application is Word Count, in
 which a stream of input text is analyzed and the total number of times
 each word has been seen is reported. This description is broad enough
 to allow developers to make different design tradeoffs in their
-implementations. You can
-find
+implementations. You can find
 [this example](https://github.com/WallarooLabs/wallaroo/blob/release/examples/python/word_count/word_count.py) in
 it's entirety in
 our
@@ -86,31 +44,8 @@ For this example we will make the following assumptions:
 * Outgoing messages consist of a word and the number of times that
   word has been seen in the event stream.
 
-```
-// INSERT GRAPHIC OF THIS OR SOMETHING
 
-incoming message
-|
-| bytes
-v
-Decode
-|
-| string
-v
-Split (stateless)
-| | |
-| | | string
-v v v
-CountWord (stateful)
-|
-| WordCount
-v
-Encode
-|
-| bytes
-v
-outgoing message
-```
+![Word Count Diagram](/images/post/python-api/word-count-diagram.png)
 
 In our example we will also split the state (the number of times each
 word has been seen) into 26 partitions, where each partition handles
@@ -118,18 +53,18 @@ words that start with different letters. For example "acorn" and
 "among" would go to the "a" partition, while "bacon" would go to the
 "b" partition.
 
+This application will process messages as they arrive. This contrasts with some other streaming data processing systems that are designed around processing messages in micro-batches. This results in lower latencies because message processing is not delayed.
+
 ### Wallaroo's Core Abstractions
 
 In order to understand the Python API, it is important to understand
 Wallaroo's core abstractions:
 * State -- Accumulated result of data stored over the course of time.
-* Computation -- Code that transforms an input of some type In to an
-  output of some type Out (or optionally None if the input should be
-  filtered out).
-* State Computation -- Code that takes an input type In and a state
-  object of some type State, operates on that input and state
-  (possibly making state updates), and optionally producing an output
-  of some type Out.
+* Computation -- Code that transforms an input to an
+  output.
+* State Computation -- Code that takes an input and a state
+  object, operates on that input and state
+  (possibly making state updates), and optionally produces an output.
 * Source -- Input point for data from external systems into an application.
 * Sink -- Output point from an application to external systems.
 * Decoder -- Code that transforms a stream of bytes from an external
@@ -168,7 +103,7 @@ def application_setup(args):
 This code creates an application with the topology that was described
 earlier. It represents one pipeline that consists of a stateless
 computation called `Split` that splits a string of words into
-individual words and a stateful computation called `CountWord` that
+individual words and a state computation called `CountWord` that
 updates the state of the application and creates outgoing messages
 that represent the word count. The classes used here will be described
 more in the following sections.
@@ -187,12 +122,12 @@ number of partitions. The only restriction is that these partitions
 must be independent of each other in terms of how they will be
 accessed, because only one state partition can be accessed at a time.
 
-State partitions are accessed inside state computations. When a
+When a
 message is sent, Wallaroo applies a partition function to the message
 to determine which state partition to send it to. Different state
 partitions may live on different workers, and a partition may move
 from one worker to another when workers are added or removed from the
-cluster.
+cluster. This makes it easy to scale the application up and down as the number of workers in the cluster increases and decreases.
 
 This example represents the state as a dictionary that is wrapped in
 an object that knows how to update it and has a method that returns an
@@ -254,6 +189,8 @@ class Decoder(object):
         return bs.decode("utf-8")
 ```
 
+This decoder is specific to TCP sources. Wallaroo also has support for Kafka sources, and other source types will be added in the future.
+
 #### Stateless Computation
 
 `Split` is a stateless computation. It takes a string and splits it into
@@ -284,23 +221,16 @@ class Split(object):
         return words
 ```
 
-The `Split` computation doesn't actually send messages itself, it
-returns a list of messages that the Wallaroo framework will send on
-it's behalf. If the incoming message was `why hello world` then `why`
-and `world` would be send to the "w" partition, and `hello` would be
-send to the "h" partition. The `Split` computation does not need to be
-aware of how data is partitioned, nor does it need to be aware of
-which machines hold these partitions; the Wallaroo framework takes
-care of all of that.
+The `Split` computation returns a list of individual words that the Wallaroo framework sends along as messages to the next step in the pipeline. Wallaroo takes care of making sure that each message gets delivered to the correct partition. Your application does not need to know how the data is partitioned or which machine holds that partition.
 
 #### Stateful Computation
 
 `CountWord` is a stateful computation; it uses an incoming message and
-a state to update the word count for the new word and return a message
-for Wallaroo to send on it's behalf.
+a state to update the word count for the new word and returns a message
+for Wallaroo to send on its behalf.
 
 ```python
-class CountWord():
+class CountWord(object):
     def name(self):
         return "Count Word"
 
@@ -334,29 +264,35 @@ class Encoder(object):
         return data.word + " => " + str(data.count) + "\n"
 ```
 
+This example uses a TCP sink, but Wallaroo also supports Kafka sinks. Other types of sinks will be added in the future.
+
 ## A Scalable Event Processing Application
 
 This application can run on one worker and can scale horizontally by
-adding more and more workers. Since each partition lives on a worker
-and there are only 26 partitions, this application can't scale much
-beyond 26 workers. However, an application with more partitions would
-be able to take advantage of more workers.
+adding more and more workers. Wallaroo's flexibility makes it easy to adapt to whatever partitioning strategy your application requires. Take a look at our documentation for [information about how to run a Wallaroo cluster](https://docs.wallaroolabs.com/book/core-concepts/clustering.html).
 
-## Running the Application
+## Check It Out
 
 If you're interested in running this application yourself, take a look at the
 the [Wallaroo documentation](https://docs.wallaroolabs.com) and the
-[example applications](https://github.com/WallarooLabs/wallaroo/tree/release/examples/python) that
+[word count example application](https://github.com/WallarooLabs/wallaroo/tree/release/examples/python/word_count) that
 we've built. You'll find instructions on setting up Wallaroo and running applications. And take a look at
 our [community page](https://www.wallaroolabs.com/community) to sign
 up for our mailing list or join our IRC channel to ask any question you may have.
 
-## Check It Out
+You can also watch this video to see Wallaroo in action. Our VP of Engineering walks you through the concepts that were covered in this blog post and then shows the word count application scaling by adding new workers to the cluster.
+
+<iframe src="https://player.vimeo.com/video/234753585" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+
+Our API is new and we are looking at ways to improve it. We have a lot of ideas of our own, but if you have any ideas we would love to hear from you. Please don’t hesitate to get in touch with us through [our mailing list](https://groups.io/g/wallaroo) or [our IRC channel](https://webchat.oftc.net/?channels=wallaroo).
 
 We built Wallaroo to help people create applications without getting
 bogged down in the hard parts of distributed systems. We hope you'll
 take a look at
-our [github repository](https://github.com/wallaroolabs/wallaroo) and
+our [GitHub repository](https://github.com/wallaroolabs/wallaroo) and
 get to know Wallaroo to see if it can help you with the problems
 you're trying to solve. And we hope to hear back from you about the
 great things you've done with it.
+
+
+
