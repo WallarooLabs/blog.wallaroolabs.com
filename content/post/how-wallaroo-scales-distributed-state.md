@@ -1,8 +1,8 @@
 +++
 title = "How Wallaroo Scales Distributed State"
 slug = "how-wallaroo-scales-distributed-state"
-draft = true
-date = "2017-10-19T15:20:13-05:00"
+draft = false
+date = 2017-10-19T00:00:00Z
 tags = [
     "wallaroo",
     "scaling",
