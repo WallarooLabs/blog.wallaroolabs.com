@@ -112,7 +112,7 @@ The app developer never has to think about this!  The ability to resize a cluste
 We’re calling this set of features “autoscaling,” and we're planning to release them for general use in Q4 of this year (2017).  If you want to be the first to know when they’re available, sign up for our [announcement mailing list](http://sendence.us14.list-manage.com/subscribe/post?u=ca8d451e475b0747280ce3ce2&amp;id=ac010da092).  And if you just can’t wait to see it in action, check out this 15-minute live demo of growing a Wallaroo cluster, presented by our VP of Engineering:
 [Scale Independence in Wallaroo](https://vimeo.com/234753585).
 
-As always, if you’d like to ask us more in-depth technical questions, or if you have any ideas to share, please don’t hesitate to get in touch with us through [our mailing list](https://groups.io/g/wallaroo) or [our IRC channel](https://webchat.oftc.net/?channels=wallaroo).  
+As always, if you’d like to ask us more in-depth technical questions, or if you have any ideas to share, please don’t hesitate to get in touch with us through [our mailing list](https://groups.io/g/wallaroo) or [our IRC channel](https://webchat.freenode.net/?channels=#wallaroo).  
 
 In this post, we only scratched the surface of how Wallaroo handles state, so stay tuned for future posts on the subject. 
 
