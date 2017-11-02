@@ -6,7 +6,7 @@ author: nisanharamati
 slug: testing-state-correctness
 draft: false
 categories:
-  - testing
+  - Testing
 tags:
   - testing
   - chaos engineering
