@@ -41,7 +41,6 @@ When you create a blog post using the above instructions, standard Wallaroo Labs
 ```toml
 +++
 title = "example"
-slug = "post-url-name"
 draft = false
 date = "2017-03-02T15:20:13-05:00"
 categories = ["category 1","category 2"]
@@ -54,7 +53,6 @@ author = "Author Name"
 Let's quickly run through each.
 
 * Title is the title of your post
-* Slug is used in the url. Once the post is published, this should never change. If you post is called "Hello Wallaroo" then the slug should be "hello-wallaroo"
 * Leave draft as false. That way it will appear in Netlify previews and on the site when we merge our PR.
 * Date you should date to the current date and time right before your PR is merged.
 * Categories are used to group a series of posts together. For example, our series of posts introducing the world to Wallaroo is under the category "Hello Wallaroo". Categories should be used for a related series of posts that you would expect benefit from being read in order. You can [check the website](http://blog.wallaroolabs.com/categories/) to see existing categories.
