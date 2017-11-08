@@ -1,14 +1,14 @@
 +++
 title = "Identifying Trending Twitter Hashtags in Real-time with Wallaroo"
 date = 2017-11-09T12:00:00-04:00
-draft = true
+draft = false
 slug = "twitter-hashtags-real-time"
 author = "haneemedhat"
 description = "Using Wallaroo to connect to a real-time twitter stream and find trending hashtags"
 tags = [
     "wallaroo",
     "twitter",
-		"tutorial",
+    "tutorial",
     "example"
 ]
 categories = [
