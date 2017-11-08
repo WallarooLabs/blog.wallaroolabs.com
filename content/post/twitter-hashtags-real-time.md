@@ -59,17 +59,17 @@ In order to get real-time tweets, you need to register on [Twitter
 Apps](https://apps.twitter.com/) by clicking on “Create new app”, and
 filling in the form under “Create your twitter app”.
 
-![](images/credentials.png)
+![](images/post/twitter-hashtags-real-time/credentials.png)
 
 
 Go to your newly created app and open the “Keys and Access
 Tokens” tab, then click on “Generate my access token”.
 
-![](images/credentials_2.png)
+![](images/post/twitter-hashtags-real-time/credentials_2.png)
 
 Your new access tokens will appear like this:
 
-![](images/credentials_3.png)
+![](images/post/twitter-hashtags-real-time/credentials_3.png)
 
 
 
@@ -92,28 +92,23 @@ import requests_oauthlib
 import json
 
 # Replace the values below with yours
-ACCESS_TOKEN = 'PUT_YOURS_HERE'
-ACCESS_SECRET = 'PUT_YOURS_HERE'
-CONSUMER_KEY = 'PUT_YOURS_HERE'
-CONSUMER_SECRET = 'PUT_YOURS_HERE'
+ACCESS_TOKEN = ''
+ACCESS_SECRET = ''
+CONSUMER_KEY = ''
+CONSUMER_SECRET = ''
 my_auth = requests_oauthlib.OAuth1(CONSUMER_KEY, CONSUMER_SECRET,ACCESS_TOKEN, ACCESS_SECRET)
 
 
 def send_tweets_to_wallaroo(http_resp, tcp_connection):
     for line in http_resp.iter_lines():
-        try:
-            full_tweet = json.loads(line)
-            tweet_text = full_tweet['text']
-            # send the length of text + 1 for newline represented in 5-digits along with the tweet text
-            # in order to be parsed as payload_length
-            # e.g. if tweet text is 'Hello everyone!' then we send '00016Hello everyone!'
-            tcp_connection.sendall(str(len(tweet_text)+1).zfill(5) + tweet_text + '\n')
-            print("Tweet Length: " + str(len(tweet_text)+1).zfill(5))
-            print("Tweet Text: " + tweet_text)
-            print ("=========================================")
-        except:
-            e = sys.exc_info()[0]
-            print("Error: %s" % e)
+        full_tweet = json.loads(line)
+        if 'text' in full_tweet:
+            tweet_text = full_tweet['text'].encode('utf-8')
+            # send the length of text + 1 for newline represented as 5 ASCII
+            # characters, followed by the tweet text and \n
+            # e.g. if tweet text is 'Hello everyone!', send '00016Hello everyone!'
+            tcp_connection.sendall(str(len(tweet_text)+1).zfill(5) +
+                    tweet_text + '\n')
 
 
 def get_tweets():
@@ -121,22 +116,20 @@ def get_tweets():
     query_data = [('locations', '-130,-20,100,50'), ('track', '#')]
     query_url = url + '?' + '&'.join([str(t[0]) + '=' + str(t[1]) for t in query_data])
     response = requests.get(query_url, auth=my_auth, stream=True)
-    print(query_url, response)
     return response
 
 
 # Create a TCP/IP socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-# Connect the socket to the input port of Wallaroo
+# Connect to Wallaroo
 wallaro_input_address = ('localhost', 8002)
 
-print >>sys.stderr, 'connecting to %s port %s' % wallaro_input_address
+print 'connecting to Wallaroo on %s:%s' % wallaro_input_address
 sock.connect(wallaro_input_address)
 
 resp = get_tweets()
 send_tweets_to_wallaroo(resp,sock)
-
 ```
 
 4. **Create the Wallaroo Application**
@@ -167,16 +160,12 @@ These are the same 5 bytes that are being sent by **send\_tweets\_to\_wallaroo(h
 ```python
 class Decoder(object):
     def header_length(self):
-        print "header_length"
         return 5
 
     def payload_length(self, bs):
-        print "payload_length", bs
         return int(struct.unpack("!5s", bs)[0])
-        #return 4
 
     def decode(self, bs):
-        print "decode", bs
         return bs.decode("utf-8")
 ```
 
@@ -196,11 +185,8 @@ class HashtagFinder(object):
     def name(self):
         return "HashtagFinder"
 
-    def compute(self, data):
-        print "HashtagFinder compute:", data
-        for word in data.split(" "):
-            if word[0] == ‘#’:
-                return word.replace("\n","")
+    def compute_multi(self, data):
+        return [word.strip() for word in data.split() if word[0] == '#']
 ```
 
 7. **Create The State and StateBuilder**
@@ -220,21 +206,27 @@ This State class has the following three methods:
 class HashtagCounts(object):
 
     def __init__(self):
-        # initialize the dataframe with columns names
         self.hashtags_df = pd.DataFrame(columns=['Hashtag','Counts'])
-        # assign the Hashtag column to be the index of the dataframe
+        # We want to be addressing by Hashtag most frequently
         self.hashtags_df = self.hashtags_df.set_index(['Hashtag'])
-        # change the type of Counts column to int
+        # Counts is an int
         self.hashtags_df['Counts'] = self.hashtags_df['Counts'].astype('int')
 
     def update(self, hashtag_name, counts):
         # if the hashtag is already exists then add its counts to old counts
         # and if not exists, then add it in the dataframe with its current counts
-        self.hashtags_df.loc[hashtag_name] = self.hashtags_df.loc[hashtag_name] + counts if hashtag_name in self.hashtags_df.index else counts
+        curr_count = 0
+        if hashtag_name in self.hashtags_df.index:
+            curr_count = self.hashtags_df.loc[hashtag_name]
+        self.hashtags_df.loc[hashtag_name] = curr_count + counts
 
-    def get_counts(self):
-        # Return from the dataframe a dict of top 10 hashtags
-        return self.hashtags_df.nlargest(10,'Counts').to_dict()['Counts']
+    def get_counts(self, n=10):
+        # Return from the dataframe a dict of top n hashtags
+        return self.hashtags_df.nlargest(n,'Counts').to_dict()['Counts']
+
+    def get_count(self, c):
+        # int is safe to return as is!
+        return self.hashtags_df.loc[c]
 ```
 
 We also need a StateBuilder class called **HashtagsStateBuilder** that will be used to create State objects from within Wallaroo.
@@ -268,14 +260,12 @@ We can now define the last component of our application: the Encoder class. Here
 ```python
 class Encoder(object):
     def encode(self, data):
-        print "encode: "
         # extract the hashtags from dataframe and convert them into array
         top_tags = [str(hashtag) for hashtag in data]
         # extract the counts from dataframe and convert them into array
         tags_count = [data[hashtag] for hashtag in data]
         # transform the data to be as array of labels and array of counts
         request_data = {'label': str(top_tags), 'data': str(tags_count)}
-        print(str(request_data) + ';;\n')
         # return the data to TCP connection along with a special separator
         return str(request_data) + ';;\n'
 ```
@@ -365,7 +355,7 @@ download and add the
 [Chart.js](https://github.com/chartjs/Chart.js/releases/download/v2.4.0/Chart.js)
 file into the static directory.
 
-![](images/dashboard_app.png)
+![](images/post/twitter-hashtags-real-time/dashboard_app.png)
 
 Then, in **app.py** file, we’ll create a function called **update\_dashboard**
 that can be called (by **socket\_receiver.py**) through this URL:
@@ -556,7 +546,7 @@ Now you can open the dashboard web application using URL:
 
 you'll see the dashboard being updated in real-time.
 
-![](images/Wallaroo_Dashboard.gif)
+![](images/post/twitter-hashtags-real-time/Wallaroo_Dashboard.gif)
 
 **Conclusion**
 ==============
