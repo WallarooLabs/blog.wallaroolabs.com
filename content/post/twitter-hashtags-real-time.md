@@ -18,9 +18,6 @@ categories = [
 +++
 
 
-#Wallaroo Tutorial: Identifying Trending Twitter Hashtags in Real-time
----------------------------------
-
 This week we have a guest post written by Hanee' Medhat
 
 Hanee' is a Big Data Engineer, with experience working with massive data in many industries, such as Telecommunications and Banking.
