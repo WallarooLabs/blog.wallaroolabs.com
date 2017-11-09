@@ -1,6 +1,6 @@
 +++
 title = "Identifying Trending Twitter Hashtags in Real-time with Wallaroo"
-date = 2017-11-09T12:00:00-04:00
+date = 2017-11-14T12:00:00-04:00
 draft = false
 slug = "twitter-hashtags-real-time"
 author = "haneemedhat"
@@ -21,17 +21,16 @@ categories = [
 This week we have a guest post written by Hanee' Medhat
 
 Hanee' is a Big Data Engineer, with experience working with massive data in many industries, such as Telecommunications and Banking.
-(https://twitter.com/HaneeShousha)
 
 ## Overview
 
-One of the primary places where the world is seeing an explosion of data growth is in social media.  Wallaroo is a powerful and simple-to-use open-source data engine that is ideally suited for handling massive amounts of streaming data in real-time.
+One of the primary places where the world is seeing an explosion of data growth is in social media.  [Wallaroo](http://www.wallaroolabs.com/community) is a powerful and simple-to-use open-source data engine that is ideally suited for handling massive amounts of streaming data in real-time.
 
 In this tutorial, I will use Wallaroo to analyze and extract insights from Twitter in real-time and present the results on a dashboard.
 
 First, a little background on Wallaroo.  Wallaroo is a relatively new open-source project that has been getting a lot of attention recently.  Wallaroo Labs, the company behind the project, has shared a good deal of information about their approach and technology. You may have seen some of their recent blog articles on Hacker News.
 
-You can find more information about Wallaroo by visiting [wallaroolabs.com/community].
+You can find more information about Wallaroo by visiting [this site](wallaroolabs.com/community).
 
 Wallaroo allows developers to write code in native Python and, unlike other streaming projects, doesn't require using Java or the JVM. I was intrigued by their approach and wanted to see how easy it would be to use Wallaroo to do some analysis on Twitter data.
 
@@ -39,7 +38,7 @@ Wallaroo allows developers to write code in native Python and, unlike other stre
 
 This post shows a real use case on a massive online data stream, using Wallaroo’s Python API. We will show how easy it is to transform data streams with a small amount of code.
 
-We will create an application that reads a real data stream from Twitter, extracts hashtags, and counts them to identify the top trending hashtags on Twitter. You can create the needed files on your own or follow along by cloning the [Wallaroo Twitter Trending Example](https://github.com/WallarooLabs/wallaroo-twitter-trending-example) from github.
+We will create an application that reads a real data stream from Twitter, extracts hashtags, and counts them to identify the top trending hashtags on Twitter. You can create the needed files on your own or follow along by cloning the [Wallaroo Twitter Trending Example](https://github.com/WallarooLabs/wallaroo-twitter-trending-example) from GitHub.
 
 
 ### 1. Install Wallaroo
@@ -54,17 +53,16 @@ In order to get real-time tweets, you need to register on [Twitter
 Apps](https://apps.twitter.com/) by clicking on “Create new app”, and
 filling in the form under “Create your twitter app”.
 
-![](images/post/twitter-hashtags-real-time/credentials.png)
-
+![](/images/post/twitter-hashtags-real-time/credentials.png)
 
 Go to your newly created app and open the “Keys and Access
 Tokens” tab, then click on “Create my access token”.
 
-![](images/post/twitter-hashtags-real-time/credentials_2.png)
+![](/images/post/twitter-hashtags-real-time/credentials_2.png)
 
 Your new access tokens will appear like this:
 
-![](images/post/twitter-hashtags-real-time/credentials_3.png)
+![](/images/post/twitter-hashtags-real-time/credentials_3.png)
 
 
 
@@ -144,7 +142,7 @@ import pandas as pd
 
 ### 5. Create The Decoder
 
-The Decoder will translate the raw messages from the network connection and feed the resulting messages to the computations. Create a class called **Decoder** that implements the following three methods.
+The [Decoder](https://docs.wallaroolabs.com/book/core-concepts/core-concepts.html) will translate the raw messages from the network connection and feed the resulting messages to the computations. Create a class called **Decoder** that implements the following three methods.
 
 * **header_length(self)**: This method returns a fixed integer that represents the number of bytes that hold the value of **payload_length**. In this case we return 5, which denotes that the value of **payload_length** is held in 5 bytes.
 
@@ -168,9 +166,9 @@ class Decoder(object):
 
 ### 6. Create The Computation
 
-Now let’s define the computation class which will be used in the data processing logic. We will be applying this on the tweets received from the Decoder in order to extract all the Hashtags.
+Now let’s define the [computation](https://docs.wallaroolabs.com/book/core-concepts/core-concepts.html) class which will be used in the data processing logic. We will be applying this on the tweets received from the Decoder in order to extract all the Hashtags.
 
-Our computation is called ** HashtagFinder**, and like all computations, it must implement the following two methods:
+Our computation is called **HashtagFinder**, and like all computations, it must implement the following two methods:
 
 * **name(self)**:  returns the name of the computation step.
 * **compute(self, input_data)**: takes a parameter **input_data**, containing the data coming from the previous step and implements the current step’s logic.
@@ -188,7 +186,7 @@ class HashtagFinder(object):
 
 ### 7. Create The State and StateBuilder
 
-This is a crucial step. We want to count how many times each hashtag was mentioned, and to do so we need to track this information in a stateful computation. We do this via **State** and **StateBuilder** classes.
+This is a crucial step. We want to count how many times each hashtag was mentioned, and to do so we need to track this information in a [stateful computation](https://docs.wallaroolabs.com/book/core-concepts/core-concepts.html). We do this via **State** and __StateBuilder__ classes.
 
 We created the State class **HashtagCounts**, which contains a pandas dataframe that holds all aggregated hashtag counts, and is updated at each event.
 
@@ -234,7 +232,7 @@ class HashtagsStateBuilder(object):
 ```
 ### 8. Create StateComputation
 
-Next is the StateComputation class that updates the State object. This is similar to a regular Computation, but the **compute** method has an additional **state** argument, which holds the state object.
+Next is the [StateComputation](https://docs.wallaroolabs.com/book/core-concepts/core-concepts.html) class that updates the State object. This is similar to a regular Computation, but the **compute** method has an additional **state** argument, which holds the state object.
 
 ```python
 class ComputeHashtags(object):
@@ -250,7 +248,7 @@ class ComputeHashtags(object):
 
 ### 9. Create The Encoder
 
-We can now define the last component of our application: the Encoder class. Here we transform the data to an array of all hashtags and an array of their counts, to be sent through the network to the front end application.
+We can now define the last component of our application: the [Encoder](https://docs.wallaroolabs.com/book/core-concepts/core-concepts.html) class. Here we transform the data to an array of all hashtags and an array of their counts, to be sent through the network to the front end application.
 
 
 ```python
@@ -268,7 +266,7 @@ class Encoder(object):
 
 ### 10. Create The ApplicationBuilder
 
-We now need to create the application topology from the module’s **application_setup** method.
+We now need to create the [application topology](https://docs.wallaroolabs.com/book/core-concepts/core-concepts.html) from the module’s **application_setup** method.
 
 We create an **ApplicationBuilder** with the name **Trending Hashtags**, and added the following components:
 
@@ -349,7 +347,7 @@ download and add the
 [Chart.js](https://github.com/chartjs/Chart.js/releases/download/v2.4.0/Chart.js)
 file into the static directory.
 
-![](images/post/twitter-hashtags-real-time/dashboard_app.png)
+![](/images/post/twitter-hashtags-real-time/dashboard_app.png)
 
 Then, in **app.py** file, we’ll create a function called **update\_dashboard**
 that can be called (by **socket\_receiver.py**) through this URL:
@@ -522,7 +520,7 @@ Now that we have built all the components, from grabbing the data all the way to
 2. Run **socket\_receiver.py**
 3. Run the **twitter\_wallaroo\_app** from terminal using the below commands:
 
-Note: The `machida` executable is in `machida/build/machida` in the [Wallaroo](https://github.com/wallaroolabs/wallaroo) repo. For example, if you’ve followed the Wallaroo installation [instructions](https://docs.wallaroolabs.com/book/getting-started/setup.html) then it will be in `$HOME/wallaroo-tutorial/wallaroo/machida/build/machida`. In order to run `machida` you will need to set up your `PYTHONPATH` to point to the `wallaroo.py` python library. For example, if you’ve followed the Wallaroo installation instructions](https://docs.wallaroolabs.com/book/getting-started/setup.html) then `machida` will be `$HOME/wallaroo-tutorial/wallaroo/machida/build/machida` and you can set `PYTHONPATH` with `export PYTHONPATH=$HOME/wallaroo-tutorial/wallaroo/machida`
+Note: The `machida` executable is in `machida/build/machida` in the [Wallaroo](https://github.com/wallaroolabs/wallaroo) repo. For example, if you’ve followed the Wallaroo installation [instructions](https://docs.wallaroolabs.com/book/getting-started/setup.html) then it will be in `$HOME/wallaroo-tutorial/wallaroo/machida/build/machida`. In order to run `machida` you will need to set up your `PYTHONPATH` to point to the `wallaroo.py` python library. For example, if you’ve followed the [Wallaroo installation instructions](https://docs.wallaroolabs.com/book/getting-started/setup.html) then `machida` will be `$HOME/wallaroo-tutorial/wallaroo/machida/build/machida` and you can set `PYTHONPATH` with `export PYTHONPATH=$HOME/wallaroo-tutorial/wallaroo/machida`
 
 ```
 export PYTHONPATH="$PYTHONPATH:$HOME/wallaroo-tutorial/wallaroo/machida:."
@@ -550,7 +548,7 @@ Now you can open the dashboard web application using URL:
 
 you'll see the dashboard being updated in real-time.
 
-![](images/post/twitter-hashtags-real-time/Wallaroo_Dashboard.gif)
+![](/images/post/twitter-hashtags-real-time/Wallaroo_Dashboard.gif)
 
 If you've run into trouble setting up the application and do not feel comfortable debugging the issue, we suggest using `virtualenv` to create an isolated Python environment. Here's a good [guide](http://docs.python-guide.org/en/latest/dev/virtualenvs/#lower-level-virtualenv) to help you get `virtualenv` setup if you have not done so already.
 
@@ -560,3 +558,4 @@ In this post, we've learned how to do simple online data processing on live Twit
 
 Even in this simple example, we can see how Wallaroo is able to transform and process a large data stream in real-time, with very little boilerplate code.
 
+If you're interested in learning more about Wallaroo, take a look at the the [Wallaroo documentation](https://docs.wallaroolabs.com) and some of the [examples](https://github.com/WallarooLabs/wallaroo/tree/release/examples/python/word_count) that we've built. Also, check out our [community page](https://www.wallaroolabs.com/community) to sign up for our mailing list or join our IRC channel to ask any question you may have.
