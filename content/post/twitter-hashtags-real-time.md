@@ -12,7 +12,8 @@ tags = [
     "example"
 ]
 categories = [
-    "Hello Wallaroo"
+    "Tutorial",
+    "Examples"
 ]
 +++
 
@@ -25,8 +26,7 @@ This week we have a guest post written by Hanee' Medhat
 Hanee' is a Big Data Engineer, with experience working with massive data in many industries, such as Telecommunications and Banking.
 (https://twitter.com/HaneeShousha)
 
-**Overview**
-============
+## Overview
 
 One of the primary places where the world is seeing an explosion of data growth is in social media.  Wallaroo is a powerful and simple-to-use open-source data engine that is ideally suited for handling massive amounts of streaming data in real-time.  
 
@@ -38,22 +38,20 @@ You can find more information about Wallaroo by visiting [wallaroolabs.com/commu
 
 Wallaroo allows developers to write code in native Python and, unlike other streaming projects, doesn't require using Java or the JVM. I was intrigued by their approach and wanted to see how easy it would be to use Wallaroo to do some analysis on Twitter data.
 
-**Tutorial**
-============
+## Tutorial
 
 This post shows a real use case on a massive online data stream, using Wallaroo’s Python API. We will show how easy it is to transform data streams with a small amount of code.
 
 We will create an application that reads a real data stream from Twitter, extracts hashtags, and counts them to identify the top trending hashtags on Twitter.
 
 
-1. **Install Wallaroo**
-================================================
+### 1. Install Wallaroo
+
 Before we get started, you should make sure you have Wallaroo installed.  You can find detailed instructions [here](https://docs.wallaroolabs.com/book/getting-started/setup.html).
 
 
 
-2. **Register for Twitter APIs**
-================================================
+### 2. Register for Twitter APIs
 
 In order to get real-time tweets, you need to register on [Twitter
 Apps](https://apps.twitter.com/) by clicking on “Create new app”, and
@@ -73,8 +71,7 @@ Your new access tokens will appear like this:
 
 
 
-3. **Create Twitter Client**
-======================================
+### 3. Create Twitter Client
 
 Let's start by creating a client that connects to the Twitter API in order to grab the tweets and send them to Wallaroo.
 
@@ -132,8 +129,8 @@ resp = get_tweets()
 send_tweets_to_wallaroo(resp,sock)
 ```
 
-4. **Create the Wallaroo Application**
-======================================
+### 4. Create the Wallaroo Application
+
 Now we can build the Wallaroo application that identifies the trending hashtags on the real-time stream.
 
 The Wallaroo application logic is self-contained in **twitter\_wallaroo\_app.py**. We start by importing all the needed libraries.
@@ -145,8 +142,8 @@ import pandas as pd
 
 ``` 
 
-5. **Create The Decoder**
-=========================
+### 5. Create The Decoder
+
 The Decoder will translate the raw messages from the network connection and feed the resulting messages to the computations. Create a class called **Decoder** that implements the following three methods.
 
 * **header_length(self)**: This method returns a fixed integer that represents the number of bytes that hold the value of **payload_length**. In this case we return 5, which denotes that the value of **payload_length** is held in 5 bytes.
@@ -169,8 +166,8 @@ class Decoder(object):
         return bs.decode("utf-8")
 ```
 
-6. **Create The Computation**
-=========================
+### 6. Create The Computation
+
 Now let’s define the computation class which will be used in the data processing logic. We will be applying this on the tweets received from the Decoder in order to extract all the Hashtags.
 
 Our computation is called ** HashtagFinder**, and like all computations, it must implement the following two methods:
@@ -189,8 +186,7 @@ class HashtagFinder(object):
         return [word.strip() for word in data.split() if word[0] == '#']
 ```
 
-7. **Create The State and StateBuilder**
-=========================
+### 7. Create The State and StateBuilder
 
 This is a crucial step. We want to count how many times each hashtag was mentioned, and to do so we need to track this information in a stateful computation. We do this via **State** and **StateBuilder** classes.
 
@@ -236,8 +232,8 @@ class HashtagsStateBuilder(object):
     def build(self):
         return HashtagCounts()
 ```
-8. **Create StateComputation**
-=========================
+### 8. Create StateComputation
+
 Next is the StateComputation class that updates the State object. This is similar to a regular Computation, but the **compute** method has an additional **state** argument, which holds the state object.
 
 ```python
@@ -252,8 +248,8 @@ class ComputeHashtags(object):
         return (state.get_counts(), True)
 ```
 
-9. **Create The Encoder**
-=========================
+### 9. Create The Encoder
+
 We can now define the last component of our application: the Encoder class. Here we transform the data to an array of all hashtags and an array of their counts, to be sent through the network to the front end application.
 
 
@@ -270,8 +266,8 @@ class Encoder(object):
         return str(request_data) + ';;\n'
 ```
 
-10. **Create The ApplicationBuilder**
-=========================
+### 10. Create The ApplicationBuilder
+
 We now need to create the application topology from the module’s **application_setup** method.
 
 We create an **ApplicationBuilder** with the name **Trending Hashtags**, and added the following components:
@@ -296,8 +292,8 @@ def application_setup(args):
 
 
 
-11. **Create The Data Receiver**
-=========================
+### 11. Create The Data Receiver
+
 We'll now create an adaptor that will collect the output from our Wallaroo application and send it to the RESTful front-end application. The code for this part is in **socket\_receiver.py**.
 
 The code is very simple, it connects to the TCP output of Wallaroo and looks for our pre-determined message separator **(;;)**, and sends each message to the RESTful web service shown in the next step. 
@@ -344,8 +340,8 @@ while True:
         print(response)
 ```
 
-12. **Create The Dashboard Application**
-=========================
+### 12. Create The Dashboard Application
+
 To be able to view the results of our application, we’ll create a simple dashboard that we will update in real-time using Wallaroo’s output.
 We’ll build it using Python, Flask and
 [Charts.js](http://www.chartjs.org/)
@@ -514,8 +510,7 @@ The last part is the function that repeats an Ajax request every second to **/re
 </script>
 ```
 
-13. **Run The Application**
-=========================
+### 13. Run The Application
 
 Now that we have built all the components, from grabbing the data all the way to representing it on a dashboard, the only remaining step it to run everything:
 
@@ -539,7 +534,7 @@ machida --application-module twitter_wallaroo_app \
 
 ```
 
-4.  And finally run **twitter_client.py**
+4.  Run **twitter_client.py**
 
 Now you can open the dashboard web application using URL:
 <http://localhost:5001/>
