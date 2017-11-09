@@ -25,11 +25,11 @@ Hanee' is a Big Data Engineer, with experience working with massive data in many
 
 ## Overview
 
-One of the primary places where the world is seeing an explosion of data growth is in social media.  Wallaroo is a powerful and simple-to-use open-source data engine that is ideally suited for handling massive amounts of streaming data in real-time.  
+One of the primary places where the world is seeing an explosion of data growth is in social media.  Wallaroo is a powerful and simple-to-use open-source data engine that is ideally suited for handling massive amounts of streaming data in real-time.
 
 In this tutorial, I will use Wallaroo to analyze and extract insights from Twitter in real-time and present the results on a dashboard.
 
-First, a little background on Wallaroo.  Wallaroo is a relatively new open-source project that has been getting a lot of attention recently.  Wallaroo Labs, the company behind the project, has shared a good deal of information about their approach and technology. You may have seen some of their recent blog articles on Hacker News.  
+First, a little background on Wallaroo.  Wallaroo is a relatively new open-source project that has been getting a lot of attention recently.  Wallaroo Labs, the company behind the project, has shared a good deal of information about their approach and technology. You may have seen some of their recent blog articles on Hacker News.
 
 You can find more information about Wallaroo by visiting [wallaroolabs.com/community].
 
@@ -39,7 +39,7 @@ Wallaroo allows developers to write code in native Python and, unlike other stre
 
 This post shows a real use case on a massive online data stream, using Wallaroo’s Python API. We will show how easy it is to transform data streams with a small amount of code.
 
-We will create an application that reads a real data stream from Twitter, extracts hashtags, and counts them to identify the top trending hashtags on Twitter.
+We will create an application that reads a real data stream from Twitter, extracts hashtags, and counts them to identify the top trending hashtags on Twitter. You can create the needed files on your own or follow along by cloning the [Wallaroo Twitter Trending Example](https://github.com/WallarooLabs/wallaroo-twitter-trending-example) from github.
 
 
 ### 1. Install Wallaroo
@@ -58,7 +58,7 @@ filling in the form under “Create your twitter app”.
 
 
 Go to your newly created app and open the “Keys and Access
-Tokens” tab, then click on “Generate my access token”.
+Tokens” tab, then click on “Create my access token”.
 
 ![](images/post/twitter-hashtags-real-time/credentials_2.png)
 
@@ -95,14 +95,17 @@ my_auth = requests_oauthlib.OAuth1(CONSUMER_KEY, CONSUMER_SECRET,ACCESS_TOKEN, A
 
 def send_tweets_to_wallaroo(http_resp, tcp_connection):
     for line in http_resp.iter_lines():
-        full_tweet = json.loads(line)
-        if 'text' in full_tweet:
-            tweet_text = full_tweet['text'].encode('utf-8')
-            # send the length of text + 1 for newline represented as 5 ASCII
-            # characters, followed by the tweet text and \n
-            # e.g. if tweet text is 'Hello everyone!', send '00016Hello everyone!'
-            tcp_connection.sendall(str(len(tweet_text)+1).zfill(5) +
-                    tweet_text + '\n')
+        try:
+            full_tweet = json.loads(line)
+            if 'text' in full_tweet:
+                tweet_text = full_tweet['text'].encode('utf-8')
+                # send the length of text + 1 for newline represented as 5 ASCII
+                # characters, followed by the tweet text and \n
+                # e.g. if tweet text is 'Hello everyone!', send '00016Hello everyone!'
+                tcp_connection.sendall(str(len(tweet_text)+1).zfill(5) +
+                        tweet_text + '\n')
+        except:
+            print "Error decoding data received from Twitter!"
 
 
 def get_tweets():
@@ -137,7 +140,7 @@ import struct
 import wallaroo
 import pandas as pd
 
-``` 
+```
 
 ### 5. Create The Decoder
 
@@ -193,7 +196,7 @@ This State class has the following three methods:
 
 * **__init__(self)**: here we declare and prepare the dataframe that will hold the hashtags counts.
 *  **update(self, hashtag_name, counts)**: This method is called in the computation step, in order to update the dataframe with the new values. We add the hashtag and its current count to the dataframe if it is not found, otherwise we increment the count.
-*  **get_counts(self)**: This gets the data we want to send to the next step, in the form of a dictionary contaning the counts for the top 10 hashtags.  
+*  **get_counts(self)**: This gets the data we want to send to the next step, in the form of a dictionary contaning the counts for the top 10 hashtags.
 
 ```python
 class HashtagCounts(object):
@@ -254,7 +257,7 @@ We can now define the last component of our application: the Encoder class. Here
 class Encoder(object):
     def encode(self, data):
         # extract the hashtags from dataframe and convert them into array
-        top_tags = [str(hashtag) for hashtag in data]
+        top_tags = [str(hashtag.encode("utf-8")) for hashtag in data]
         # extract the counts from dataframe and convert them into array
         tags_count = [data[hashtag] for hashtag in data]
         # transform the data to be as array of labels and array of counts
@@ -293,7 +296,7 @@ def application_setup(args):
 
 We'll now create an adaptor that will collect the output from our Wallaroo application and send it to the RESTful front-end application. The code for this part is in **socket\_receiver.py**.
 
-The code is very simple, it connects to the TCP output of Wallaroo and looks for our pre-determined message separator **(;;)**, and sends each message to the RESTful web service shown in the next step. 
+The code is very simple, it connects to the TCP output of Wallaroo and looks for our pre-determined message separator **(;;)**, and sends each message to the RESTful web service shown in the next step.
 
 
 ```python
@@ -327,14 +330,12 @@ while True:
         full_message, separator, buffer = buffer.partition(';;')
 
         # initialize and send the data through REST API
-        url = 'http://localhost:5001/updateData'
+        url = 'http://localhost:5003/updateDashboard'
 
         # replace some escaping characters that have been added to the data while conversion
         full_message = full_message.replace("\'","'").replace("\\\\","\\")
-        print(ast.literal_eval(full_message))
         # send the data to the RESTful Webservice as a dictionary
         response = requests.post(url, data=ast.literal_eval(full_message))
-        print(response)
 ```
 
 ### 12. Create The Dashboard Application
@@ -395,7 +396,7 @@ def update_data_post():
 
 
 if __name__ == "__main__":
-    app.run(host='localhost', port=5001)
+    app.run(host='localhost', port=5003)
 ```
 
 Now let’s create a simple chart in **index.html** to display the hashtags data and update them in real-time.
@@ -429,7 +430,7 @@ Now let’s construct the chart using the JavaScript code below. First we
 get the canvas element.  Then we create a new chart object, and pass it the
 canvas and data.
 
-The last part is the function that repeats an Ajax request every second to **/refreshDashboard**, which returns the updated data for the chart. 
+The last part is the function that repeats an Ajax request every second to **/refreshDashboard**, which returns the updated data for the chart.
 
 ```javascript
 <script>
@@ -509,26 +510,37 @@ The last part is the function that repeats an Ajax request every second to **/re
 
 ### 13. Run The Application
 
+Before we run our Twitter Trending Hashtags application, we need to make sure we have the proper Python dependencies installed. We depend on `pandas`, `requests_oauthlib`, and `flask`. These can be installed with the following commands:
+
+```
+pip install pandas requests_oauthlib flask
+```
+
 Now that we have built all the components, from grabbing the data all the way to representing it on a dashboard, the only remaining step it to run everything:
 
 1. Run the Dashboard application: **app.py**
 2. Run **socket\_receiver.py**
-3. Run the **twitter\_wallaroo\_app** from terminal using the below command:
+3. Run the **twitter\_wallaroo\_app** from terminal using the below commands:
+
+Note: The `machida` executable is in `machida/build/machida` in the [Wallaroo](https://github.com/wallaroolabs/wallaroo) repo. For example, if you’ve followed the Wallaroo installation [instructions](https://docs.wallaroolabs.com/book/getting-started/setup.html) then it will be in `$HOME/wallaroo-tutorial/wallaroo/machida/build/machida`. In order to run `machida` you will need to set up your `PYTHONPATH` to point to the `wallaroo.py` python library. For example, if you’ve followed the Wallaroo installation instructions](https://docs.wallaroolabs.com/book/getting-started/setup.html) then `machida` will be `$HOME/wallaroo-tutorial/wallaroo/machida/build/machida` and you can set `PYTHONPATH` with `export PYTHONPATH=$HOME/wallaroo-tutorial/wallaroo/machida`
 
 ```
-machida --application-module twitter_wallaroo_app \
-  --in 127.0.0.1:8002 
+export PYTHONPATH="$PYTHONPATH:$HOME/wallaroo-tutorial/wallaroo/machida:."
+```
+
+```
+$HOME/wallaroo-tutorial/wallaroo/machida/build/machida --application-module twitter_wallaroo_app \
+  --in 127.0.0.1:8002 \
   --out 127.0.0.1:7002 \
-  --metrics 127.0.0.1:5001 
-  --control 127.0.0.1:6000 
+  --metrics 127.0.0.1:5001 \
+  --control 127.0.0.1:6000 \
   --data 127.0.0.1:6001 \
   --worker-name worker1 \
   --ponythreads=1 \
   --external 127.0.0.1:5050 \
   --cluster-initializer \
-  --ponythreads=1 
+  --ponythreads=1 \
   --ponynoblock
-
 ```
 
 4.  Run **twitter_client.py**
@@ -539,6 +551,8 @@ Now you can open the dashboard web application using URL:
 you'll see the dashboard being updated in real-time.
 
 ![](images/post/twitter-hashtags-real-time/Wallaroo_Dashboard.gif)
+
+If you've run into trouble setting up the application and do not feel comfortable debugging the issue, we suggest using `virtualenv` to create an isolated Python environment. Here's a good [guide](http://docs.python-guide.org/en/latest/dev/virtualenvs/#lower-level-virtualenv) to help you get `virtualenv` setup if you have not done so already.
 
 **Conclusion**
 ==============
