@@ -516,32 +516,41 @@ pip install pandas requests_oauthlib flask
 
 Now that we have built all the components, from grabbing the data all the way to representing it on a dashboard, the only remaining step it to run everything:
 
-1. Run the Dashboard application: `app.py`
+1. Run the Dashboard application
+    ```bash
+    python app.py
+    ```
+
 2. Run `socket_receiver.py`
+    ```bash
+    python socket_receiver.py
+    ```
+
 3. Run the `twitter_wallaroo_app` from terminal using the below commands:
 
-Note: The `machida` executable is in `machida/build/machida` in the [Wallaroo](https://github.com/wallaroolabs/wallaroo) repo. For example, if you’ve followed the Wallaroo installation [instructions](https://docs.wallaroolabs.com/book/getting-started/setup.html) then it will be in `$HOME/wallaroo-tutorial/wallaroo/machida/build/machida`. In order to run `machida` you will need to set up your `PYTHONPATH` to point to the `wallaroo.py` python library. For example, if you’ve followed the [Wallaroo installation instructions](https://docs.wallaroolabs.com/book/getting-started/setup.html) then `machida` will be `$HOME/wallaroo-tutorial/wallaroo/machida/build/machida` and you can set `PYTHONPATH` with `export PYTHONPATH=$HOME/wallaroo-tutorial/wallaroo/machida`
 
-```
-export PYTHONPATH="$PYTHONPATH:$HOME/wallaroo-tutorial/wallaroo/machida:."
-```
+    ```bash
+    export PYTHONPATH="$PYTHONPATH:$HOME/wallaroo-tutorial/wallaroo/machida:."
+    $HOME/wallaroo-tutorial/wallaroo/machida/build/machida --application-module twitter_wallaroo_app \
+      --in 127.0.0.1:8002 \
+      --out 127.0.0.1:7002 \
+      --metrics 127.0.0.1:5001 \
+      --control 127.0.0.1:6000 \
+      --data 127.0.0.1:6001 \
+      --worker-name worker1 \
+      --ponythreads=1 \
+      --external 127.0.0.1:5050 \
+      --cluster-initializer \
+      --ponythreads=1 \
+      --ponynoblock
+    ```
 
-```
-$HOME/wallaroo-tutorial/wallaroo/machida/build/machida --application-module twitter_wallaroo_app \
-  --in 127.0.0.1:8002 \
-  --out 127.0.0.1:7002 \
-  --metrics 127.0.0.1:5001 \
-  --control 127.0.0.1:6000 \
-  --data 127.0.0.1:6001 \
-  --worker-name worker1 \
-  --ponythreads=1 \
-  --external 127.0.0.1:5050 \
-  --cluster-initializer \
-  --ponythreads=1 \
-  --ponynoblock
-```
+    Note: The `machida` executable is in `machida/build/machida` in the [Wallaroo](https://github.com/wallaroolabs/wallaroo) repo. For example, if you’ve followed the Wallaroo installation [instructions](https://docs.wallaroolabs.com/book/getting-started/setup.html) then it will be in `$HOME/wallaroo-tutorial/wallaroo/machida/build/machida`. In order to run `machida` you will need to set up your `PYTHONPATH` to point to the `wallaroo.py` python library. For example, if you’ve followed the [Wallaroo installation instructions](https://docs.wallaroolabs.com/book/getting-started/setup.html) then `machida` will be `$HOME/wallaroo-tutorial/wallaroo/machida/build/machida` and you can set `PYTHONPATH` with `export PYTHONPATH=$HOME/wallaroo-tutorial/wallaroo/machida`
 
 4.  Run `twitter_client.py`
+    ```bash
+    python twitter_client.py
+    ```
 
 Now you can open the dashboard web application using URL:
 <http://localhost:5001/>
