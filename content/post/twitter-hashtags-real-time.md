@@ -70,11 +70,11 @@ Your new access tokens will appear like this:
 
 Let's start by creating a client that connects to the Twitter API in order to grab the tweets and send them to Wallaroo.
 
-**twitter_client.py** connects to Wallaroo using a TCP connection, calls the Twitter Streaming API to get the tweets in real-time, and forwards them to Wallaroo in order to be processed.
+`twitter_client.py` connects to Wallaroo using a TCP connection, calls the Twitter Streaming API to get the tweets in real-time, and forwards them to Wallaroo in order to be processed.
 
-We connect to our Wallaroo application via a socket on **('localhost', 8002)**, then call **get_tweets()**, which initiates the connection to Twitter and forwards the tweets to Wallaroo, with the help of **send\_tweets\_to\_wallaroo(http\_resp, tcp\_connection)**.
+We connect to our Wallaroo application via a socket on `('localhost', 8002)`, then call `get_tweets()`, which initiates the connection to Twitter and forwards the tweets to Wallaroo, with the help of `send_tweets_to_wallaroo(http_resp, tcp_connection)`.
 
-Note that in **send\_tweets\_to\_wallaroo(http\_resp, tcp\_connection)** we compute **payload_length** for each tweet and format it as a **5-digit** string (e.g. **'00005'**), which is sent along with the tweet.
+Note that in `send_tweets_to_wallaroo(http_resp, tcp_connection)` we compute `payload_length` for each tweet and format it as a 5-digit string (e.g. `'00005'`), which is sent along with the tweet.
 
 ```python
 import socket
@@ -131,7 +131,7 @@ send_tweets_to_wallaroo(resp,sock)
 
 Now we can build the Wallaroo application that identifies the trending hashtags on the real-time stream.
 
-The Wallaroo application logic is self-contained in **twitter\_wallaroo\_app.py**. We start by importing all the needed libraries.
+The Wallaroo application logic is self-contained in `twitter_wallaroo_app.py`. We start by importing all the needed libraries.
 
 ```python
 import struct
@@ -142,14 +142,14 @@ import pandas as pd
 
 ### 5. Create The Decoder
 
-The [Decoder](https://docs.wallaroolabs.com/book/core-concepts/core-concepts.html) will translate the raw messages from the network connection and feed the resulting messages to the computations. Create a class called **Decoder** that implements the following three methods.
+The [Decoder](https://docs.wallaroolabs.com/book/core-concepts/core-concepts.html) will translate the raw messages from the network connection and feed the resulting messages to the computations. Create a class called `Decoder` that implements the following three methods.
 
-* **header_length(self)**: This method returns a fixed integer that represents the number of bytes that hold the value of **payload_length**. In this case we return 5, which denotes that the value of **payload_length** is held in 5 bytes.
+* `header_length(self)`: This method returns a fixed integer that represents the number of bytes that hold the value of `payload_length`. In this case we return 5, which denotes that the value of `payload_length` is held in 5 bytes.
 
-* **payload_length(self, bs)**: This method takes a parameter **bs** which holds the number of bytes from **header_length** above; in our case 5 bytes of data. We then unpack these into an integer that denotes the length of the current message’s data payload to be read from the network stream.
-These are the same 5 bytes that are being sent by **send\_tweets\_to\_wallaroo(http\_resp, tcp\_connection)** in the Twitter client. For example, if we receive **'00006'**, it is converted to integer value **6**, which tells wallaroo to read the next 6 bytes and give them to the **decode** method.
+* `payload_length(self, bs)`: This method takes a parameter `bs` which holds the number of bytes from `header_length` above; in our case 5 bytes of data. We then unpack these into an integer that denotes the length of the current message’s data payload to be read from the network stream.
+These are the same 5 bytes that are being sent by `send_tweets_to_wallaroo(http_resp, tcp_connection)` in the Twitter client. For example, if we receive `'00006'`, it is converted to integer value `6`, which tells wallaroo to read the next 6 bytes and give them to the `decode` method.
 
-* **decode(self, bs)**: this method reads the data payload sent through the network, the length of which was returned by **payload_length**. In this case, we convert the bytes to a UTF-8 string and pass that along to the computation.
+* `decode(self, bs)`: this method reads the data payload sent through the network, the length of which was returned by `payload_length`. In this case, we convert the bytes to a UTF-8 string and pass that along to the computation.
 
 
 ```python
@@ -168,12 +168,12 @@ class Decoder(object):
 
 Now let’s define the [computation](https://docs.wallaroolabs.com/book/core-concepts/core-concepts.html) class which will be used in the data processing logic. We will be applying this on the tweets received from the Decoder in order to extract all the Hashtags.
 
-Our computation is called **HashtagFinder**, and like all computations, it must implement the following two methods:
+Our computation is called `HashtagFinder`, and like all computations, it must implement the following two methods:
 
-* **name(self)**:  returns the name of the computation step.
-* **compute(self, input_data)**: takes a parameter **input_data**, containing the data coming from the previous step and implements the current step’s logic.
+* `name(self)`:  returns the name of the computation step.
+* `compute(self, input_data)`: takes a parameter `input_data`, containing the data coming from the previous step and implements the current step’s logic.
 
-In this case, we are splitting each tweet into words first, then filtering only for words that begin with **#**, and passing the hashtags along to the next step.
+In this case, we are splitting each tweet into words first, then filtering only for words that begin with `#`, and passing the hashtags along to the next step.
 
 ```python
 class HashtagFinder(object):
@@ -186,15 +186,15 @@ class HashtagFinder(object):
 
 ### 7. Create The State and StateBuilder
 
-This is a crucial step. We want to count how many times each hashtag was mentioned, and to do so we need to track this information in a [stateful computation](https://docs.wallaroolabs.com/book/core-concepts/core-concepts.html). We do this via **State** and __StateBuilder__ classes.
+This is a crucial step. We want to count how many times each hashtag was mentioned, and to do so we need to track this information in a [stateful computation](https://docs.wallaroolabs.com/book/core-concepts/core-concepts.html). We do this via `State` and `StateBuilder` classes.
 
-We created the State class **HashtagCounts**, which contains a pandas dataframe that holds all aggregated hashtag counts, and is updated at each event.
+We created the State class `HashtagCounts`, which contains a pandas dataframe that holds all aggregated hashtag counts, and is updated at each event.
 
 This State class has the following three methods:
 
-* **__init__(self)**: here we declare and prepare the dataframe that will hold the hashtags counts.
-*  **update(self, hashtag_name, counts)**: This method is called in the computation step, in order to update the dataframe with the new values. We add the hashtag and its current count to the dataframe if it is not found, otherwise we increment the count.
-*  **get_counts(self)**: This gets the data we want to send to the next step, in the form of a dictionary contaning the counts for the top 10 hashtags.
+* `__init__(self)`: here we declare and prepare the dataframe that will hold the hashtags counts.
+*  `update(self, hashtag_name, counts)`: This method is called in the computation step, in order to update the dataframe with the new values. We add the hashtag and its current count to the dataframe if it is not found, otherwise we increment the count.
+*  `get_counts(self)`: This gets the data we want to send to the next step, in the form of a dictionary contaning the counts for the top 10 hashtags.
 
 ```python
 class HashtagCounts(object):
@@ -223,7 +223,7 @@ class HashtagCounts(object):
         return self.hashtags_df.loc[c]
 ```
 
-We also need a StateBuilder class called **HashtagsStateBuilder** that will be used to create State objects from within Wallaroo.
+We also need a StateBuilder class called `HashtagsStateBuilder` that will be used to create State objects from within Wallaroo.
 
 ```python
 class HashtagsStateBuilder(object):
@@ -232,7 +232,7 @@ class HashtagsStateBuilder(object):
 ```
 ### 8. Create StateComputation
 
-Next is the [StateComputation](https://docs.wallaroolabs.com/book/core-concepts/core-concepts.html) class that updates the State object. This is similar to a regular Computation, but the **compute** method has an additional **state** argument, which holds the state object.
+Next is the [StateComputation](https://docs.wallaroolabs.com/book/core-concepts/core-concepts.html) class that updates the State object. This is similar to a regular Computation, but the `compute` method has an additional `state` argument, which holds the state object.
 
 ```python
 class ComputeHashtags(object):
@@ -266,14 +266,14 @@ class Encoder(object):
 
 ### 10. Create The ApplicationBuilder
 
-We now need to create the [application topology](https://docs.wallaroolabs.com/book/core-concepts/core-concepts.html) from the module’s **application_setup** method.
+We now need to create the [application topology](https://docs.wallaroolabs.com/book/core-concepts/core-concepts.html) from the module’s `application_setup` method.
 
-We create an **ApplicationBuilder** with the name **Trending Hashtags**, and added the following components:
+We create an `ApplicationBuilder` with the name `Trending Hashtags`, and added the following components:
 
-* a **new_pipeline**, with a TCP source with the input and output connection configuration that was passed from the command line, and an instance of our **Decoder**.
-* a **HashtagFinder** computation after the input in order to extract the hashtags from the tweets.
-* a stateful **ComputHashtags** computation. Note that we also have to pass an instance of the StateBuilder.
-* a TCP data sink, and an instance of our **Encoder**, as the output of the data flow.
+* a `new_pipeline`, with a TCP source with the input and output connection configuration that was passed from the command line, and an instance of our `Decoder`.
+* a `HashtagFinder` computation after the input in order to extract the hashtags from the tweets.
+* a stateful `ComputHashtags` computation. Note that we also have to pass an instance of the StateBuilder.
+* a TCP data sink, and an instance of our `Encoder`, as the output of the data flow.
 
 
 ```python
@@ -292,9 +292,9 @@ def application_setup(args):
 
 ### 11. Create The Data Receiver
 
-We'll now create an adaptor that will collect the output from our Wallaroo application and send it to the RESTful front-end application. The code for this part is in **socket\_receiver.py**.
+We'll now create an adaptor that will collect the output from our Wallaroo application and send it to the RESTful front-end application. The code for this part is in `socket\_receiver.py`.
 
-The code is very simple, it connects to the TCP output of Wallaroo and looks for our pre-determined message separator **(;;)**, and sends each message to the RESTful web service shown in the next step.
+The code is very simple, it connects to the TCP output of Wallaroo and looks for our pre-determined message separator `(;;)`, and sends each message to the RESTful web service shown in the next step.
 
 
 ```python
@@ -349,13 +349,13 @@ file into the static directory.
 
 ![](/images/post/twitter-hashtags-real-time/dashboard_app.png)
 
-Then, in **app.py** file, we’ll create a function called **update\_dashboard**
-that can be called (by **socket\_receiver.py**) through this URL:
-**http://localhost:5001/updateDashboard**
+Then, in `app.py` file, we’ll create a function called `update\_dashboard`
+that can be called (by `socket\_receiver.py`) through this URL:
+`http://localhost:5001/updateDashboard`
 
-**refresh\_dashboard** is created for periodic Ajax requests that return the new updated **hashtags** and **counts** arrays as JSON.
+`refresh\_dashboard` is created for periodic Ajax requests that return the new updated `hashtags` and `counts` arrays as JSON.
 
-**get\_chart** will render **index.html**.
+`get_chart` will render `index.html`.
 
 ```python
 from flask import Flask,jsonify,request
@@ -397,7 +397,7 @@ if __name__ == "__main__":
     app.run(host='localhost', port=5003)
 ```
 
-Now let’s create a simple chart in **index.html** to display the hashtags data and update them in real-time.
+Now let’s create a simple chart in `index.html` to display the hashtags data and update them in real-time.
 
 In the body tag, we have to create a canvas and give it an ID in order
 to reference it while displaying the chart using JavaScript in the next
@@ -428,7 +428,7 @@ Now let’s construct the chart using the JavaScript code below. First we
 get the canvas element.  Then we create a new chart object, and pass it the
 canvas and data.
 
-The last part is the function that repeats an Ajax request every second to **/refreshDashboard**, which returns the updated data for the chart.
+The last part is the function that repeats an Ajax request every second to `/refreshDashboard`, which returns the updated data for the chart.
 
 ```javascript
 <script>
@@ -516,9 +516,9 @@ pip install pandas requests_oauthlib flask
 
 Now that we have built all the components, from grabbing the data all the way to representing it on a dashboard, the only remaining step it to run everything:
 
-1. Run the Dashboard application: **app.py**
-2. Run **socket\_receiver.py**
-3. Run the **twitter\_wallaroo\_app** from terminal using the below commands:
+1. Run the Dashboard application: `app.py`
+2. Run `socket_receiver.py`
+3. Run the `twitter_wallaroo_app` from terminal using the below commands:
 
 Note: The `machida` executable is in `machida/build/machida` in the [Wallaroo](https://github.com/wallaroolabs/wallaroo) repo. For example, if you’ve followed the Wallaroo installation [instructions](https://docs.wallaroolabs.com/book/getting-started/setup.html) then it will be in `$HOME/wallaroo-tutorial/wallaroo/machida/build/machida`. In order to run `machida` you will need to set up your `PYTHONPATH` to point to the `wallaroo.py` python library. For example, if you’ve followed the [Wallaroo installation instructions](https://docs.wallaroolabs.com/book/getting-started/setup.html) then `machida` will be `$HOME/wallaroo-tutorial/wallaroo/machida/build/machida` and you can set `PYTHONPATH` with `export PYTHONPATH=$HOME/wallaroo-tutorial/wallaroo/machida`
 
@@ -541,7 +541,7 @@ $HOME/wallaroo-tutorial/wallaroo/machida/build/machida --application-module twit
   --ponynoblock
 ```
 
-4.  Run **twitter_client.py**
+4.  Run `twitter_client.py`
 
 Now you can open the dashboard web application using URL:
 <http://localhost:5001/>
@@ -552,8 +552,7 @@ you'll see the dashboard being updated in real-time.
 
 If you've run into trouble setting up the application and do not feel comfortable debugging the issue, we suggest using `virtualenv` to create an isolated Python environment. Here's a good [guide](http://docs.python-guide.org/en/latest/dev/virtualenvs/#lower-level-virtualenv) to help you get `virtualenv` setup if you have not done so already.
 
-**Conclusion**
-==============
+## Conclusion
 In this post, we've learned how to do simple online data processing on live Twitter data using Wallaroo, and visualizing the results through a simple RESTful Web service.
 
 Even in this simple example, we can see how Wallaroo is able to transform and process a large data stream in real-time, with very little boilerplate code.
