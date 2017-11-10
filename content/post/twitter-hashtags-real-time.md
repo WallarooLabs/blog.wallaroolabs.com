@@ -41,13 +41,19 @@ This post shows a real use case on a massive online data stream, using Wallaroo�
 We will create an application that reads a real data stream from Twitter, extracts hashtags, and counts them to identify the top trending hashtags on Twitter. You can create the needed files on your own or follow along by cloning the [Wallaroo Twitter Trending Example](https://github.com/WallarooLabs/wallaroo-twitter-trending-example) from GitHub.
 
 
-### 1. Install Wallaroo
+### Install Wallaroo
 
 Before we get started, you should make sure you have Wallaroo installed.  You can find detailed instructions [here](https://docs.wallaroolabs.com/book/getting-started/setup.html).
 
+### Install Dependencies
 
+The Twitter Trending Hashtags application depends on the `pandas`, `requests_oauthlib`, and `flask` packages. These can be installed with the following command:
 
-### 2. Register for Twitter APIs
+```
+pip install pandas requests_oauthlib flask
+```
+
+### Register for Twitter APIs
 
 In order to get real-time tweets, you need to register on [Twitter
 Apps](https://apps.twitter.com/) by clicking on “Create new app”, and
@@ -66,7 +72,7 @@ Your new access tokens will appear like this:
 
 
 
-### 3. Create Twitter Client
+### Create Twitter Client
 
 Let's start by creating a client that connects to the Twitter API in order to grab the tweets and send them to Wallaroo.
 
@@ -127,7 +133,7 @@ resp = get_tweets()
 send_tweets_to_wallaroo(resp,sock)
 ```
 
-### 4. Create the Wallaroo Application
+### Create the Wallaroo Application
 
 Now we can build the Wallaroo application that identifies the trending hashtags on the real-time stream.
 
@@ -140,7 +146,7 @@ import pandas as pd
 
 ```
 
-### 5. Create The Decoder
+### Create The Decoder
 
 The [Decoder](https://docs.wallaroolabs.com/book/core-concepts/core-concepts.html) will translate the raw messages from the network connection and feed the resulting messages to the computations. Create a class called `Decoder` that implements the following three methods.
 
@@ -164,14 +170,15 @@ class Decoder(object):
         return bs.decode("utf-8")
 ```
 
-### 6. Create The Computation
+### Create The Computation
 
 Now let’s define the [computation](https://docs.wallaroolabs.com/book/core-concepts/core-concepts.html) class which will be used in the data processing logic. We will be applying this on the tweets received from the Decoder in order to extract all the Hashtags.
 
-Our computation is called `HashtagFinder`, and like all computations, it must implement the following two methods:
+Our computation is called `HashtagFinder`, and like all computations, it must implement the `name` method and either `compute` or `compute_multi`
 
 * `name(self)`:  returns the name of the computation step.
-* `compute(self, input_data)`: takes a parameter `input_data`, containing the data coming from the previous step and implements the current step’s logic.
+* `compute(self, input_data)`: takes a parameter `input_data`, containing the data coming from the previous step and implements the current step’s logic, and returns one value which will be sent as a message to the next step in the application.
+* `compute_multi(self, input_data)`: similar to `compute`, but it returns a list of values, each of which will be sent as a different message to the next step in the application.
 
 In this case, we are splitting each tweet into words first, then filtering only for words that begin with `#`, and passing the hashtags along to the next step.
 
@@ -184,7 +191,7 @@ class HashtagFinder(object):
         return [word.strip() for word in data.split() if word[0] == '#']
 ```
 
-### 7. Create The State and StateBuilder
+### Create The State and StateBuilder
 
 This is a crucial step. We want to count how many times each hashtag was mentioned, and to do so we need to track this information in a [stateful computation](https://docs.wallaroolabs.com/book/core-concepts/core-concepts.html). We do this via `State` and `StateBuilder` classes.
 
@@ -230,7 +237,7 @@ class HashtagsStateBuilder(object):
     def build(self):
         return HashtagCounts()
 ```
-### 8. Create StateComputation
+### Create StateComputation
 
 Next is the [StateComputation](https://docs.wallaroolabs.com/book/core-concepts/core-concepts.html) class that updates the State object. This is similar to a regular Computation, but the `compute` method has an additional `state` argument, which holds the state object.
 
@@ -246,7 +253,7 @@ class ComputeHashtags(object):
         return (state.get_counts(), True)
 ```
 
-### 9. Create The Encoder
+### Create The Encoder
 
 We can now define the last component of our application: the [Encoder](https://docs.wallaroolabs.com/book/core-concepts/core-concepts.html) class. Here we transform the data to an array of all hashtags and an array of their counts, to be sent through the network to the front end application.
 
@@ -264,7 +271,7 @@ class Encoder(object):
         return str(request_data) + ';;\n'
 ```
 
-### 10. Create The ApplicationBuilder
+### Create The ApplicationBuilder
 
 We now need to create the [application topology](https://docs.wallaroolabs.com/book/core-concepts/core-concepts.html) from the module’s `application_setup` method.
 
@@ -290,7 +297,7 @@ def application_setup(args):
 
 
 
-### 11. Create The Data Receiver
+### Create The Data Receiver
 
 We'll now create an adaptor that will collect the output from our Wallaroo application and send it to the RESTful front-end application. The code for this part is in `socket_receiver.py`.
 
@@ -336,7 +343,7 @@ while True:
         response = requests.post(url, data=ast.literal_eval(full_message))
 ```
 
-### 12. Create The Dashboard Application
+### Create The Dashboard Application
 
 To be able to view the results of our application, we’ll create a simple dashboard that we will update in real-time using Wallaroo’s output.
 We’ll build it using Python, Flask and
@@ -506,13 +513,7 @@ The last part is the function that repeats an Ajax request every second to `/ref
 </script>
 ```
 
-### 13. Run The Application
-
-Before we run our Twitter Trending Hashtags application, we need to make sure we have the proper Python dependencies installed. We depend on `pandas`, `requests_oauthlib`, and `flask`. These can be installed with the following commands:
-
-```
-pip install pandas requests_oauthlib flask
-```
+### Run The Application
 
 Now that we have built all the components, from grabbing the data all the way to representing it on a dashboard, the only remaining step it to run everything:
 
