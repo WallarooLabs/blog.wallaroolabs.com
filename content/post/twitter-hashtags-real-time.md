@@ -292,7 +292,7 @@ def application_setup(args):
 
 ### 11. Create The Data Receiver
 
-We'll now create an adaptor that will collect the output from our Wallaroo application and send it to the RESTful front-end application. The code for this part is in `socket\_receiver.py`.
+We'll now create an adaptor that will collect the output from our Wallaroo application and send it to the RESTful front-end application. The code for this part is in `socket_receiver.py`.
 
 The code is very simple, it connects to the TCP output of Wallaroo and looks for our pre-determined message separator `(;;)`, and sends each message to the RESTful web service shown in the next step.
 
