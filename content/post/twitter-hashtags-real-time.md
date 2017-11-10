@@ -30,7 +30,7 @@ In this tutorial, I will use Wallaroo to analyze and extract insights from Twitt
 
 First, a little background on Wallaroo.  Wallaroo is a relatively new open-source project that has been getting a lot of attention recently.  Wallaroo Labs, the company behind the project, has shared a good deal of information about their approach and technology. You may have seen some of their recent blog articles on Hacker News.
 
-You can find more information about Wallaroo by visiting [this site](https://wallaroolabs.com/community).
+You can find more information about Wallaroo by visiting [this site](https://www.wallaroolabs.com/community).
 
 Wallaroo allows developers to write code in native Python and, unlike other streaming projects, doesn't require using Java or the JVM. I was intrigued by their approach and wanted to see how easy it would be to use Wallaroo to do some analysis on Twitter data.
 
