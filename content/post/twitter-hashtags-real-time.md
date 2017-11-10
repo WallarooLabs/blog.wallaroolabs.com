@@ -349,11 +349,11 @@ file into the static directory.
 
 ![](/images/post/twitter-hashtags-real-time/dashboard_app.png)
 
-Then, in `app.py` file, we’ll create a function called `update\_dashboard`
-that can be called (by `socket\_receiver.py`) through this URL:
+Then, in `app.py` file, we’ll create a function called `update_dashboard`
+that can be called (by `socket_receiver.py`) through this URL:
 `http://localhost:5001/updateDashboard`
 
-`refresh\_dashboard` is created for periodic Ajax requests that return the new updated `hashtags` and `counts` arrays as JSON.
+`refresh_dashboard` is created for periodic Ajax requests that return the new updated `hashtags` and `counts` arrays as JSON.
 
 `get_chart` will render `index.html`.
 
