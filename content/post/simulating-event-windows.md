@@ -15,7 +15,7 @@ description = "Creating event boundaries and processing cumulative state"
 author = "amosca"
 +++
 
-Certain applications lend themselves to pure parallel computation better than others. In some cases we require to apply certain algorithms over a "window" in our data. This means that after we have complete a certain amount of processing (be it time, number of messages or some other arbitraty metric), we want to perform a special action for the data in that window. An example application of this could be producing stats for log files over a certain period of time. We may want to produce our stats in the form of periodic summarier (e.g. daily), in which case the computation in Wallaroo would have to know when it has received the last message for a particular day. We are working hard every day to support new use patterns, and this type of windowing can already be simulated without any native support in Wallaroo.
+Certain applications lend themselves to pure parallel computation better than others. In some cases we require to apply certain algorithms over a "window" in our data. This means that after we have completedd a certain amount of processing (be it time, number of messages or some other arbitraty metric), we want to perform a special action for the data in that window. An example application of this could be producing stats for log files over a certain period of time. We may want to produce our stats in the form of a periodic summary (e.g. daily), in which case the computation in Wallaroo would have to know when it has received the last message for a particular day. We are working hard every day to support new use patterns, and this type of windowing can already be simulated without any native support in Wallaroo.
 
 This blog entry is about the aforementioned example, and how this can be implemented in the current version of Wallaroo (0.2.1).
 
@@ -41,7 +41,7 @@ The time element is taken from information from the message rather than a timer,
 
 ## Log-file analytics application
 
-Let's return to our log file analyzer. We will assume the goal of counting different return codes on a daily basis. This is a very basic example, but it already includes the important elements needed to create a windowed application. We will stream our logfiles line-by-line to the topology, and will output one message per (day, return code) pairing. So, for instance, if we input five lines as follows
+Let's return to our log file analyzer. We will assume the goal of counting different return codes on a daily basis. This is a very basic example, but it already includes the important elements needed to create a windowed application. We will stream our logfiles line-by-line to the application, and will output one message per (day, return code) pairing. So, for instance, if we input five lines as follows
 
 ```
 64.242.88.10 - - [07/Mar/2004:16:24:16 -0800] "GET /twiki/bin/view/Main/ABlogPage HTTP/1.1" 200 4924
@@ -58,7 +58,7 @@ we will expect an output as follows
 2004-03-07 401 2
 ```
 
-We will also adopt a small trick. Because we are simulating event-based windowing, we will introduce a "token" marker after each day, that our topology will have to interpret correctly. For example
+We will also adopt a small trick. Because we are simulating event-based windowing, we will introduce a "token" marker after each day, that our application will have to interpret correctly. For example
 
 ```
 64.242.88.10 - - [07/Mar/2004:16:24:16 -0800] "GET /twiki/bin/view/Main/ABlogPage HTTP/1.1" 200 4924
@@ -69,15 +69,15 @@ END_OF_DAY
 64.242.88.10 - - [08/Mar/2004:06:12:50 -0800] "GET /twiki/bin/view/Main/YetAnotherPage HTTP/1.1" 200 40520
 ```
 
-### Topology
+### Application Setup
 
-The simplest possible topology to do this would be composed of three elements, according to the following diagram
+The simplest possible application to do this would be composed of three elements, according to the following diagram
 
 ![High Level Logfiles Diagram](/images/post/simulate-event-windowing-wallaroo/topology.png)
 
 A fully working version of the code from this post can be found in the [examples](http://github.com/) directory of our repository, together with instructions on how to build it and run it on some example data.
 
-We set up our Wallaroo topology as follows
+We set up our Wallaroo application as follows
 
 ```
 def application_setup(args):
@@ -87,7 +87,7 @@ def application_setup(args):
     ab = wallaroo.ApplicationBuilder("Apache Log file analysis")
     ab.new_pipeline("convert",
                     wallaroo.TCPSourceConfig(in_host, in_port, Decoder()))
-    ab.to(Count)
+    ab.to_stateful(Count)
     ab.to_sink(wallaroo.TCPSinkConfig(out_host, out_port, Encoder()))
     return ab.build()
 ```
@@ -111,6 +111,28 @@ class Decoder(object):
             return LogLine(bs)
 ```
 
+#### State
+
+Now we can create our shared state object, which will receive the state changes produced by the computation.
+
+```
+<code for state goes here>
+```
+
+We must also create a factory for our state, which will be used by Wallaroo when it creates a new computation
+
+```
+<code for state builder goes here>
+```
+
+#### State Change
+
+Every time a computation has to side-effect the shared state, it must do so by returning an object representing a `state change`. This is so that these changes can be serialised and accounted for in the internal transaction log, for resilience and replay.
+
+```
+<code for state change goes here>
+```
+
 #### Computation
 
 The computation itself needs to be able to do the following things:
@@ -131,11 +153,12 @@ class Count(object):
         self.current_day = None
 
     def compute(self, data):
-        if type(data) is BoundaryMessage:
+        if isinstance(data, BoundaryMessage):
+
             r = self.current_batch
             self.reset()
             return r
-        elif type(data) is LogLine:
+        elif isinstance(data,  LogLine):
             return_code = determine_return_code(data)
             self.current_batch[return_code] = self.current_batch.get(return_code, 0) + 1
             if self.current_day is None:
@@ -161,9 +184,21 @@ class Encoder(object):
         return struct.pack('>II', 4, data)
 ```
 
+## Sending data to Wallaroo
+
+In order to send data into Wallaroo, we must use a special sender that knows how to send the `END_OF_DAY` markers. We can create this sender by formatting our messages such that they match the working of the decoder:
+
+* 4 bytes representing the length of the message, followed by
+* a UTF-8 encoded string
+
+```
+<code for sender goes here>
+```
+
+
 ## Next steps
 
-There are obvious limitations to this basic example. For instance, there is no partitioning. Additionally, we did not use the builtin stateful mechanisms in Wallaroo. All of this functionality can be added to production-level code, but for the purpose of illustrating how to simulate windows, we preferred to narrow the focus and reduce distractions.
+There are obvious limitations to this basic example. For instance, there is no partitioning. of this functionality can be added to production-level code, but for the purpose of illustrating how to simulate windows, we preferred to narrow the focus and reduce distractions.
 
 If you would like to ask us more in-depth technical questions, or if you have any suggestions, please get in touch via [our mailing list](https://groups.io/g/wallaroo) or [our IRC channel](https://webchat.freenode.net/?channels=#wallaroo).  
 
