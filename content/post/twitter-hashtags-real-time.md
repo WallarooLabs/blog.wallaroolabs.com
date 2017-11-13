@@ -9,7 +9,8 @@ tags = [
     "wallaroo",
     "twitter",
     "tutorial",
-    "example"
+    "example",
+    "python"
 ]
 categories = [
     "Tutorial",
