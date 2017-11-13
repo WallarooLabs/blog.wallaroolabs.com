@@ -1,7 +1,7 @@
 +++
 title = "How to simulate event-driven windowing in Wallaroo"
 slug = "simulate-event-windowing-wallaroo"
-draft = true
+draft = false
 date = 2017-11-09T00:00:00Z
 tags = [
     "wallaroo",
