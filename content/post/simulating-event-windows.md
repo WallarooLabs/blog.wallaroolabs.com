@@ -92,6 +92,20 @@ def application_setup(args):
     return ab.build()
 ```
 
+#### Message types
+
+We now need to determine how we will represent internally the difference between an actual log line and the boundary marker. For that we use two different classes.
+
+```
+class LogLine(object):
+    def __init__(self, text):
+        self.text = text
+
+
+class BoundaryMessage(object):
+    pass
+```
+
 #### Decoder
 
 Our decoder needs to be able to correctly identify the `END_OF_DAY` message, and translate that into an appropriate message that will signal to the computations that they need to roll over to the next day. We will call this a `BoundaryMessage`, and all other messages will be `LogLine`s.
@@ -116,21 +130,31 @@ class Decoder(object):
 Now we can create our shared state object, which will receive the state changes produced by the computation.
 
 ```
-<code for state goes here>
+class Counter(object):
+    def __init__(self):
+        self.reset()
+
+    def reset(self):
+        self.current_batch = {}
+        self.current_day = None
+
+    def update(self, day, return_code):
+        if self.current_day is None:
+            self.current_day = day
+        if self.current_day != day:
+            raise
+        self.current_batch[return_code] = self.current_batch.get(return_code, 0) + 1
+
+    def get_counts(self):
+        return self.current_batch
 ```
 
 We must also create a factory for our state, which will be used by Wallaroo when it creates a new computation
 
 ```
-<code for state builder goes here>
-```
-
-#### State Change
-
-Every time a computation has to side-effect the shared state, it must do so by returning an object representing a `state change`. This is so that these changes can be serialised and accounted for in the internal transaction log, for resilience and replay.
-
-```
-<code for state change goes here>
+class CounterBuilder(object):
+    def build(self):
+        return Counter()
 ```
 
 #### Computation
@@ -144,44 +168,52 @@ The computation itself needs to be able to do the following things:
 
 ```
 class Count(object):
-
     def __init__(self):
-        self.reset()
+        self.day_re = re.compile('\[(.*)\]')
+        self.code_re = re.compile('"GET [^\s]* HTTP/[12].[01]" ([0-9]+)')
 
-    def reset(self):
-        self.current_batch = {}
-        self.current_day = None
+    def name(self):
+        return "count status"
 
-    def compute(self, data):
+    def determine_return_code(self, line):
+        m = self.code_re.search(line)
+        if m is not None:
+            return m.group(1)
+
+    def determine_day(self, line):
+        m = self.day_re.search(line)
+        if m is not None:
+            return m.group(1).split(':')[0]
+
+    def compute(self, data, state):
         if isinstance(data, BoundaryMessage):
-
-            r = self.current_batch
-            self.reset()
-            return r
+            return self.process_batch(state)
         elif isinstance(data,  LogLine):
-            return_code = determine_return_code(data)
-            self.current_batch[return_code] = self.current_batch.get(return_code, 0) + 1
-            if self.current_day is None:
-                self.current_day = determine_day(data)
+            return_code = self.determine_return_code(data.text)
+            day = self.determine_day(data.text)
+            state.update(day, return_code)
+            return (None, True)
         else:
             raise
 
     def name(self):
         return "Count return codes"
 
-    def process_batch(self, batch_data):
-        return len(batch_data)
+    def process_batch(self, state):
+        r = state.get_counts()
+        state.reset()
+        return (r, True)
 ```
 
 #### Encoder
 
-On receipt of a `SummaryMessage`, we need to unpack the data inside it and
-create the lines of output.
+On receipt of a summary message (which in our case is a `dict` of return codes and counts), we need to unpack the data inside it and create the lines of output. For simplicity, we will send a json-encoded version of the dictionary, which is human-readable.
 
 ```
 class Encoder(object):
     def encode(self, data):
-        return struct.pack('>II', 4, data)
+        s = json.dumps(data).encode('UTF-8')
+        return struct.pack('>I{}s'.format(len(s)), len(s), s)
 ```
 
 ## Sending data to Wallaroo
@@ -191,14 +223,43 @@ In order to send data into Wallaroo, we must use a special sender that knows how
 * 4 bytes representing the length of the message, followed by
 * a UTF-8 encoded string
 
+Our sender will send an entire log file, followed by the special marker. This is based on the assumption that we will have one separate file per day, which will be true in many cases.
+
 ```
-<code for sender goes here>
+import sys
+import socket
+import struct
+
+
+def send_message(conn, msg):
+    conn.sendall(struct.pack('>I', len(msg)))
+    conn.sendall(msg)
+
+if __name__ == '__main__':
+    wallaroo_host = sys.argv[1]
+    file_to_send = sys.argv[2]
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    add = sys.argv[1].split(':')
+    wallaroo_input_address = (add[0], int(add[1]))
+    print 'connecting to Wallaroo on %s:%s' % wallaroo_input_address
+    sock.connect(wallaroo_input_address)
+    with open(file_to_send) as f:
+        for line in f:
+            send_message(sock, line)
+    send_message(sock, "END_OF_DAY") 
 ```
 
+## Running our application
+
+To run our application, we need to follow these steps:
+
+- start a listener so we can view the output : `nc -l 7002`
+- start the Wallaroo application from within its directory: `PYTHONPATH=:.:../../../machida/ ../../../machida/build/machida --application-module logfiles --in 127.0.0.1:8002 --out 127.0.0.1:7002 --metrics 127.0.0.1:5001 --control 127.0.0.1:6000 --data 127.0.0.1:6001 --worker-name worker1 --external 127.0.0.1:5050 --cluster-initializer --ponythreads=1`
+- send our files to Wallaroo via our sender: `for f in day_*.log; do python sender.py 127.0.0.1:8002 $f; done`
 
 ## Next steps
 
-There are obvious limitations to this basic example. For instance, there is no partitioning. of this functionality can be added to production-level code, but for the purpose of illustrating how to simulate windows, we preferred to narrow the focus and reduce distractions.
+There are obvious limitations to this basic example. For instance, there is no partitioning. A lot of extra functionality can be added to production-level code, but for the purpose of illustrating how to simulate windows, we preferred to narrow the focus and reduce distractions.
 
 If you would like to ask us more in-depth technical questions, or if you have any suggestions, please get in touch via [our mailing list](https://groups.io/g/wallaroo) or [our IRC channel](https://webchat.freenode.net/?channels=#wallaroo).  
 
