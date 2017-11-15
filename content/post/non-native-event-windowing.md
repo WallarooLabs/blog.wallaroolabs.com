@@ -7,6 +7,7 @@ tags = [
     "wallaroo",
     "windowing",
     "partitioning"
+    "python"
 ]
 categories = [
     "Windowing"
