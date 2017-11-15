@@ -75,7 +75,7 @@ The simplest possible application to do this would be composed of three elements
 
 ![High Level Logfiles Diagram](/images/post/event-windowing-wallaroo/topology.png)
 
-A fully working version of the code from this post can be found in the [examples](http://github.com/) directory of our repository, together with instructions on how to build it and run it on some example data.
+A fully working version of the code from this post can be found [here](https://github.com/WallarooLabs/wallaroo_blog_examples/tree/master/non-native-event-windowing/), together with instructions on how to build it and run it on some example data.
 
 We set up our Wallaroo application as follows
 
