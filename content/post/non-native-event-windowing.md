@@ -16,7 +16,7 @@ description = "Creating event boundaries and processing cumulative state"
 author = "amosca"
 +++
 
-Certain applications lend themselves to pure parallel computation better than others. In some cases we require to apply certain algorithms over a "window" in our data. This means that after we have completedd a certain amount of processing (be it time, number of messages or some other arbitraty metric), we want to perform a special action for the data in that window. An example application of this could be producing stats for log files over a certain period of time. We may want to produce our stats in the form of a periodic summary (e.g. daily), in which case the computation in Wallaroo would have to know when it has received the last message for a particular day. We are working hard every day to support new use patterns, and this type of windowing can already be supported without any native support in Wallaroo.
+Certain applications lend themselves to pure parallel computation better than others. In some cases we require to apply certain algorithms over a "window" in our data. This means that after we have completed a certain amount of processing (be it time, number of messages or some other arbitrary metric), we want to perform a special action for the data in that window. An example application of this could be producing stats for log files over a certain period of time. We may want to produce our stats in the form of a periodic summary (e.g. daily), in which case the computation in Wallaroo would have to know when it has received the last message for a particular day. We are working hard every day to support new use patterns, and this type of windowing can already be supported without any native support in Wallaroo.
 
 This blog entry is about the aforementioned example, and how this can be implemented in the current version of Wallaroo (0.2.1).
 
@@ -208,7 +208,7 @@ class Count(object):
 
 #### Encoder
 
-On receipt of a summary message (which in our case is a `dict` of return codes and counts), we need to unpack the data inside it and create the lines of output. For simplicity, we will send a json-encoded version of the dictionary, which is human-readable.
+On receipt of a summary message (which in our case is a `dict` of return codes and counts), we need to unpack the data inside it and create the lines of output. For simplicity, we will send a JSON-encoded version of the dictionary, which is human-readable.
 
 ```
 class Encoder(object):
