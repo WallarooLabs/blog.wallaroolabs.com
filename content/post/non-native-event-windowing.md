@@ -73,7 +73,7 @@ END_OF_DAY
 
 The simplest possible application to do this would be composed of three elements, according to the following diagram
 
-![High Level Logfiles Diagram](/images/post/event-windowing-wallaroo/topology.png)
+![High Level Logfiles Diagram](/images/post/simulate-event-windowing-wallaroo/topology.png)
 
 A fully working version of the code from this post can be found [here](https://github.com/WallarooLabs/wallaroo_blog_examples/tree/master/non-native-event-windowing/), together with instructions on how to build it and run it on some example data.
 
@@ -246,7 +246,7 @@ if __name__ == '__main__':
     with open(file_to_send) as f:
         for line in f:
             send_message(sock, line)
-    send_message(sock, "END_OF_DAY") 
+    send_message(sock, "END_OF_DAY")
 ```
 
 ## Running our application
@@ -261,7 +261,6 @@ To run our application, we need to follow these steps:
 
 There are obvious limitations to this basic example. For instance, there is no partitioning. A lot of extra functionality can be added to production-level code, but for the purpose of illustrating how to create windows, we preferred to narrow the focus and reduce distractions.
 
-If you would like to ask us more in-depth technical questions, or if you have any suggestions, please get in touch via [our mailing list](https://groups.io/g/wallaroo) or [our IRC channel](https://webchat.freenode.net/?channels=#wallaroo).  
+If you would like to ask us more in-depth technical questions, or if you have any suggestions, please get in touch via [our mailing list](https://groups.io/g/wallaroo) or [our IRC channel](https://webchat.freenode.net/?channels=#wallaroo).
 
 In this post, we have only covered a small part of windowing, and future posts will cover other types of windowing with more complex examples.
-
