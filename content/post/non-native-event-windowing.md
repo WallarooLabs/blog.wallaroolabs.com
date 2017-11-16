@@ -19,7 +19,7 @@ author = "amosca"
 
 Certain applications lend themselves to pure parallel computation better than others. In some cases we require to apply certain algorithms over a "window" in our data. This means that after we have completed a certain amount of processing (be it time, number of messages or some other arbitrary metric), we want to perform a special action for the data in that window. An example application of this could be producing stats for log files over a certain period of time. We may want to produce our stats in the form of a periodic summary (e.g. daily), in which case the computation in Wallaroo would have to know when it has received the last message for a particular day. We are working hard every day to support new use patterns, and this type of windowing can already be supported without any native support in Wallaroo.
 
-This blog entry is about the aforementioned example, and how this can be implemented in the [current version of Wallaroo (0.2.2)](https://github.com/WallarooLabs/wallaroo/tree/0.2.2).
+This blog entry is about the aforementioned example, and how this can be implemented in the [current version of Wallaroo (0.2.2)](https://github.com/WallarooLabs/wallaroo/tree/0.2.2). The full code can be found on [GitHub](https://github.com/WallarooLabs/wallaroo_blog_examples/tree/master/non-native-event-windowing).
 
 ## Types of windowing
 
@@ -263,6 +263,6 @@ To run our application, we need to follow these steps:
 
 There are obvious limitations to this basic example. For instance, there is no partitioning. A lot of extra functionality can be added to production-level code, but for the purpose of illustrating how to create windows, we preferred to narrow the focus and reduce distractions.
 
-If you would like to ask us more in-depth technical questions, or if you have any suggestions, please get in touch via [our mailing list](https://groups.io/g/wallaroo) or [our IRC channel](https://webchat.freenode.net/?channels=#wallaroo).
+If you’d like to see the full code, its available on [GitHub](https://github.com/WallarooLabs/wallaroo_blog_examples/tree/master/non-native-event-windowing). If you would like to ask us more in-depth technical questions, or if you have any suggestions, please get in touch via [our mailing list](https://groups.io/g/wallaroo) or [our IRC channel](https://webchat.freenode.net/?channels=#wallaroo).
 
 In this post, we have only covered a small part of windowing, and future posts will cover other types of windowing with more complex examples.
