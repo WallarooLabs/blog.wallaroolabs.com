@@ -92,7 +92,7 @@ then we can express a violation of sequential consistency of the state as
 
 3. a duplication of the same operation more than once
 
-	  &nbsp;&nbsp;&nbsp;&nbsp;... &rarr; (op<sub>5</sub>, state<sub>5</sub>) &rarr; (op<su>5</su>, <span style="color:blue">invalid state</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:red">duplication</span>
+	  &nbsp;&nbsp;&nbsp;&nbsp;... &rarr; (op<sub>5</sub>, state<sub>5</sub>) &rarr; (op<sub>5</sub>, <span style="color:blue">invalid state</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:red">duplication</span>
 
 In other words, _loss_, _reordering_, _corruption_, and _duplication_ are the _indicators_ we will use to determine if the sequential consistency of the state has been violated. If we can detect that any of these events have happened, then the sequential consistency invariant has been violated, and the test should fail.
 
