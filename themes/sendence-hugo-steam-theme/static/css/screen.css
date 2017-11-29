@@ -695,3 +695,10 @@ h1.posts-tagged {
   font-weight: 400;
   font-size: 16px;
 }
+
+div#splash {
+  margin-bottom: 2em;
+  text-align: center;
+  margin: 20px auto 2em auto;
+  max-width: 600px;
+}
