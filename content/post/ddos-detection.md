@@ -346,7 +346,7 @@ To run the application, we will use netcat for our TCP receiver, and a custom se
 The following steps will run the application:
 
 1. Set up Wallaroo for your OS following [these instructions][setup instructions]
-2. Check out the [Wallaroo Blog Exmaples GitHub repository][wallaroo blog examples] and navigate to the ddos-detection example directory
+2. Check out the [Wallaroo Blog Examples GitHub repository][wallaroo blog examples] and navigate to the ddos-detection example directory
 
     ```bash
     git clone https://github.com/WallarooLabs/wallaroo_blog_examples.git
