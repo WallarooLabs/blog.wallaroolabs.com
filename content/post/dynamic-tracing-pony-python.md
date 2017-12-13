@@ -164,7 +164,7 @@ development environment and production systems.
   [SystemTap][SystemTap] was originally designed as a more flexible
   alternative to DTrace.  More recently, a system built around
   [Linux uprobes][linux-uprobes] and [Linux kprobes][linux-kprobes] and
-  [the linux `perf` utility][linux-perf] and eBPF[ebpf] combine to make a useful
+  [the linux `perf` utility][linux-perf] and [eBPF][ebpf] combine to make a useful
   dynamic tracing system.  The best summaries I know of are 
   [Julia Evans's overview][julia-evans-tracing] and
   [Brendan Gregg's various articles][brendan-gregg-tracing].
@@ -211,7 +211,8 @@ NOTE: SystemTap calls these things a 'mark'.  Linux uprobes calls them a
 'uprobe'.
 
 A USDT probe is "a point of instrumentation, [...] a specific location
-in a program flow".  This type of probe is inserted manually into the
+in a program flow" (source: [Gregg & Mauro](#dtrace-book)).
+This type of probe is inserted manually into the
 program's source code.  In most programming languages, it looks like
 an ordinary function call or macro.  The probe may include arguments,
 which can provide additional information during runtime.
@@ -645,8 +646,9 @@ today:
 
 For more about DTrace:
 
-* The book "DTrace: Dynamic Tracing in Oracle Solaris, Mac OS X, and
-  FreeBSD" by Gregg and Mauro is a fantastic guide to using DTrace and
+* <a id="dtrace-book"></a> The book "DTrace: Dynamic Tracing in Oracle
+  Solaris, Mac OS X, and FreeBSD" by Gregg and Mauro
+  is a fantastic guide to using DTrace and
   how to observe nearly every part of the operating system kernel.
   Ask your favorite bookseller to get a hardcopy or a electronic/PDF
   version.  I have both and still use them regularly. `^_^`
