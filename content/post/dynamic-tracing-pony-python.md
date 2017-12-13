@@ -38,7 +38,8 @@ Here's an outline for the rest of this article:
 * What are some scenarios where dynamic tracing can be most useful?
 * A brief survey of some of the dynamic tracing tools available.
 * A demonstration of what those tools can tell us about applications written
-in Pony, Python, and both languages together in a Wallaroo application.
+  in Pony, Python, and both languages together in a
+  [Wallaroo application][hello-wallaroo].
 * Please don't miss
 [Appendix A](#appendix-a-dynamic-tracing-resources-for-further-study),
 with over 20 references to find more information about dynamic
@@ -182,12 +183,13 @@ DTrace?  Or SystemTap?  Or uprobes & `perf`?  All of them?  Some?
 
 In this section, I'm going to demonstrate the use of user-space DTrace
 probes inside of a simple "Hello, world!" Pony program and then
-a [Wallaroo application][wallaroo].  Wallaroo is a
+a [Wallaroo application][wallaroo].  [Wallaroo][hello-wallaroo] is a
 hybrid application written both in [Pony][pony] and also
-[Python][python].  DTrace can collect and analyse events from both
+[Python][python].  (The Go language will also be fully supported soon.)
+DTrace can collect and analyse events from both
 halves of the Wallaroo app.
 
-I've chosen DTrace only.  It isn't my wish to ignore Linux users.
+I've chosen to write about DTrace only.
 [Appendix A](#appendix-a-dynamic-tracing-resources-for-further-study)
 has links to lots of SystemTap and uprobes+perf
 documentation and tutorials, so that you can try to adapt the examples
@@ -305,12 +307,14 @@ That's new, isn't it?  We've learned a lot of things, including:
 * The wildcard matched 3 probes, i.e., the first three of the four
   mentioned above.
 * When a probe fires, DTrace will provide a default action if no
-  action is specified: it will print the CPU number that fired the
-  probe, the DTrace probe ID number, the C function name where the
-  probe is located, and the name of the probe.
-  * As an extra bonus, we've discovered the names of 3 C functions in
-    the Pony runtime: `pony_init()`, `ponyint_sched_start()`, and
-    `ponyint_sched_shutdown()`.
+  action is specified, printing:
+  * the CPU number that fired the probe,
+  * the DTrace probe ID number,
+  * the C function name where the probe is located, and
+  * the name of the probe.
+* As an extra bonus, we've discovered the names of three C functions in
+  the Pony runtime: `pony_init()`, `ponyint_sched_start()`, and
+  `ponyint_sched_shutdown()`.
 * This program executes in only a few milliseconds.
   However, despite the tiny time interval,  the OS decided to move the
   process's execution from CPU `6` to CPU `7`.
@@ -594,7 +598,7 @@ learning about the dynamic tracing tool(s) available in your favorite
 OS.
 
 The Wallaroo application from Wallaroo Labs is a hybrid, written in
-both Pony and Python and also using a runtime library that is written
+both Pony and Python and also using runtime libraries that are written
 in C.  I've used DTrace to measure events created by probes that fire
 in the Pony runtime, in the Python interpreter, and also inside
 of the operating system.
@@ -625,7 +629,7 @@ For general information on dynamic tracing and overviews of
 some of the implementations available in open source operating system
 today:
 
-* Wikipedia on tracing: https://en.wikipedia.org/wiki/Tracing_(software)
+* Wikipedia on tracing: https://en.wikipedia.org/wiki/Tracing_(software%29
 * Wikipedia on DTrace: https://en.wikipedia.org/wiki/DTrace
 * Wikipedia on SystemTap: https://en.wikipedia.org/wiki/SystemTap
 * Linux uprobes overview: https://lwn.net/Articles/499190/
@@ -910,6 +914,7 @@ then I add `/usr/local/pony/master/bin` instead.
 [marketspread-readme]: https://github.com/WallarooLabs/wallaroo/tree/master/examples/python/market_spread#market-spread
 [pony-readme]: https://github.com/ponylang/ponyc#building-ponyc-from-source
 [wallaroo]: https://github.com/WallarooLabs/wallaroo#wallaroo
+[hello-wallaroo]: https://blog.wallaroolabs.com/2017/03/hello-wallaroo/
 [pony]: https://www.ponylang.org/
 [python]: https://www.python.org/
 [pony-examples]: https://github.com/ponylang/ponyc/tree/master/examples
