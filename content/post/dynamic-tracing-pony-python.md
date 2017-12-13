@@ -36,16 +36,19 @@ operating systems.
 Here's an outline for the rest of this article:
 
 * What are some scenarios where dynamic tracing can be most useful?
+  ([Part one](#part1))
 * A brief survey of some of the dynamic tracing tools available.
+  ([Part two](#part2))
 * A demonstration of what those tools can tell us about applications written
   in Pony, Python, and both languages together in a
   [Wallaroo application][hello-wallaroo].
+  ([Part three](#part3))
 * Please don't miss
 [Appendix A](#appendix-a-dynamic-tracing-resources-for-further-study),
 with over 20 references to find more information about dynamic
 tracing, DTrace, SystemTap and Linux uprobes, eBPF, and much more.
 
-#### What kind of questions can dynamic tracing help answer?
+## <a id="part1"></a> What kind of questions can dynamic tracing help answer?
 
 Imagine that you're trying to fix a bug, or find a performance
 bottleneck.  You have questions like this:
@@ -120,7 +123,7 @@ center or someone else's.
 * Your application is working well for the first 17 hours, but then it
   suddenly tries & fails to allocate 195GB of memory and crashes.  Why?
 
-## Dynamic Tracing: safely altering your program while it runs
+## <a id="part2"></a> Dynamic Tracing: safely altering your program while it runs
 
 Tracing is a very broad topic in software engineering.  There isn't
 space available here for a long discussion.  Wikipedia provides a
@@ -174,7 +177,7 @@ development environment and production systems.
 - [Erlang][erlang-provider], [Micro Focus COBOL][opencobol-tracing], ...:
   Many languages include user space-only support for dynamic tracing.
 
-## Let's demonstrate DTrace's power by examining Pony programs
+## <a id="part3"></a> Let's demonstrate DTrace's power by examining Pony programs
 
 Writing about dynamic tracing isn't easy.  It's a broad subject.
 How do I choose which platform to examine and to demonstrate by
@@ -601,7 +604,9 @@ The Wallaroo application from Wallaroo Labs is a hybrid, written in
 both Pony and Python and also using runtime libraries that are written
 in C.  I've used DTrace to measure events created by probes that fire
 in the Pony runtime, in the Python interpreter, and also inside
-of the operating system.
+of the operating system.  Wallaroo is a young application written in a
+young programming language, Pony.  A lot of work remains to make
+Wallaroo's computation observable via dynamic tracing.
 
 Dynamic tracing is a fantastic tool to have in your mental toolbox.
 There are some tasks that DTrace or SystemTap can do that other
