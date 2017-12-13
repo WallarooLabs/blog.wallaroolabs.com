@@ -1,6 +1,6 @@
 +++
 title = "Dynamic tracing a Pony + Python program with DTrace"
-date = 2017-12-11T07:30:00-04:00
+date = 2017-12-14T06:30:12-06:00
 draft = false
 slug = "dynamic-tracing-pony-python"
 author = "slfritchie"
@@ -192,7 +192,8 @@ hybrid application written both in [Pony][pony] and also
 DTrace can collect and analyse events from both
 halves of the Wallaroo app.
 
-I've chosen to write about DTrace only.
+I've chosen to write about DTrace only, using OS X 10.12/macOS Sierra
+for the demo.
 [Appendix A](#appendix-a-dynamic-tracing-resources-for-further-study)
 has links to lots of SystemTap and uprobes+perf
 documentation and tutorials, so that you can try to adapt the examples
@@ -550,6 +551,7 @@ We've learned many things here also.
   activity; the average rate disk I/O rate of approximately 1 op/second 
   falls within our expected range.
 
+<a id="lunch"></a>
 We also learned something that's useful in many contexts but is
 especially valuable in sensitive production environments: the DTrace
 script did indeed stop itself after 5 seconds.  When you aren't sure
@@ -607,24 +609,22 @@ in C.  I've used DTrace to measure events created by probes that fire
 in the Pony runtime, in the Python interpreter, and also inside
 of the operating system.  Wallaroo is a young application written in a
 young programming language, Pony.  A lot of work remains to make
-Wallaroo's computation observable via dynamic tracing.
+all of Wallaroo's computations observable via dynamic tracing.
 
 Dynamic tracing is a fantastic tool to have in your mental toolbox.
-There are some tasks that DTrace or SystemTap can do that other
-debugging or profiling tools simply cannot do.  Conversely, sometimes
+However, sometimes
 a debugger like GDB or profilers like GProf or Valgrind can do things
 that a dynamic tracer will never be able to do.  It isn't a dynamic tracing
 versus traditional tools fight.  It's a use-each-when-appropriate
-thing!  Getting familiar with the strengths and weaknesses of both
-approaches can serve your career well.
+thing!
 
 Remember: you can use dynamic tracing anywhere that your OS supports
 it.  That includes "in production", where DTrace can easily
 examine otherwise-hidden application & kernel behaviors.
 
-I didn't even mention that you can use either DTrace or SystemTap to
+I skipped mentioning that you can use DTrace or SystemTap to
 trace the function entry & return events of
-**any non-static C function in any program**.
+*any non-static C function in any program*.
 That little trick alone can save you hours of
 frustration & guessing about how a program is behaving.  But you can
 learn that easily on your own.  Please, go explore!
