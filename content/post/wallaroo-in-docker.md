@@ -8,11 +8,13 @@ description = "Simplifying the installation and setup process for Wallaroo using
 tags = [
     "docker",
     "wallaroo",
-    "python"
+    "python",
+    "pony",
+    "installation",
+    "virtualenv"
 ]
 categories = [
-    "Hello Wallaroo",
-    "Docker"
+    "Installation"
 ]
 +++
 
