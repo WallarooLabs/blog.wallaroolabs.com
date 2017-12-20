@@ -4,7 +4,7 @@ date = 2017-11-14T12:00:00-04:00
 draft = false
 slug = "twitter-hashtags-real-time"
 author = "haneemedhat"
-description = "Using Wallaroo to connect to a real-time twitter stream and find trending hashtags"
+description = "Using Wallaroo to connect to a real-time twitter stream and find trending hashtags."
 tags = [
     "wallaroo",
     "twitter",

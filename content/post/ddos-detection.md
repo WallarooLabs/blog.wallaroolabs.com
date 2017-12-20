@@ -16,7 +16,7 @@ tags = [
 categories = [
     "Examples"
 ]
-description = "Building a DDoS attack detector using timeseries analysis in real time with Wallaroo"
+description = "Building a DDoS attack detector using timeseries analysis in real time with Wallaroo."
 author = "nisanharamati"
 +++
 

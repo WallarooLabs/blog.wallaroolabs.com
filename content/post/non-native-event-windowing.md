@@ -13,7 +13,7 @@ tags = [
 categories = [
     "Windowing"
 ]
-description = "Creating event boundaries and processing cumulative state"
+description = "Creating event boundaries and processing cumulative state."
 author = "amosca"
 +++
 

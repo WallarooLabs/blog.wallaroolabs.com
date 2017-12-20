@@ -4,7 +4,7 @@ date = 2017-12-20T07:45:00-05:00
 draft = false
 slug = "wallaroo-in-docker"
 author = "jonbrwn"
-description = "Simplifying the installation and setup process for Wallaroo using Docker"
+description = "Simplifying the installation and setup process for Wallaroo using Docker."
 tags = [
     "docker",
     "wallaroo",

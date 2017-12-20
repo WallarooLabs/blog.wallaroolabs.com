@@ -4,7 +4,7 @@ date = 2017-10-26T07:30:00-04:00
 draft = false
 slug = "why-pony"
 author = "seantallen"
-description = "A technical dive into why we used Pony to write Wallaroo"
+description = "A technical dive into why we used Pony to write Wallaroo."
 tags = [
     "wallaroo",
     "pony",
