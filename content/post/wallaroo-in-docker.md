@@ -37,14 +37,14 @@ High performance distributed data processing frameworks are by nature, complex. 
 
 ## What’s hard about setting up Wallaroo?
 
-One of the biggest hurdles while setting up Wallaroo is installing its dependency tree. In order to get high performance, Wallaroo is compiled down to native code and uses the ponyc runtime. We chose Pony to write Wallaroo because of its emphasis on performance and correctness, you can read more on that in our [Why we used Pony to write Wallaroo](/2017/10/why-we-used-pony-to-write-wallaroo/) blog post. However, that decision meant your will be installing tools you wouldn’t necessarily be using on your own. You could take 5 minutes to get everything installed or you could take 30+ minutes. Once you have installed the needed dependencies, you would then need to compile Wallaroo and a few of its support tools. To run an example Wallaroo application you’ll need to compile the following:
+One of the biggest hurdles while setting up Wallaroo is installing its dependency tree. In order to get high performance, Wallaroo is compiled down to native code and uses the ponyc runtime. We chose Pony to write Wallaroo because of its emphasis on performance and correctness, you can read more on that in our [Why we used Pony to write Wallaroo](/2017/10/why-we-used-pony-to-write-wallaroo/) blog post. However, that decision meant you will be installing tools you wouldn’t necessarily be using on your own. You could take 5 minutes to get everything installed or you could take 30+ minutes. Once you have installed the needed dependencies, you would then need to compile Wallaroo and a few of its support tools. To run an example Wallaroo application you’ll need to compile the following:
 
 - **Giles Sender:** An application to send data into Wallaroo
 - **Machida:** A program for running Wallaroo Python applications
 - **Giles Receiver:** An application to receive the data coming out of Wallaroo
 - **Cluster Shutdown Tool:** An application to instruct the Wallaroo cluster to shutdown cleanly
 
-For a production application, some of these steps are unavoidable but we did want to minimize the number of steps a you needed to take in order to get started with Wallaroo.
+For a production application, some of these steps are unavoidable but we did want to minimize the number of steps you needed to take in order to get started with Wallaroo.
 
 ## Choosing Docker as a simplifier
 
