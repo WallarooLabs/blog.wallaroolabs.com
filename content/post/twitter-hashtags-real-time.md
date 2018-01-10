@@ -38,12 +38,17 @@ Wallaroo allows developers to write code in native Python and, unlike other stre
 
 This post shows a real use case on a massive online data stream, using Wallaroo’s Python API. We will show how easy it is to transform data streams with a small amount of code.
 
-We will create an application that reads a real data stream from Twitter, extracts hashtags, and counts them to identify the top trending hashtags on Twitter. You can create the needed files on your own or follow along by cloning the [Wallaroo Twitter Trending Example](https://github.com/WallarooLabs/wallaroo-twitter-trending-example) from GitHub.
+We will create an application that reads a real data stream from Twitter, extracts hashtags, and counts them to identify the top trending hashtags on Twitter. You can create the needed files on your own or follow along by checking out the [Wallaroo Blog Examples GitHub repository](https://github.com/WallarooLabs/wallaroo_blog_examples) and navigating to the twitter-trending-hashtags example directory.
+
+```bash
+git clone https://github.com/WallarooLabs/wallaroo_blog_examples.git
+cd wallaroo_blog_examples/twitter-trending-hashtags
+```
 
 
 ### Install Wallaroo
 
-Before we get started, you should make sure you have Wallaroo installed.  You can find detailed instructions [here](https://docs.wallaroolabs.com/book/getting-started/setup.html).
+Before we get started, you should make sure you have Wallaroo installed. You can find detailed instructions [here](https://docs.wallaroolabs.com/book/getting-started/setup.html).
 
 ### Install Dependencies
 
@@ -513,9 +518,9 @@ The last part is the function that repeats an Ajax request every second to `/ref
 </script>
 ```
 
-### Run The Application
+### Running the Application
 
-Now that we have built all the components, from grabbing the data all the way to representing it on a dashboard, the only remaining step it to run everything:
+Now that we have built all the components, from grabbing the data all the way to representing it on a dashboard, the only remaining step is to run everything:
 
 1. Run the Dashboard application
     ```bash
