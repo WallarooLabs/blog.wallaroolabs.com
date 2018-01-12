@@ -1,7 +1,7 @@
 +++
 title = "How to update your Wallaroo Python applications to the new API"
 draft = false
-date = 2017-11-09T00:00:00Z
+date = 2018-01-12T00:00:00Z
 tags = [
     "wallaroo",
     "python",
