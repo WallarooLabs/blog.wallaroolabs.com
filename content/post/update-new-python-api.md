@@ -174,4 +174,4 @@ becomes
 ab.to_sink(wallaroo.TCPSinkConfig(out_host, out_port, encoder))
 ```
 
-We hope you didn't find the upgrade process too cumbersome, and that the benefits from having a simpler, more pythonic API is going to make using wallaroo even more easy and fun!
+We hope you didn't find the upgrade process too cumbersome, and that the benefits from having a simpler, more pythonic API is going to make using Wallaroo even more easy and fun!
