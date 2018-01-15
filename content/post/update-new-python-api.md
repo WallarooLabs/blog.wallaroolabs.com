@@ -30,7 +30,7 @@ If you want to compare them side by side, here are direct links to the [old API]
 
 ## Update your decoders
 
-Let's proceed in the standard order of what a pipeline would look like. So first, we want to update our decoders to the new API. The new format uses the `@wallaroo.decoder` decorator. So instead of creating a `Decoder` class that implements certain methods, we define a `decode` function (this can have any name), and wrap it with the decorator. We also drop the `header_length()` and `payload_length()` methods, and instead pass a `header_length` and `length_ftm` arguments to the decorator. So
+Let's proceed in the standard order of what a pipeline would look like. So first, we want to update our decoders to the new API. The new format uses the `@wallaroo.decoder` decorator. So instead of creating a `Decoder` class that implements certain methods, we define a `decode` function (this can have any name), and wrap it with the decorator. We also drop the `header_length()` and `payload_length()` methods, and instead pass a `header_length` and `length_fmt` arguments to the decorator. So
 
 ```python
 class Decoder(object):
