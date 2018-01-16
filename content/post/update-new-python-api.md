@@ -26,7 +26,7 @@ A few things are now different (we hope you'll agree that this is better):
 * You no longer need to create StateBuilder classes
 * Header decoding is much simpler
 
-If you want to compare them side by side, here are direct links to the [old API](https://github.com/WallarooLabs/wallaroo/blob/36296bcd583578f5230b6c99e0554afcd3541dc0/examples/python/word_count/word_count.py) and the [new API](https://github.com/WallarooLabs/wallaroo/blob/c346c0427850990af773df4c9f0cf1d56bde402d/examples/python/word_count/word_count.py) versions of word count.
+If you want to compare them side by side, here are direct links to the [old API](https://github.com/WallarooLabs/wallaroo/blob/0.3.3/examples/python/word_count/word_count.py) and the [new API](https://github.com/WallarooLabs/wallaroo/blob/0.4.0/examples/python/word_count/word_count.py) versions of word count.
 
 ## Update your decoders
 
