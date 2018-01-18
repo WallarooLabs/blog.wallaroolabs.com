@@ -114,7 +114,7 @@ func hostsPortsToList(hostsPorts string) [][]string {
 }
 ```
 
-This code creates an application with the topology that was described earlier. It represents one pipeline that consists of a stateless computation called `Split` that splits a string of words into individual words and a state computation called `CountWord` that updates the state of the application and creates outgoing messages that represent the word count. The classes used here will be described more in the following sections. At the end, it returns a C string that represents the application, which Wallaroo then uses to build the actual application.
+This code creates an application with the topology that was described earlier. It represents one pipeline that consists of a stateless computation called `Split` that splits a string of words into individual words and a state computation called `CountWord` that updates the state of the application and creates outgoing messages that represent the word count. The types used here will be described more in the following sections. At the end, it returns a C string that represents the application, which Wallaroo then uses to build the actual application.
 
 Note that the function `hostPortsToList` is a convenience function that takes the `host:port` pairs from the command line and turns them into slices.
 
@@ -150,7 +150,7 @@ func (wordTotals *WordTotals) GetCount(word string) *WordCount {
 }
 ```
 
-There also needs to be a class that can build these state entity objects. In this example, the class is `WordTotalsBuilder`.
+There also needs to be a type that can build these state entity objects. In this example, the type is `WordTotalsBuilder`.
 
 ```go
 type WordTotalsBuilder struct {}
@@ -241,7 +241,7 @@ func (s *Split) Compute(data interface{}) []interface{} {
 
 The `Split` computation returns a list of individual words that the Wallaroo framework sends along as messages to the next step in the pipeline. Wallaroo takes care of making sure that each message gets delivered to the correct state entity. Your application does not which machine holds that state entity.
 
-There also needs to be a builder that can build instances of the `Split` computation. Our `SplitBuilder` class looks like this:
+There also needs to be a builder that can build instances of the `Split` computation. Our `SplitBuilder` type looks like this:
 
 ```go
 type SplitBuilder struct {}
