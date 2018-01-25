@@ -3,7 +3,7 @@ title= "Why we re-invented the kafka client"
 date = 2018-01-25T12:00:00-04:00
 draft = false
 author = "dipin"
-description = "Why we re-invented the kafka client for Wallaroo."
+description = "Why we re-invented the Kafka client for Wallaroo."
 tags = [
     "wallaroo",
     "kafka",
