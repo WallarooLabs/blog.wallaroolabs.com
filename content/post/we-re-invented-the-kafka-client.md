@@ -1,5 +1,5 @@
 +++
-title= "Why we re-invented the kafka client"
+title= "Why we re-invented the Kafka client"
 date = 2018-01-25T12:00:00-04:00
 draft = false
 author = "dipin"
