@@ -51,7 +51,7 @@ Pony Kafka today has the following features:
 * Basic/low level Consumer API
 * Producer API with batching and rate limiting
 * Wallaroo has integrated it via its KafkaSource and KafkaSink
-* Support for the Kafka protocol from version 0.8 - 0.10.2 and compatibility with brokers and both the C and java clients (based on our limited testing)
+* Support for the Kafka protocol from version 0.8 - 0.10.2 and compatibility with brokers and both the C and Scala/Java clients (based on our limited testing)
 * Support for message formats V0 and V1
 * Compression support
 * Throttling/backpressure to slow down producers if needed
