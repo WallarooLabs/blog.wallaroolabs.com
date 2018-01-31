@@ -18,7 +18,7 @@ We have been working on Wallaroo, our scale-independent event processing system,
 
 Three months ago I wrote [a blog post](https://blog.wallaroolabs.com/2017/10/go-python-go-stream-processing-for-python/) about the first iteration of our Python API. At the end of that post I wrote, "Our API is new, and we are looking at ways to improve it. We have a lot of ideas of our own, but if you have any ideas, we would love to hear from you." We got some feedback on various channels, including [Hacker News](https://news.ycombinator.com/item?id=15457343) and direct communications with folks who were interested in Wallaroo. One theme that emerged from these conversations was that folks felt that the API didn’t use Python in an idiomatic way (a quality that Python users often refer to as “Pythonic”). And internally we had felt that there were things that we could improve in the API.
 
-We took the feedback and began to think about what kinds of things made the existing API unpythonic. Then we mocked up some of our ideas and tried them out by reimplementing some of our example programs to see how they felt. Finally, we worked on solving some unexpected problems that arose from the changes. The end result is a new Wallaroo Python API that is much more concise and Pythonic than the original. We’ve gotten some great early feedback, and we think it represents a notable improvement over the original API, and we think that Python programmers will agree.
+We took the feedback and began to think about what kinds of things made the existing API unpythonic. Then we mocked up some of our ideas and tried them out by reimplementing some of our example programs to see how they felt. Finally, we worked on solving some unexpected problems that arose from the changes. The end result is a new Wallaroo Python API that is much more concise and Pythonic than the original. We’ve gotten some great early feedback, and we think it represents a notable improvement over the original API.
 
 ## What Was Wrong with the Original Python API
 
@@ -64,6 +64,7 @@ Before we had even published the blog post about the original Python API, we had
 We will start with the canonical streaming data processing application, Word Count. A stream of input text is analyzed and the total number of times each word has been seen is reported. [The example](https://github.com/WallarooLabs/wallaroo/blob/release/examples/python/word_count/word_count.py) in it's entirety is in our [GitHub repository](https://github.com/WallarooLabs/wallaroo/tree/release).
 
 We will make the following assumptions:
+
 * Incoming messages will come from a TCP connection and be sent to
   another TCP connection.
 * Words are sent to the system in messages that can contain zero or
@@ -86,7 +87,7 @@ In order to understand the Python API, it is important to understand Wallaroo's 
 * Computation -- Code that transforms an input to an
   output.
 * State Computation -- Code that takes an input and a state
-  object, operates on that input and state
+  entity, operates on that input and state
   (possibly making state updates), and optionally produces an output.
 * Source -- Input point for data from external systems into an application.
 * Sink -- Output point from an application to external systems.
@@ -202,7 +203,7 @@ The `split` computation returns a list of individual words that the Wallaroo fra
 
 #### State Computation
 
-`count_word` is a state computation; it uses an incoming message and a state entity to update the word count for the new word and returns a message for Wallaroo to send on its behalf.
+`count_word` is a state computation; it uses an incoming message and a state entity to update the word count for the new word and returns a message for Wallaroo to send on its behalf. The second value, in the returned tuple, indicates to Wallaroo that the state entity should be persisted because it has been updated.
 
 ```python
 @wallaroo.state_computation(name="Count Word")
