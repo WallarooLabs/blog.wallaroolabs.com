@@ -16,12 +16,19 @@ description = "Creating an inference pipeline with MNIST"
 author = "amosca"
 +++
 
-Nowadays, many applications with streaming data are either applying machine learning or have a very good use case for it. In this example, we will explore how we can build a sample pipeline to classify images from the [MNIST dataset](ihttp://yann.lecun.com/exdb/mnist/), using PCA and a regression tree in scikit-learn. As a prerequisite, you should be familiar with some notions of machine learning, and some notions about Wallaroo pipelines.
-Everything has been implemented in the [current version of Wallaroo (0.2.2)](https://github.com/WallarooLabs/wallaroo/tree/0.2.2). The full code can be found on [GitHub](https://github.com/WallarooLabs/wallaroo_blog_examples/tree/master/sklearn-example). If you have any technical questions that this post didn't answer, or if you have any suggestions, please get in touch at [hello@WallarooLabs.com](mailto:hello@WallarooLabs.com), via [our mailing list](https://groups.io/g/wallaroo) or [our IRC channel](https://webchat.freenode.net/?channels=#wallaroo).
+Nowadays, many applications with streaming data are either applying machine learning or have a very good use case for it. In this example, we will explore how we can build a sample pipeline to classify images from the [MNIST dataset](ihttp://yann.lecun.com/exdb/mnist/), using PCA and a Logistic Regression in scikit-learn. As a prerequisite, you should be familiar with some notions of machine learning, and some notions about Wallaroo pipelines.
+Everything has been implemented in the [current version of Wallaroo (0.4.0)](https://github.com/WallarooLabs/wallaroo/tree/0.4.0). The full code can be found on [GitHub](https://github.com/WallarooLabs/wallaroo_blog_examples/tree/master/sklearn-example). If you have any technical questions that this post didn't answer, or if you have any suggestions, please get in touch at [hello@WallarooLabs.com](mailto:hello@WallarooLabs.com), via [our mailing list](https://groups.io/g/wallaroo) or [our IRC channel](https://webchat.freenode.net/?channels=#wallaroo).
 
 
+## The MNIST dataset
 
-## Traning vs Inference
+The MNIST dataset is a set of 60000 black and white images, of size 28 x 28 pixels, contaning hand-written digits from 0 to 9. Each of these images has been classified and it is often used as a benchmark for computer vision and machine learning. The pixels are real valued, between 0 (completely black) and 1 (completely white).
+
+## The model
+
+One of the simplest models for classifying digits is a [Logistic Regression](https://en.wikipedia.org/wiki/Logistic_regression) on the numeric values of each pixel. An improvement to this simple model is to add a [PCA](https://en.wikipedia.org/wiki/Principal_component_analysis) preprocessing that presents the transformation with the most information content as an input to the classifier.
+
+## Training vs Inference
 
 Before we begin looking at any code, we need to make a small distinction.  A machine learning process has two distinct stages: training and inference.  During the training phase, we are creating the model itself, and we prepare it using a dataset that has been designed to do so. Typically, one would then take the trained model and use it repeatedly to make inferences about new, unseen data (hence the "inference" name for the phase).
 
@@ -91,7 +98,7 @@ def logistic_classify(x):
 
 ### Encoder
 
-The encoder simply packs the result into a string and sends it across the wire.
+The encoder packs the result into a string and sends it across the wire with a framed header containing the length of the string.
 
 ```python
 @wallaroo.encoder
@@ -145,4 +152,4 @@ To run our application, we need to follow these steps:
 
 There are obvious limitations to this basic example. For instance, there is no partitioning. And we of course realize that MNIST isn't a useful dataset beyond examples. A lot of extra functionality can be added to production-level code, but for the purpose of illustrating how to run scikit-learn algorithms in Wallaroo, we preferred to narrow the focus and reduce distractions.
 
-If you’d like to see the full code, its available on [GitHub](https://github.com/WallarooLabs/wallaroo_blog_examples/tree/master/non-native-event-windowing). If you would like to ask us more in-depth technical questions, or if you have any suggestions, please get in touch via [our mailing list](https://groups.io/g/wallaroo) or [our IRC channel](https://webchat.freenode.net/?channels=#wallaroo).
+If you’d like to see the full code, its available on [GitHub](https://github.com/WallarooLabs/wallaroo_blog_examples/tree/master/sklearn-example). If you would like to ask us more in-depth technical questions, or if you have any suggestions, please get in touch via [our mailing list](https://groups.io/g/wallaroo) or [our IRC channel](https://webchat.freenode.net/?channels=#wallaroo).
