@@ -16,7 +16,10 @@ description = "Creating an inference pipeline with MNIST"
 author = "amosca"
 +++
 
-Nowadays, many applications with streaming data are either applying machine learning or have a very good use case for it. In this example, we will explore how we can build a sample pipeline to classify images from the [MNIST dataset](ihttp://yann.lecun.com/exdb/mnist/), using PCA and a Logistic Regression in scikit-learn. As a prerequisite, you should be familiar with some notions of machine learning, and some notions about Wallaroo pipelines.
+Whilst it would seem that machine learning is taking over the world, a lot of the attention has been focused towards researching new methods and applications, and how to make a single model faster. At Wallaroo Labs we believe that, in order to make the benefits of machine learning truly ubiquitous, there needs to be a significant improvement in how we put those impressive models into production. This is where the stream computing paradigm becomes useful: as for any other type of computation, we can use streaming to apply machine learning models to a large quantity of incoming data, using available techniques in distributed computing.
+
+Nowadays, many applications with streaming data are either applying machine learning or have a very good use case for it. In this example, we will explore how we can build a machine learning inside Wallaroo, our high performance stream processing engine, to classify images from the [MNIST dataset](ihttp://yann.lecun.com/exdb/mnist/), using a basic two-stage model in Python. Whilst recognizing hand-written digits is a practically solved problem, even a simple example like the one we are presenting provides a real use case (imagine automated cheque reading in a large bank), and the same setup can be used as a starting point for virtually any machine learning application - just replace the model.
+
 Everything has been implemented in the [current version of Wallaroo (0.4.0)](https://github.com/WallarooLabs/wallaroo/tree/0.4.0). The full code can be found on [GitHub](https://github.com/WallarooLabs/wallaroo_blog_examples/tree/master/sklearn-example). If you have any technical questions that this post didn't answer, or if you have any suggestions, please get in touch at [hello@WallarooLabs.com](mailto:hello@WallarooLabs.com), via [our mailing list](https://groups.io/g/wallaroo) or [our IRC channel](https://webchat.freenode.net/?channels=#wallaroo).
 
 
@@ -26,7 +29,7 @@ The MNIST dataset is a set of 60000 black and white images, of size 28 x 28 pixe
 
 ## The model
 
-One of the simplest models for classifying digits is a [Logistic Regression](https://en.wikipedia.org/wiki/Logistic_regression) on the numeric values of each pixel. An improvement to this simple model is to add a [PCA](https://en.wikipedia.org/wiki/Principal_component_analysis) preprocessing that presents the transformation with the most information content as an input to the classifier.
+One of the simplest models for classifying digits is a [Logistic Regression](https://en.wikipedia.org/wiki/Logistic_regression) on the numeric values of each pixel. An improvement to this simple model is to add a [PCA](https://en.wikipedia.org/wiki/Principal_component_analysis) preprocessing that presents the transformation with the most information content as an input to the classifier. We will be using this two-stage approach to classify our digits.
 
 ## Training vs Inference
 
