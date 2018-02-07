@@ -13,7 +13,7 @@ tags = [
     "python"
 ]
 categories = [
-    "Example"
+    "Examples"
 ]
 +++
 
