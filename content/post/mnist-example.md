@@ -169,6 +169,6 @@ You can also watch this video to see Wallaroo in action. Our VP of Engineering w
 
 <iframe src="https://player.vimeo.com/video/234753585" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
 
-Our Python API is new, and we are looking at ways to improve it. We have a lot of ideas of our own, but if you have any ideas, we would love to hear from you. Please don’t hesitate to get in touch with us through [our mailing list](https://groups.io/g/wallaroo) or [our IRC channel](https://webchat.freenode.net/?channels=#wallaroo). We also have a short (30 seconds) [survey](https://wallaroolabs.typeform.com/to/PkC7iT?source=blog) that will help us learn more about the people who are interested in using the Go API, so if that's you then I'd encourage you to go fill it out.
+Our Python API is new, and we are looking at ways to improve it. We have a lot of ideas of our own, but if you have any ideas, we would love to hear from you. Please don’t hesitate to get in touch with us through [our mailing list](https://groups.io/g/wallaroo) or [our IRC channel](https://webchat.freenode.net/?channels=#wallaroo).
 
 We built Wallaroo to help people create applications without getting bogged down in the hard parts of distributed systems. We hope you'll take a look at our [GitHub repository](https://github.com/wallaroolabs/wallaroo) and get to know Wallaroo to see if it can help you with the problems you're trying to solve. And we hope to hear back from you about the great things you've done with it.
