@@ -10,7 +10,8 @@ tags = [
     "tutorial"
 ]
 categories = [
-    "Machine Learning"
+    "Machine Learning",
+    "Examples"
 ]
 description = "Creating an inference pipeline with MNIST"
 author = "amosca"
@@ -18,10 +19,11 @@ author = "amosca"
 
 Whilst it would seem that machine learning is taking over the world, a lot of the attention has been focused towards researching new methods and applications, and how to make a single model faster. At Wallaroo Labs we believe that, in order to make the benefits of machine learning truly ubiquitous, there needs to be a significant improvement in how we put those impressive models into production. This is where the stream computing paradigm becomes useful: as for any other type of computation, we can use streaming to apply machine learning models to a large quantity of incoming data, using available techniques in distributed computing.
 
-Nowadays, many applications with streaming data are either applying machine learning or have a very good use case for it. In this example, we will explore how we can build a machine learning inside Wallaroo, our high performance stream processing engine, to classify images from the [MNIST dataset](ihttp://yann.lecun.com/exdb/mnist/), using a basic two-stage model in Python. Whilst recognizing hand-written digits is a practically solved problem, even a simple example like the one we are presenting provides a real use case (imagine automated cheque reading in a large bank), and the same setup can be used as a starting point for virtually any machine learning application - just replace the model.
+Nowadays, many applications with streaming data are either applying machine learning or have a very good use case for it. In this example, we will explore how we can build a machine learning inside Wallaroo, our high performance stream processing engine, to classify images from the [MNIST dataset](http://yann.lecun.com/exdb/mnist/), using a basic two-stage model in Python. Whilst recognizing hand-written digits is a practically solved problem, even a simple example like the one we are presenting provides a real use case (imagine automated cheque reading in a large bank), and the same setup can be used as a starting point for virtually any machine learning application - just replace the model.
 
-Everything has been implemented in the [current version of Wallaroo (0.4.0)](https://github.com/WallarooLabs/wallaroo/tree/0.4.0). The full code can be found on [GitHub](https://github.com/WallarooLabs/wallaroo_blog_examples/tree/master/sklearn-example). If you have any technical questions that this post didn't answer, or if you have any suggestions, please get in touch at [hello@WallarooLabs.com](mailto:hello@WallarooLabs.com), via [our mailing list](https://groups.io/g/wallaroo) or [our IRC channel](https://webchat.freenode.net/?channels=#wallaroo).
+Everything has been implemented in the [current version of Wallaroo (1.4.0)](https://github.com/WallarooLabs/wallaroo/tree/0.4.0). The full code can be found on [GitHub](https://github.com/WallarooLabs/wallaroo_blog_examples/tree/master/sklearn-example). If you have any technical questions that this post didn't answer, or if you have any suggestions, please get in touch at [hello@WallarooLabs.com](mailto:hello@WallarooLabs.com), via [our mailing list](https://groups.io/g/wallaroo) or [our IRC channel](https://webchat.freenode.net/?channels=#wallaroo).
 
+We've been working on our processing engine, [Wallaroo](https://github.com/wallaroolabs/wallaroo/tree/release) for just under two years now. Our goal has been to make it as easy to build fast, scale-independent applications for processing data. When we open sourced Wallaroo last year we provided an API that let developers create applications using [Python](https://blog.wallaroolabs.com/2017/10/go-python-go-stream-processing-for-python/). The example discussed in this blog entry is written using that API.
 
 ## The MNIST dataset
 
@@ -29,7 +31,7 @@ The MNIST dataset is a set of 60000 black and white images, of size 28 x 28 pixe
 
 ## The model
 
-One of the simplest models for classifying digits is a [Logistic Regression](https://en.wikipedia.org/wiki/Logistic_regression) on the numeric values of each pixel. An improvement to this simple model is to add a [PCA](https://en.wikipedia.org/wiki/Principal_component_analysis) preprocessing that presents the transformation with the most information content as an input to the classifier. We will be using this two-stage approach to classify our digits.
+One of the simplest models for classifying digits is a [Logistic Regression](https://en.wikipedia.org/wiki/Logistic_regression) on the numeric values of each pixel. An improvement to this simple model is to add a [Principal Component Analysis](https://en.wikipedia.org/wiki/Principal_component_analysis) preprocessing that presents the transformation with the most information content as an input to the classifier. We will be using this two-stage approach to classify our digits.
 
 ## Training vs Inference
 
@@ -39,7 +41,7 @@ Whilst training is indeed a fundamental part of the machine learning process, st
 
 ## Creating the models
 
-Even though we have said that the focus will be on inference, we still need to create some models to be able to use them. In this case, all the code for training is contained in `train_models.py`. We invite you to take a detailed look at it, but for the sake of this blog entry we only need to know that it is training a PCA for data preprocessing and a logistic regression for classification. The two models are then serialized to disk using sklearn's built-in pickle compatibility, to two separate file: `pca.model` and `logistic.model`.
+Even though we have said that the focus will be on inference, we still need to create some models to be able to use them. In this case, all the code for training is contained in [`train_models.py`](https://github.com/WallarooLabs/wallaroo_blog_examples/blob/master/sklearn-example/train_models.py). We invite you to take a detailed look at it, but for the sake of this blog entry we only need to know that it is training a PCA for data preprocessing and a logistic regression for classification. The two models are then serialized to disk using sklearn's built-in pickle compatibility, to two separate files: `pca.model` and `logistic.model`.
 
 ## Application Setup
 
@@ -48,12 +50,12 @@ We set up our Wallaroo application as follows
 
 ```python
 def application_setup(args):
+    global pca
+    global logistic
     with open('pca.model', 'r') as f:
         pca = pickle.load(f)
     with open('logistic.model', 'r') as f:
         logistic = pickle.load(f)
-    global pca
-    global logistic
 
     in_host, in_port = wallaroo.tcp_parse_input_addrs(args)[0]
     out_host, out_port = wallaroo.tcp_parse_output_addrs(args)[0]
@@ -151,8 +153,22 @@ To run our application, we need to follow these steps:
 - start the Wallaroo application from within its directory: `PYTHONPATH=:.:../../../machida/ ../../../machida/build/machida --application-module digits --in 127.0.0.1:8002 --out 127.0.0.1:7002 --metrics 127.0.0.1:5001 --control 127.0.0.1:6000 --data 127.0.0.1:6001 --worker-name worker1 --external 127.0.0.1:5050 --cluster-initializer --ponythreads=1`
 - send our files to Wallaroo via our sender: `python sender.py`
 
+This will send the entire MNIST dataset to the Wallaroo application, and will send the encoded output classifications to the `nc` program.
+
 ## Next steps
 
 There are obvious limitations to this basic example. For instance, there is no partitioning. And we of course realize that MNIST isn't a useful dataset beyond examples. A lot of extra functionality can be added to production-level code, but for the purpose of illustrating how to run scikit-learn algorithms in Wallaroo, we preferred to narrow the focus and reduce distractions.
 
 If you’d like to see the full code, its available on [GitHub](https://github.com/WallarooLabs/wallaroo_blog_examples/tree/master/sklearn-example). If you would like to ask us more in-depth technical questions, or if you have any suggestions, please get in touch via [our mailing list](https://groups.io/g/wallaroo) or [our IRC channel](https://webchat.freenode.net/?channels=#wallaroo).
+
+## Check It Out
+
+If you're interested in running this application yourself, take a look at the [Wallaroo documentation](https://docs.wallaroolabs.com) and the [Full source code](https://github.com/WallarooLabs/wallaroo_blog_examples/tree/master/sklearn-example). You'll find instructions on setting up Wallaroo and running applications. And take a look at our [community page](https://www.wallaroolabs.com/community) to sign up for our mailing list or join our IRC channel to ask any question you may have.
+
+You can also watch this video to see Wallaroo in action. Our VP of Engineering walks you through the concepts that were covered in this blog post using our Python API and then shows the word count application scaling by adding new workers to the cluster.
+
+<iframe src="https://player.vimeo.com/video/234753585" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+
+Our Python API is new, and we are looking at ways to improve it. We have a lot of ideas of our own, but if you have any ideas, we would love to hear from you. Please don’t hesitate to get in touch with us through [our mailing list](https://groups.io/g/wallaroo) or [our IRC channel](https://webchat.freenode.net/?channels=#wallaroo). We also have a short (30 seconds) [survey](https://wallaroolabs.typeform.com/to/PkC7iT?source=blog) that will help us learn more about the people who are interested in using the Go API, so if that's you then I'd encourage you to go fill it out.
+
+We built Wallaroo to help people create applications without getting bogged down in the hard parts of distributed systems. We hope you'll take a look at our [GitHub repository](https://github.com/wallaroolabs/wallaroo) and get to know Wallaroo to see if it can help you with the problems you're trying to solve. And we hope to hear back from you about the great things you've done with it.
