@@ -1,7 +1,7 @@
 +++
 title = "A Scikit-learn pipeline in Wallaroo"
 draft = false
-date = 2012-02-08T00:00:00Z
+date = 2018-02-08T00:00:00Z
 tags = [
     "wallaroo",
     "machine learning",
