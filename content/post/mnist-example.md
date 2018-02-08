@@ -162,8 +162,6 @@ where each classification is a list of one element, converted to its string repr
 
 There are obvious limitations to this basic example. For instance, there is no partitioning. And we of course realize that MNIST isn't a useful dataset beyond examples. A lot of extra functionality can be added to production-level code, but for the purpose of illustrating how to run scikit-learn algorithms in Wallaroo, we preferred to narrow the focus and reduce distractions.
 
-## Check It Out
-
 If you're interested in running this application yourself, take a look at the [Wallaroo documentation](https://docs.wallaroolabs.com) and the [Full source code](https://github.com/WallarooLabs/wallaroo_blog_examples/tree/master/sklearn-example). You'll find instructions on setting up Wallaroo and running applications. And take a look at our [community page](https://www.wallaroolabs.com/community) to sign up for our mailing list or join our IRC channel to ask any question you may have.
 
 You can also watch this video to see Wallaroo in action. Our VP of Engineering walks you through the concepts that were covered in this blog post using our Python API and then shows the word count application scaling by adding new workers to the cluster.
