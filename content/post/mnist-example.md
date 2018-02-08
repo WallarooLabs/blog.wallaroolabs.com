@@ -1,7 +1,7 @@
 +++
 title = "A Scikit-learn pipeline in Wallaroo"
 draft = false
-date = 2017-11-16T00:00:00Z
+date = 2012-02-08T00:00:00Z
 tags = [
     "wallaroo",
     "machine learning",
@@ -10,7 +10,6 @@ tags = [
     "tutorial"
 ]
 categories = [
-    "Machine Learning",
     "Examples"
 ]
 description = "Creating an inference pipeline with MNIST"
@@ -19,11 +18,9 @@ author = "amosca"
 
 Whilst it would seem that machine learning is taking over the world, a lot of the attention has been focused towards researching new methods and applications, and how to make a single model faster. At Wallaroo Labs we believe that, in order to make the benefits of machine learning truly ubiquitous, there needs to be a significant improvement in how we put those impressive models into production. This is where the stream computing paradigm becomes useful: as for any other type of computation, we can use streaming to apply machine learning models to a large quantity of incoming data, using available techniques in distributed computing.
 
-Nowadays, many applications with streaming data are either applying machine learning or have a very good use case for it. In this example, we will explore how we can build a machine learning inside Wallaroo, our high performance stream processing engine, to classify images from the [MNIST dataset](http://yann.lecun.com/exdb/mnist/), using a basic two-stage model in Python. Whilst recognizing hand-written digits is a practically solved problem, even a simple example like the one we are presenting provides a real use case (imagine automated cheque reading in a large bank), and the same setup can be used as a starting point for virtually any machine learning application - just replace the model.
+Nowadays, many applications with streaming data are either applying machine learning or have a very good use case for it. In this example, we will explore how we can build a machine learning pipeline nside Wallaroo, our high performance stream processing engine, to classify images from the [MNIST dataset](http://yann.lecun.com/exdb/mnist/), using a basic two-stage model in Python. Whilst recognizing hand-written digits is a practically solved problem, even a simple example like the one we are presenting provides a real use case (imagine automated cheque reading in a large bank), and the same setup can be used as a starting point for virtually any machine learning application - just replace the model.
 
-Everything has been implemented in the [current version of Wallaroo (1.4.0)](https://github.com/WallarooLabs/wallaroo/tree/0.4.0). The full code can be found on [GitHub](https://github.com/WallarooLabs/wallaroo_blog_examples/tree/master/sklearn-example). If you have any technical questions that this post didn't answer, or if you have any suggestions, please get in touch at [hello@WallarooLabs.com](mailto:hello@WallarooLabs.com), via [our mailing list](https://groups.io/g/wallaroo) or [our IRC channel](https://webchat.freenode.net/?channels=#wallaroo).
-
-We've been working on our processing engine, [Wallaroo](https://github.com/wallaroolabs/wallaroo/tree/release) for just under two years now. Our goal has been to make it as easy to build fast, scale-independent applications for processing data. When we open sourced Wallaroo last year we provided an API that let developers create applications using [Python](https://blog.wallaroolabs.com/2017/10/go-python-go-stream-processing-for-python/). The example discussed in this blog entry is written using that API.
+We've been working on our processing engine, [Wallaroo](https://github.com/wallaroolabs/wallaroo/tree/release) for just under two years now. Our goal has been to make it as easy to build fast, scale-independent applications for processing data. When we open sourced Wallaroo last year we provided an API that let developers create applications using [Python](https://blog.wallaroolabs.com/2018/01/how-to-update-your-wallaroo-python-applications-to-the-new-api/). The example discussed in this blog entry is written using that API. We also have a [Go API](https://blog.wallaroolabs.com/2018/01/go-go-go-stream-processing-for-go/). Everything has been implemented in the [current version of Wallaroo (0.4.0)](https://github.com/WallarooLabs/wallaroo/tree/0.4.0). The full code can be found on [GitHub](https://github.com/WallarooLabs/wallaroo_blog_examples/tree/master/sklearn-example). If you have any technical questions that this post didn't answer, or if you have any suggestions, please get in touch at [hello@WallarooLabs.com](mailto:hello@WallarooLabs.com), via [our mailing list](https://groups.io/g/wallaroo) or [our IRC channel](https://webchat.freenode.net/?channels=#wallaroo).
 
 ## The MNIST dataset
 
@@ -45,7 +42,7 @@ Even though we have said that the focus will be on inference, we still need to c
 
 ## Application Setup
 
-Our application will contain two separate computations, one for the PCA transformation and one for the classification itself.
+Our application will contain two separate computations, one for the PCA transformation and one for the classification itself. The flow of data is [In] --> Decoder --> PCA --> Logistic Regression --> Encoder --> [Out]
 We set up our Wallaroo application as follows
 
 ```python
@@ -153,13 +150,17 @@ To run our application, we need to follow these steps:
 - start the Wallaroo application from within its directory: `PYTHONPATH=:.:../../../machida/ ../../../machida/build/machida --application-module digits --in 127.0.0.1:8002 --out 127.0.0.1:7002 --metrics 127.0.0.1:5001 --control 127.0.0.1:6000 --data 127.0.0.1:6001 --worker-name worker1 --external 127.0.0.1:5050 --cluster-initializer --ponythreads=1`
 - send our files to Wallaroo via our sender: `python sender.py`
 
-This will send the entire MNIST dataset to the Wallaroo application, and will send the encoded output classifications to the `nc` program.
+This will send the entire MNIST dataset to the Wallaroo application, and will send the encoded output classifications to the `nc` program. If you look at the output you will see something similar to the following
+
+```
+[0][1][2][3][4][9][6][7][8][9][0][1]
+```
+
+where each classification is a list of one element, converted to its string representation before sending.
 
 ## Next steps
 
 There are obvious limitations to this basic example. For instance, there is no partitioning. And we of course realize that MNIST isn't a useful dataset beyond examples. A lot of extra functionality can be added to production-level code, but for the purpose of illustrating how to run scikit-learn algorithms in Wallaroo, we preferred to narrow the focus and reduce distractions.
-
-If you’d like to see the full code, its available on [GitHub](https://github.com/WallarooLabs/wallaroo_blog_examples/tree/master/sklearn-example). If you would like to ask us more in-depth technical questions, or if you have any suggestions, please get in touch via [our mailing list](https://groups.io/g/wallaroo) or [our IRC channel](https://webchat.freenode.net/?channels=#wallaroo).
 
 ## Check It Out
 
