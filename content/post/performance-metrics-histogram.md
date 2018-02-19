@@ -108,8 +108,8 @@ In the external monitoring system:
     - Assuming best case performance of quicksort of O(nlogn)  
         __**Time cost: O(|W|log(|W|))**__  
 
-__**Total time cost: O(|W|log(|W|)) + O(log|W|)**__  
-__**Total space cost: O(|L|) + O(|W|)**__
+__**Total space cost: O(|L|) + O(|W|)**__  
+__**Total time cost: O(|W|log(|W|)) + O(log|W|)**__
 
 An additional issue with this approach is that percentiles cannot be added or averaged. So if we wanted to reduce the work done in the monitoring system by computing percentiles locally on each worker, we would not be able to generate system-wide metrics from these percentiles. This forces us to collect and eventually send out a metric for each lifecycle phase of each event that is processed by Wallaroo. The amount of traffic this generates is proproptional to the amount of data Wallaroo is processing.
 
