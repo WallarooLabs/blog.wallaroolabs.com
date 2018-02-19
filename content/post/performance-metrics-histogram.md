@@ -161,7 +161,7 @@ In the external monitoring system:
 - We then select the bin whose maximum value is the value we wish a certain percentage of the population to be below and check whether the fraction in that bin is larger than the desired value. If it is, we're good.  
     __**Time cost: O(1)**__  
 
-__**Total space cost: O(|L|*|H|) + O(|w|*|H|) + O(|H|) * O(|H|)**__  
+__**Total space cost: O(|L|&#x2a;|H|) + O(|w|&#x2a;|H|) + O(|H|) &#x2a; O(|H|)**__  
 __**Total time cost: O(|w|) + O(|w|*|H|) + O(|H|)**__
 
 ## Comparing the Two Approaches
