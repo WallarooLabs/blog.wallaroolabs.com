@@ -89,7 +89,7 @@ In the external monitoring system:
 
 1. We store all data as a list of events, L. L is sorted by time.
 2. We then select a window, W, from L, such that W contains all events whose time is within the last 5 minutes  
-    `{W: e ∀ e ∊ L | e.time > now()-'5 minutes'}`
+    `W = {∀ e | e ∊ L and (e.time > now()-'5 minutes')}`
 3. To select the values in the 99% and 99.9% positions, we need to sort W. We call the sorted list W'.
 4. We then select the 99% and 99.9% positions in the sorted list W', by taking its length and multiplying it by 0.99 and 0.999 respectively, then rounding the fraction up to the nearest integer. We use those integers as the indexes for the events whose latencies are the 99%- and 99.9%-percentiles. 
 
