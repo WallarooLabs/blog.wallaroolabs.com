@@ -22,7 +22,7 @@ When we first started development on [Wallaroo](https://github.com/WallarooLabs/
 
 1. High-Throughput
 2. Low-Latency
-3. 1/3 of the infrastructure costs/needs compared to existing solutions.
+3. Lower the infrastructure costs/needs compared to existing solutions.
 
 Proving to our users that we were delivering on these principles was an essential part of the early development cycle of Wallaroo. How could we prove we were delivering on these principles? We needed to capture metrics. Metrics are an excellent way to spot bottlenecks in any system. Providing meaningful metrics to our users would mean they could make quicker iterations in their development cycle by being able to spot specific bottlenecks in various locations of our system. An added benefit that came from capturing these metrics was that it also sped up the Wallaroo development cycle as we were able to use them as guidelines to [measure the “cost” of every feature](https://blog.wallaroolabs.com/2017/06/whats-the-secret-sauce/#measure-the-cost-of-every-feature).
 
