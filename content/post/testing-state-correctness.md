@@ -3,7 +3,6 @@ description: "Introducing the error detection problem and how we approach it whe
 title: "Measuring Correctness of State in a Distributed System"
 date: 2017-10-05T00:00:00Z
 author: nisanharamati
-slug: testing-state-correctness
 draft: false
 categories:
   - Testing

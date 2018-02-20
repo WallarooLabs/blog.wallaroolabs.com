@@ -1,6 +1,5 @@
 +++
 title = "Stateful Multi-Stream Processing in Python with Wallaroo"
-slug = "stateful-multi-stream-processing-in-python-with-wallaroo"
 draft = false
 date = 2017-12-07T00:00:00Z
 tags = [

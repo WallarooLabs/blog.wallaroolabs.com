@@ -2,7 +2,6 @@
 title= "Go Python, Go! Stream Processing for Python"
 date = 2017-10-12T12:00:00-04:00
 draft = false
-slug = "go-python-go-stream-processing-for-python"
 author = "aturley"
 description = "Wallaroo’s Python API let's you write distributed stream processing applications in your favorite language, Python."
 tags = [

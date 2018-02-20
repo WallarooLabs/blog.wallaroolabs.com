@@ -2,7 +2,6 @@
 title = "Dynamic tracing a Pony + Python program with DTrace"
 date = 2017-12-14T06:30:12-06:00
 draft = false
-slug = "dynamic-tracing-pony-python"
 author = "slfritchie"
 description = "Use the dynamic tracing tool DTrace to observe the internals of a Wallaroo application, observing events in both Pony code and Python code and also inside the OS kernel itself."
 tags = [

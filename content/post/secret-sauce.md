@@ -3,7 +3,6 @@ description: "A high-level look at how Wallaroo gets its excellent performance."
 title: What's the "Secret Sauce"?
 date: 2017-06-30T00:00:00Z
 author: seantallen
-slug: secret-sauce
 draft: false
 categories: 
   - Hello Wallaroo

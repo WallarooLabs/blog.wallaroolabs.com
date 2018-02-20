@@ -2,7 +2,6 @@
 title = "Open Sourcing Wallaroo"
 date = 2017-09-27T12:00:00-04:00
 draft = false
-slug = "open-sourcing-wallaroo"
 author = "seantallen"
 description = "In which we announce the opening up of our codebase."
 tags = [

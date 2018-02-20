@@ -3,7 +3,6 @@ description = "An introduction to Wallaroo: Wallaroo Labs's new high-throughput,
 title = "Hello Wallaroo!"
 date = "2017-03-19T00:00:00Z"
 author = "seantallen"
-slug = "hello-wallaroo"
 draft = false
 categories = ["Hello Wallaroo"]
 tags = ["exactly-once", "performance", "wallaroo"]
