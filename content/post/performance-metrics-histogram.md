@@ -10,7 +10,7 @@ tags = [
     "monitoring"
 ]
 categories = [
-    "Observability"
+    "Metrics"
 ]
 +++
 
