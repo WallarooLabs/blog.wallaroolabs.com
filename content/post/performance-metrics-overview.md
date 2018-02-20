@@ -11,8 +11,7 @@ tags = [
     "wallaroo"
 ]
 categories = [
-    "Metrics",
-    "Performance",
+    "Metrics"
 ]
 +++
 
