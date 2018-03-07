@@ -15,7 +15,7 @@ categories = [
 ]
 +++
 
-At [Wallaroo Labs](http://www.wallaroolabs.com/) we've been working on our stream processing engine, [Wallaroo](https://github.com/wallaroolabs/wallaroo/tree/release) for just under two years now. We recently explained how we [increased performance of Wallaroo](https://blog.wallaroolabs.com/2018/02/how-we-built-wallaroo-to-process-millions-of-messages/sec-with-microsecond-latencies/) and how we [collect metrics without impacting performance](https://blog.wallaroolabs.com/2018/02/building-low-overhead-metrics-collection-for-high-performance-systems/). This blog post focuses on how we do our performance testing to help us achieve [Wallaroo's goals](https://github.com/wallaroolabs/wallaroo#what-is-wallaroo).
+At [Wallaroo Labs](http://www.wallaroolabs.com/) we've been working on our stream processing engine, [Wallaroo](https://github.com/wallaroolabs/wallaroo/tree/release) for just under two years now. We've designed Wallaroo to be able to handle millions of messages a second on a single server with low microsecond latencies. We recently explained how we [increased performance of Wallaroo](https://blog.wallaroolabs.com/2018/02/how-we-built-wallaroo-to-process-millions-of-messages/sec-with-microsecond-latencies/) and how we [collect metrics without impacting performance](https://blog.wallaroolabs.com/2018/02/building-low-overhead-metrics-collection-for-high-performance-systems/). This blog post focuses on how we do our performance testing to help us achieve [Wallaroo's goals](https://github.com/wallaroolabs/wallaroo#what-is-wallaroo).
 
 ## Importance of Performance Testing and Considerations Involved
 
