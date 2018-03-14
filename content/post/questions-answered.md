@@ -5,12 +5,11 @@ draft = false
 author = "cblake"
 description = "Top Questions from Developers and Hacker News Community about Wallaroo."
 tags = [
-    "wallaroo",
-    "FAQ"
+    "Wallaroo",
+    "Python"
 ]
 categories = [
-    "wallaroo",
-    "Python"
+    "FAQ"
 ]
 +++
 Wallaroo Labs has received a lot of great feedback from developers on Hacker News and other communities. 
