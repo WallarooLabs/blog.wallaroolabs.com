@@ -13,9 +13,12 @@ categories = [
     "Python"
 ]
 +++
-Wallaroo Labs has received a lot of great feedback from developers on Hacker News and other communities.  
+Wallaroo Labs has received a lot of great feedback from developers on Hacker News and other communities. 
+
 Below are some answers to questions that repeatedly come up in conversations about Wallaroo.
+
 Thank you! Please keep reading our engineering posts, commenting, and asking questions!
+
 ## Why did you write Wallaroo in Pony?
  
 When we looked at the tools available to build Wallaroo and the use cases we wanted to handle, there were a few paths available to us.
