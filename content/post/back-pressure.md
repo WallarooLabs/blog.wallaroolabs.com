@@ -106,10 +106,10 @@ that one second.  My local Post Office is not big enough to "store"
 1,000 customers in its queue.
 
 Let's look at some methods for handling overload.  We'll see that the
-methods available depend on changing the arrival rate or changing the
-queuing space.
+methods available depend on changing changing the queuing space, the
+Departure Rate, and/or the Arrival Rate.
 
-## Solution 1: Add more queue space to a single machine
+## Solution 1: Add more queue space
 
 If an application's buffer gets full, just add more space.  Most
 modern operating systems will do this for you, via the wonderful magic
@@ -117,9 +117,25 @@ of virtual memory.
 
 We also know that computer systems do not have infinite storage
 space.  If the `Arrival Rate > Departure Rate` equation is true for
-long enough, any single machine will run out of space.
+long enough, any single machine will run out of space.  The same
+statement holds true for a multi-machine system.
 
-## Solution 2: Add more capacity to the system
+## Solution 1b: Add more machines to add more queue space
+
+If your application is in a "cloud" computing environment where it's
+possible to add more machines (or virtual machines or containers,
+etc.), and if your application can take advantage of more machines,
+then adding more machines will probably give you more queue space.
+
+If you are lucky that both significant "if" conditions are true, then
+you still have a problem.  A finite set of computers with finite
+storage space each is still a finite total sum of storage space.
+Having more queue space simply delays the inevitable time when your
+queues are become full.
+
+## Solution 2a: Increase the Departure Rate
+
+There are two variations of this
 
 What's the difference between this solution and solution #1?
 Complexity.
