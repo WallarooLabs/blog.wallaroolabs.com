@@ -80,7 +80,7 @@ empty (after a sufficiently long period of time).
 
 What do these three assumptions mean for your system?
 
-1. Infinite queue length: Your computer does not have infinite memory.
+1. Infinite queue length: Sorry, your computer does not have infinite memory.
 
 2. & 3. Finite queue length & steady state: When/If the queue limit is
 violated, the model cannot tell you much (or anything) about the
@@ -107,11 +107,11 @@ that one second.  My local Post Office is not big enough to "store"
 
 Let's look at some methods for handling overload.  We'll see that the
 methods available depend on changing changing the queuing space, the
-Departure Rate, and/or the Arrival Rate.
+`Departure Rate`, and/or the `Arrival Rate`.
 
 ## Solution 1: Add more queue space
 
-If an application's buffer gets full, just add more space.  Most
+If an service's buffer gets full, just add more space.  Most
 modern operating systems will do this for you, via the wonderful magic
 of virtual memory.
 
@@ -120,67 +120,40 @@ space.  If the `Arrival Rate > Departure Rate` equation is true for
 long enough, any single machine will run out of space.  The same
 statement holds true for a multi-machine system.
 
-## Solution 1b: Add more machines to add more queue space
+## Solution 2: Increase the Departure Rate
 
-If your application is in a "cloud" computing environment where it's
-possible to add more machines (or virtual machines or containers,
-etc.), and if your application can take advantage of more machines,
-then adding more machines will probably give you more queue space.
+There are two significant techniques to increase the departure rate:
+increase service throughput or decrease service latency.  These two
+strategies are commonly called "horizontal scaling" and "load
+shedding", respectively.
 
-If you are lucky that both significant "if" conditions are true, then
-you still have a problem.  A finite set of computers with finite
-storage space each is still a finite total sum of storage space.
-Having more queue space simply delays the inevitable time when your
-queues are become full.
+### Solution 2a: horizontal scaling (a.k.a. "make your cluster bigger")
 
-## Solution 2a: Increase the Departure Rate
-
-There are two variations of this
-
-What's the difference between this solution and solution #1?
-Complexity.
-
-a. Add more more queue space (RAM, NVRAM, disk, etc.)
-   * Typically by adding more machines to a distributed system
-   * In some cases, adding a new storage device is feasible, e.g.,
-     adding a new Elastic Block Store (EBS) device to an Amazon cloud
-     virtual machine.
-b. Add more computing capacity (CPU, GPU, network I/O processors,
-   etc.) to the system.
-   * Increasing computing capacity will increase the Departure Rate of
-     the system (we hope!).
-   * If you add entire new machines (or virtual machines or
-     containers), then you are probably also adding more queue space.
-
-Quickly adding more computing resources to a single machine is not
-common.  Most standalone computers cannot easily add a new CPU or a
-new disk drive while it is running.
+Sometimes, it is possible to add more space (RAM, NVRAM, disk, etc.)
+or CPU/GPU/network capacity to a single machine, but it isn't common.
+It's usually far easier to add additional machines.  Or add virtual
+machines (VMs).  Or add containers.  Or add new-technology-of-the-year.
+"Horizontal scaling" is the usual name for this technique.
 
 For cloud computing systems such as Amazon Web Services (AWS), Google
 Compute Engine (GCE), Azure Compute, and many others, adding capacity
-is indeed feasible.  They have APIs that include (some type of) "Add
-More".  For a fewservices, it's that easy.  For many others, it is not
-that easy.
-
-Adding more capacity to the system can help in the future, but the
-extra capacity cannot help your overloaded system *right now*.
+is indeed feasible.  They have APIs that include (some kind of) "Add
+More, Just Click Here!".  Adding more capacity to the system is
+fantastic the future, but the extra capacity cannot help your
+overloaded system *right now*.
 
 * Adding extra capacity may be impossible or difficult
 * Adding extra capacity may be expensive
-* Time latency before extra capacity is available
+* Waiting an long time before extra capacity is available
 * Overhead of adding extra capacity may *reduce* capacity of
-  existing system before and/or during the transition time.
+  existing system during the transition time.
+  (Frequently, this is your service & application's problem instead of
+  your data center/hosting/compute platform's problem.)
 
-Even if your computing service provide can add services quickly, your
-application may not be designed to use the new capacity immediately.
-So you can still have an overloaded system.  Bummer.
+### Solution 2b: Load shedding
 
-## Solution 3: Load shedding
-
-This is another method of changing the `Arrival Rate > Departure Rate`
-equation: we "shed" load (or "drop" or "ignore" or "degrade service")
-to increase the `Departure Rate` side of the equation.  These
-strategies include:
+This is another way to increase the `Departure Rate` side of our
+service equation.  These strategies include:
 
 * Drop the request/query/packet.  Literally, do nothing.
 * Choose an alternatve computation that requires less time.
@@ -188,17 +161,98 @@ strategies include:
     instead of the full 100%.
   * If the service calculates square roots with 25 digits of
     precision, then reduce the precision to 5 digits instead.
+* Do not compute the requested value, but instead send an immediate
+  reply to the client that signals that the system is overloaded.
 
-## Solution 4: Back-Pressure
 
-----
-----
+## Solution 3: Decrease the Arrival Rate
 
-Scraps
+It's unfortunate, but many computer systems have very little control
+over a service's arrival rate.  You don't have full control over your
+customers & their arrival rates.  Perhaps 1,000 customers really can
+arrive in one second at your local Post Office?
 
-The "queue" in this abstract model is some place, real or imaginary,
-where things wait before getting actual service from the system.  In
-computer systems, the model's queue usually has a linked list or array
-or some other data structure to manage the items in the physical
-queue in the computer's memory.  
+### Solution 3a: Filter out some requests
 
+Earlier this month, on
+[March 1st, 2018, GitHub experienced a denial-of-service attack](https://githubengineering.com/ddos-incident-report/).
+At its peak, the attack generated 1.35 terabits/second of network
+traffic at 126.9 million packets/second.  The report from GitHub's
+Engineering department explains how Akamai's services were used to
+reduce the `Arrival Rate` by filtering out millions of packets per
+second of junk.
+
+Akamai's technique of filtering is not a generally useful technique
+for all distributed systems.  For example:
+
+1. It only works with limited network protocols (such as HTTP over
+TCP),
+2. Requires specific network hardware and network architecture, and 
+3. Requires significant operations staff, training, and rehearsed
+procedures to operate smoothly.
+
+### Solution 3b: Force customers to reduce their Arrival Rate
+
+Many decades of computer systems research has given us a lot of rate
+limiting systems.  Most are based on a notion of credit or money or
+tokens or ticket before a customer can be admitted to a queue.  If you
+don't have the credit/money/token/ticket before arriving in the queue,
+then you aren't admitted.  These systems are very effective at
+reducing the `Arrival Rate`.  Perhaps your system can handle 900
+operations/second, but you wish to force all users to a sum of only 7
+operations/second.  Sure, admission control can do that.
+
+One of the better-known `Arrival Rate` control mechanisms in software
+developer & IT systems people is built into the TCP protocol.  The
+rate limiting part is TCP's "sliding window", which permits a limited
+number of network packets to be "in transit" in the network without
+permanently overloading the network's capacity.  When the sliding
+window is large, the sender is permitted to send a large number of
+bytes to the receiver.  When the window is zero, the sender must stop
+sending.
+
+TODO: How much "enforcement" is really, truly "enforcment"?
+
+However, the credit/token/ticket subsystem itself can be modelled as a
+service queue network.  And that subsystem will have its own
+`Arrival Rate > Departure Rate` equation.
+
+If that equation remains true for the credit/whatever subsystem, then
+you haven't changed the nature of the problem.
+
+### Solution 3b': Reduce customer Arrival Rate via back-pressure
+
+It would be fantastic to be able to enforce a reduction in the
+`Arrival Rate` side of our equation for all customers.  I have
+already mentioned three of ways to do it.
+
+1. The filtering approach, e.g. Akamai's denial-of-service filtering
+   service.
+2. A credit/token/admission system, which (ideally!) is much more
+   difficult to overload than the system that it protects.
+3. Load shedding plus some kind of "I am overloaded" response.
+
+Unfortunately, the "I am overloaded" style of load shedding doesn't
+guarantee a lower `Arrival Rate`.  The customer probably does not have
+to wait before trying to re-enter the service queue.  Impolite
+customers can still overload the system.
+
+There is a technique that can force customer `Arrival Rate` to slow
+down: "back-pressure".  It's a technique that must be comprehensively
+designed into a system to be effective.  Back-pressure is the
+technique that Wallaroo uses to avoid overload.  The next section
+discusses how back-pressure was designed for & implemented by
+Wallaroo.
+
+## More writing on how to deal with overload
+
+* Wikipedia: [Back-Pressure](https://en.wikipedia.org/wiki/Back_pressure)
+* Fred Hebert: [Queues Don't Fix Overload](https://ferd.ca/queues-don-t-fix-overload.html)
+* Fred Hebert: [Handling Overload](https://ferd.ca/handling-overload.html),
+a survey of overload mitigation techniques & code libraries available
+in Erlang.
+* dataArtisans: [How Apache Flink™ handles backpressure](https://data-artisans.com/blog/how-flink-handles-backpressure)
+* Reactive Streams initiative: [Introduction to JDK9 java.util.concurrent.Flow](http://www.reactive-streams.org)
+* Henn Idan: [Reactive Streams and the Weird Case of Back Pressure](https://blog.takipi.com/reactive-streams-and-the-weird-case-of-back-pressure/)
+* Zach Tellman: [Everything Will Flow](https://www.youtube.com/watch?time_continue=1&v=1bNOO3xxMc0),
+  an overview of Clojure's `core.async` library.
