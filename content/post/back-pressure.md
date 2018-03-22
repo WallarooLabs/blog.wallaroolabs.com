@@ -3,7 +3,7 @@ title = "Overload, Back-Pressure, Pony, and Wallaroo: a savory stew"
 date = 2018-03-20T06:30:12-06:00
 draft = false
 author = "slfritchie"
-description = "TODO A savory stew of overload, backpressure, the Pony Runtime, and Wallaroo"
+description = "TODO A savory stew of overload, back-pressure, the Pony Runtime, and Wallaroo"
 tags = [
     "back-pressure",
     "overload",
@@ -75,8 +75,7 @@ typically a fixed, static amount.)  However,
 "stability", depending on the book or paper that you're reading.  The
 steady state assumption is that the arrival rate is less than or equal
 to the departure rate.  If a system is not in steady state, then one
-(or more!) queues in the model's network starts growing and are never
-empty (after a sufficiently long period of time).
+(or more!) queues in the model's network start growing without limit.
 
 What do these three assumptions mean for your system?
 
@@ -86,11 +85,11 @@ What do these three assumptions mean for your system?
 violated, the model cannot tell you much (or anything) about the
 system's behavior.
 
-# Overload
+# Overload: Definition and Mitigation
 
 Let's use an informal definition for "overload".
 
-> When a finite size service queue becomes full, or when any service
+> When a finite size service queue becomes full, or when a service
 > queue's size continues to grow without stopping, then the service is
 > overloaded.
 
@@ -206,7 +205,8 @@ One of the better-known `Arrival Rate` control mechanisms in software
 developer & IT systems people is built into the TCP protocol.  The
 rate limiting part is TCP's "sliding window", which permits a limited
 number of network packets to be "in transit" in the network without
-permanently overloading the network's capacity.  When the sliding
+permanently overloading the network's capacity or the receiving
+system's capacity. When the sliding
 window is large, the sender is permitted to send a large number of
 bytes to the receiver.  When the window is zero, the sender must stop
 sending.
@@ -215,12 +215,11 @@ TODO: How much "enforcement" is really, truly "enforcment"?
 
 However, the credit/token/ticket subsystem itself can be modelled as a
 service queue network.  And that subsystem will have its own
-`Arrival Rate > Departure Rate` equation.
+`Arrival Rate > Departure Rate` equation.  But if the
+credit/token/ticket subsystem becomes the overloaded bottleneck in
+your system, then your problem remains: overload.
 
-If that equation remains true for the credit/whatever subsystem, then
-you haven't changed the nature of the problem.
-
-### Solution 3b': Reduce customer Arrival Rate via back-pressure
+### Solution 3b variation: Reduce Arrival Rate via back-pressure
 
 It would be fantastic to be able to enforce a reduction in the
 `Arrival Rate` side of our equation for all customers.  I have
@@ -244,15 +243,193 @@ technique that Wallaroo uses to avoid overload.  The next section
 discusses how back-pressure was designed for & implemented by
 Wallaroo.
 
-## More writing on how to deal with overload
+# More material on how to deal with overload
+
+Articles & presentations that you might find useful places to learn more.
 
 * Wikipedia: [Back-Pressure](https://en.wikipedia.org/wiki/Back_pressure)
+* Wikipedia: [TCP Flow Control](https://en.wikipedia.org/wiki/Transmission_Control_Protocol#Flow_control)
 * Fred Hebert: [Queues Don't Fix Overload](https://ferd.ca/queues-don-t-fix-overload.html)
 * Fred Hebert: [Handling Overload](https://ferd.ca/handling-overload.html),
-a survey of overload mitigation techniques & code libraries available
-in Erlang.
+  a survey of overload mitigation techniques in general & code libraries
+  available in Erlang.
 * dataArtisans: [How Apache Flink™ handles backpressure](https://data-artisans.com/blog/how-flink-handles-backpressure)
 * Reactive Streams initiative: [Introduction to JDK9 java.util.concurrent.Flow](http://www.reactive-streams.org)
 * Henn Idan: [Reactive Streams and the Weird Case of Back Pressure](https://blog.takipi.com/reactive-streams-and-the-weird-case-of-back-pressure/)
 * Zach Tellman: [Everything Will Flow](https://www.youtube.com/watch?time_continue=1&v=1bNOO3xxMc0),
   an overview of Clojure's `core.async` library.
+* Douglas Comer & Pearson Education (image credit): [Figure 25.7 from "Fundamentals Of Computer Networking And Internetworking"](https://www.cs.csustan.edu/~john/classes/previous_semesters/CS3000_Communication_Networks/2015_02_Spring/Notes/CNAI_Figures/figure-25.7.jpeg)
+
+# Wallaroo's Back-Pressure Mechanisms
+
+Wallaroo uses end-to-end back-pressure to limit queue sizes of all
+actors within the system.  This section describes how it back-pressure
+is implmented by Wallaroo today and how it will change in a
+near-future release.
+
+## Where Does the Term Back-Pressure Come From?
+
+Originally, the term "back-pressure" refers to the resistance to
+forward flow of gas or liquid in a confined space, e.g., air duct or
+pipe.  The gas (or liquid) experiences friction along the sides of the
+duct (or pipe).  It is easy to create an experiment to experience
+different amounts of back-pressure in a gas.  Using your lungs and
+mouth, try to blow as much air (as quickly as possible!) through the
+following tubes:
+
+* A small cocktail straw
+* A regular drink straw, e.g., from the soda fountain at McDonalds
+* The cardboard tube from a roll of paper towels or toilet paper
+* A hallway in your favorite school, office building, or your
+  house/apartment.
+  * I.e., the hallway is a very large-sized tube for this experiment
+
+## TCP's Back-Pressure Mechanism: Sliding Window Flow Control
+
+This isn't the time & place to describe TCP's sliding window flow
+control in detail.  However, a picture is worth at least a thousand
+words in this case.  Let's take a look.
+
+First, let's make some assumptions and statements about a hypothetical
+TCP connection.  (This is a partial list, in order to simplify the
+example.)
+
+* The sender application is Wallaroo.
+* Wallaroo is attempting to send 50,000 bytes of data to the receiver
+  as quickly as possible.
+* The sender can only send as many bytes as specified by the
+  receiver's advertise window.
+* The receiver app is some TCP data sink that stores Wallaroo's
+  computation output in 1,000 byte chunks.
+* The receiver's disk drive is very old and slow.  To write a single
+  single 1,000 byte block can cause the writing application to pause
+  for several seconds.
+
+In Figure 25.7 by Prof. Douglas Comer of Purdue University, we assume
+that a TCP connection is already established between a sender and
+receiver.  This diagram tracks one of the two "advertise windows" of
+the sliding window protocol for the connection.  We look at one
+direction only, but the a separate sliding window is used for data
+sent in the other direction.
+
+From the receiver's point of view:
+
+* The advertise window starts at 2,500 bytes.
+* Packets start arriving from the sender.  However, the receiver app
+  has been put to sleep by the kernel and cannot read any data.
+* The app wakes up, reads 2,000 bytes from the TCP connection, writes
+  the data to disk, then goes to sleep while waiting for disk I/O to finish.
+* The app wakes up, reads 1,000 bytes from the TCP connection, writes
+  the data to disk, then goes to sleep while waiting for disk I/O to finish.
+
+Dr. Comer's diagram of this sequence of network events looks like this:
+
+![Figure 25.7 from "Fundamentals Of Computer Networking And Internetworking"](https://www.cs.csustan.edu/~john/classes/previous_semesters/CS3000_Communication_Networks/2015_02_Spring/Notes/CNAI_Figures/figure-25.7.jpeg)
+
+The advertise window falls to zero twice in this example.  Wallaroo
+has over 40,000 bytes of data waiting to be transmitted.  However,
+when the advertise window is zero, the sender must stop transmitting
+and wait for an 'ack' message with a non-zero advertise window.
+
+How does Wallaroo know the receiver's advertise window size?  That
+level of detail is not available through the POSIX network socket API!
+
+In truth, a POSIX kernel can tell a user application when the
+advertise window size (or a related value, the congestion window) is
+zero.  If the socket has been configured in non-blocking I/O mode,
+then a `write(2)` or `writev(2)` system call to the socket will fail
+with the `errno` value of `EWOULDBLOCK`.  The `EWOULDBLOCK` condition
+tells the application that the kernel was not able to send any data on
+the socket immediately.
+
+When Wallaroo's `writev(2)` call fails with `EWOULDBLOCK` status when
+sending to a data sink, then we know that the sink is slow.  We don't
+know why the receiving sink is slow, but we definitely know that
+Wallaroo is sending data faster than the TCP sink can read it.
+Wallaroo needs to spread this information to other parts of itself
+... and that dissemination process is "back-pressure".
+
+## Wallaroo is a distributed system of actors in a single OS process
+
+Wallaroo is an application written in the Pony language.
+(We have `TODO blog post XXX` that explains why we use Pony to write Wallaroo.)
+
+Pony implements the "Actor Model" of concurrency, which means that a
+Pony program is a collection of independent actor objects that perform
+computations within their own private state.
+
+In our example, there is an actor called a `TCPSink` that is
+responsible for writing data to a TCP socket to send to one of
+Wallaroo's data sinks.  When that actor experiences an `EWOULDBLOCK`
+event when sending data, it is the only actor that is aware of the
+sink's speed problem.  Pony does not allow global variables.  We
+cannot simply use a global variable like we can do (naively!) in C,
+e.g., `hey_everyone_slow_down = 1`, to cause the rest of Wallaroo to
+slow down.
+
+In an Actor Model system, actors communicate with each other by
+sending messages.  Therefore, the `TCPSink` needs to send messages to
+other Wallaroo actors to tell the other actors to stop work.  If all
+actors in the system are told to stop, then Wallaroo as a whole can
+act as if a big finger reached into the system and pressed the "PAUSE"
+button.
+
+When that metaphorical "PAUSE" button is pressed, the system no longer
+creates data to send to the sink.  Wallaroo's internal queues become
+frozen as producing actors stop sending messages.  When paused, the
+message mailbox queues for each actor are effectively limited in
+size.  Neither Wallaroo nor Pony provide strict limits on the mailbox
+service queue length, but strict limits aren't necessary.  As long as
+the pause happens quickly enough, we shouldn't have to worry about
+uncontrollable memory use.
+
+TODO ^^^ needs more work
+
+## Wallaroo today: the "mute" protocol
+
+Inside of Wallaroo today, a custom protocol is used to control the
+back-pressure of stopping & starting computation in the data stream
+pipeline.  Pony doesn't have a broadcast mechanism to send a message
+to all actors in the system.  We don't really want to broadcast to all
+actors: many Wallaroo actors don't need to know about back-pressure or
+flow control.  But we do need a scheme to help determine what
+actors really do need to participate in the protocol.
+
+The protocol is informally called the "mute protocol", based on the
+name of one of the messages it uses, called `mute()`.  The word "mute"
+means to be silent or to cause a speaker to become silent.  That's
+what we want for back-pressure: to cause sending actors "upstream" in
+a Wallaroo pipeline to stop sending messages to the `TCPSink`.
+
+As a data stream processor, the computation stages inside of Wallaroo
+are arranged in a stream or pipeline.  The diagram below shows a
+simplified view of a
+["word count" application in Wallaroo](https://github.com/WallarooLabs/wallaroo/tree/master/examples/python/word_count)
+which shows the actors directly involved with processing the input
+data stream.
+
+![Wallaroo word count example diagram](/images/post/back-pressure/wallaroo1.png)
+
+When the `TCPSink` actor becomes aware of back-pressure on the TCP
+socket (via the `EWOULDBLOCK` error status when trying to send data),
+then `TCPSink` sends `mute()` messages up the chain all the way back
+to the `TCPSource` actor.
+
+When the `mute()` message reaches the `TCPSource` actor, then reading
+from the source TCP socket will stop.  Now, the same TCP flow control
+scenario that told us that the data sink is slow can be used by
+Wallaroo to force the sender of the source TCP socket to stop sending.
+If the sender sends enough data, then the TCP advertise window will
+drop to zero, which will force the sender to stop sending.
+
+Now we have all three pieces of back-pressure in place:
+
+* From a slow sink TCP socket to Wallaroo's `TCPSink` actor, via TCP's
+  advertise window reduced to zero.
+* Backward along the stream processing chain from `TCPSink` to
+  `TCPSource`, using the custom `mute()` protocol within Wallaroo
+* From Wallaroo's `TCPSource` actor to the source's TCP socket, also
+  via TCP's advertise window reduced to zero.
+  
+## Wallaroo tomorrow: plans to use Pony's built-in back-pressure
+
