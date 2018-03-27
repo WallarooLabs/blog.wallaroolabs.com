@@ -16,9 +16,9 @@ categories = [
 ]
 +++
 
-## Pre-Introduction: Overload and how Wallaroo mitigates overload
+## Series Introduction: Overload and how Wallaroo mitigates overload
 
-This is the first part of a two-part series of articles.  Here's a
+This is the first of a pair of Wallaroo Labs blog articles.  Here's a
 sketch of the series.
 
 1. Give a brief overview of queueing networks and what "overload" means
@@ -29,18 +29,17 @@ sketch of the series.
    manage overload: back-pressure.
 
 This article will cover points #1 and #2.  The next article, planned
-for April 3rd, will tackle point #3 in detail.
+for April 3rd, will tackle point #3 in more detail.
 
-## Introduction: What is overload?
+## Introduction: An overview to queueing networks
 
 Queueing theory is about 100 years old.  It's a fascinating topic, one
 that has been applied to computer systems since the 1960s.  The
 Wikipedia article https://en.wikipedia.org/wiki/Queueing_theory is a
 good place to start for diving into the mathematical models of
-queueing networks.  A dive into math isn't needed for what I'll
-discuss in this article, which is overload and back-pressure.  But a
-very small introduction to queueing theory will help put us all on the
-same page.
+queueing networks.  A dive into math isn't needed for in this article
+or for the follow-up article.  But a very small introduction to
+queueing theory will help put us all on the same page.
 
 Here's a diagram of a very simple queueing system.
 
@@ -60,25 +59,26 @@ average.  If customers arrive at a rate of `X` people per minute, then
 how long will the queue time typically be?  How many people will
 usually waiting in the queue?
 
-Mathematicians have spent decades defining scenarios & models for
+Mathematicians have about 100 years defining scenarios & models for
 different kinds of arrival rate schemes, service time schemes, and queue
 size limits, then applying those schemes to this very simple model.
 It's surprising how powerful a tool this single queue+service model
 is.  When the model's simplicity is no longer sufficient,
-mathematicians and analysts start putting multiple service centers
+mathematicians and analysts started putting multiple service centers
 into networks, like this one:
 
 ![A Network of Queues](/images/post/back-pressure/network-of-queues.png)
 
-Here is a software development network model for the
-edit-compile-execute cycle.
+Here is a network model for the edit-compile-execute cycle of software
+development:
 
 ![A Network Model for Software Development](/images/post/back-pressure/dev-cycle-network.png)
 
-I'm skipping all of the nifty math techniques that are used to predict
+I'm intentionally not discussing any of the many methods that are used
+to predict
 answers to questions like, "How long will the queue be?" or "How long
 will I wait?"  Instead, I wish to point some of the fundamental
-assumptions that most of those techniques require:
+assumptions that most of those methods require:
 
 1. "Infinite queue length".  This is pretty easy: the model assumes
 that queues can be arbitrarily big.
@@ -87,7 +87,7 @@ that queues can be arbitrarily big.
 assumes that a queue size is limited in size.  (The queue size is also
 typically a fixed, static amount.)
 
-3. "Steady state".  This might be called "flow balance assumption" or
+3. "Steady state".  This might instead be called "flow balance assumption" or
 "stability", depending on the book or paper that you're reading.  The
 steady state assumption is that the arrival rate is less than or equal
 to the departure rate.  If a system is not in steady state, then one
@@ -101,7 +101,7 @@ What do these three assumptions mean for your system?
 violated, the model cannot tell you much (or anything) about the
 system's behavior.
 
-## Overload: Definition and Mitigation
+## Overload: How to define it and how to mitigate its effects
 
 Let's use an informal definition for "overload".
 
