@@ -1,12 +1,13 @@
 +++
-title = "Overload, Back-Pressure, Pony, and Wallaroo: a savory stew"
-date = 2018-03-20T06:30:12-06:00
+title = "Overload, Back-Pressure, Pony, and Wallaroo: a review of overload mitigation techniques and Wallaroo's specific implementation"
+date = 2018-03-26T06:30:12-06:00
 draft = false
 author = "slfritchie"
-description = "TODO A savory stew of overload, back-pressure, the Pony Runtime, and Wallaroo"
+description = "A review of overload mitigation techniques for distributed systems in general and systems "
 tags = [
     "back-pressure",
     "overload",
+    "workload management",
     "pony",
     "wallaroo"
 ]
@@ -15,7 +16,7 @@ categories = [
 ]
 +++
 
-# Introduction: What is overload?
+## Introduction: What is overload?
 
 Queueing theory is about 100 years old.  It's a fascinating topic, one
 that has been applied to computer systems since the 1960s.  The
@@ -69,7 +70,7 @@ that queues can be arbitrarily big.
 
 2. "Finite queue length". This one is also pretty clear: the model
 assumes that a queue size is limited in size.  (The queue size is also
-typically a fixed, static amount.)  However, 
+typically a fixed, static amount.)
 
 3. "Steady state".  This might be called "flow balance assumption" or
 "stability", depending on the book or paper that you're reading.  The
@@ -85,7 +86,7 @@ What do these three assumptions mean for your system?
 violated, the model cannot tell you much (or anything) about the
 system's behavior.
 
-# Overload: Definition and Mitigation
+## Overload: Definition and Mitigation
 
 Let's use an informal definition for "overload".
 
@@ -105,10 +106,10 @@ that one second.  My local Post Office is not big enough to "store"
 1,000 customers in its queue.
 
 Let's look at some methods for handling overload.  We'll see that the
-methods available depend on changing changing the queuing space, the
+methods available depend on changing the queuing space, the
 `Departure Rate`, and/or the `Arrival Rate`.
 
-## Solution 1: Add more queue space
+### Solution 1: Add more queue space
 
 If an service's buffer gets full, just add more space.  Most
 modern operating systems will do this for you, via the wonderful magic
@@ -119,14 +120,14 @@ space.  If the `Arrival Rate > Departure Rate` equation is true for
 long enough, any single machine will run out of space.  The same
 statement holds true for a multi-machine system.
 
-## Solution 2: Increase the Departure Rate
+### Solution 2: Increase the Departure Rate
 
 There are two significant techniques to increase the departure rate:
-increase service throughput or decrease service latency.  These two
-strategies are commonly called "horizontal scaling" and "load
-shedding", respectively.
+increase service throughput or decrease service latency.  Two
+strategies are commonly used to implement them: "horizontal scaling"
+and "load shedding", respectively.
 
-### Solution 2a: horizontal scaling (a.k.a. "make your cluster bigger")
+#### Solution 2a: horizontal scaling (a.k.a. "make your cluster bigger")
 
 Sometimes, it is possible to add more space (RAM, NVRAM, disk, etc.)
 or CPU/GPU/network capacity to a single machine, but it isn't common.
@@ -143,19 +144,19 @@ overloaded system *right now*.
 
 * Adding extra capacity may be impossible or difficult
 * Adding extra capacity may be expensive
-* Waiting an long time before extra capacity is available
+* Waiting a long time before extra capacity is available
 * Overhead of adding extra capacity may *reduce* capacity of
   existing system during the transition time.
   (Frequently, this is your service & application's problem instead of
   your data center/hosting/compute platform's problem.)
 
-### Solution 2b: Load shedding
+#### Solution 2b: Load shedding
 
 This is another way to increase the `Departure Rate` side of our
 service equation.  These strategies include:
 
 * Drop the request/query/packet.  Literally, do nothing.
-* Choose an alternatve computation that requires less time.
+* Choose an alternative computation that requires less time.
   * If the service is text search, then only search 10% of the text corpus
     instead of the full 100%.
   * If the service calculates square roots with 25 digits of
@@ -164,14 +165,14 @@ service equation.  These strategies include:
   reply to the client that signals that the system is overloaded.
 
 
-## Solution 3: Decrease the Arrival Rate
+### Solution 3: Decrease the Arrival Rate
 
 It's unfortunate, but many computer systems have very little control
 over a service's arrival rate.  You don't have full control over your
 customers & their arrival rates.  Perhaps 1,000 customers really can
 arrive in one second at your local Post Office?
 
-### Solution 3a: Filter out some requests
+#### Solution 3a: Filter out some requests
 
 Earlier this month, on
 [March 1st, 2018, GitHub experienced a denial-of-service attack](https://githubengineering.com/ddos-incident-report/).
@@ -190,7 +191,7 @@ TCP),
 3. Requires significant operations staff, training, and rehearsed
 procedures to operate smoothly.
 
-### Solution 3b: Force customers to reduce their Arrival Rate
+#### Solution 3b: Force customers to reduce their Arrival Rate
 
 Many decades of computer systems research has given us a lot of rate
 limiting systems.  Most are based on a notion of credit or money or
@@ -201,25 +202,24 @@ reducing the `Arrival Rate`.  Perhaps your system can handle 900
 operations/second, but you wish to force all users to a sum of only 7
 operations/second.  Sure, admission control can do that.
 
-One of the better-known `Arrival Rate` control mechanisms in software
+One of the better-known `Arrival Rate` control mechanisms by software
 developer & IT systems people is built into the TCP protocol.  The
 rate limiting part is TCP's "sliding window", which permits a limited
 number of network packets to be "in transit" in the network without
 permanently overloading the network's capacity or the receiving
 system's capacity. When the sliding
 window is large, the sender is permitted to send a large number of
-bytes to the receiver.  When the window is zero, the sender must stop
+packets to the receiver.  When the window is zero, the sender must stop
 sending.
 
-TODO: How much "enforcement" is really, truly "enforcment"?
-
+TODO: Rec by Sean: drop this pp:
 However, the credit/token/ticket subsystem itself can be modelled as a
 service queue network.  And that subsystem will have its own
 `Arrival Rate > Departure Rate` equation.  But if the
 credit/token/ticket subsystem becomes the overloaded bottleneck in
 your system, then your problem remains: overload.
 
-### Solution 3b variation: Reduce Arrival Rate via back-pressure
+#### Solution 3b variation: Reduce Arrival Rate via back-pressure
 
 It would be fantastic to be able to enforce a reduction in the
 `Arrival Rate` side of our equation for all customers.  I have
@@ -243,7 +243,20 @@ technique that Wallaroo uses to avoid overload.  The next section
 discusses how back-pressure was designed for & implemented by
 Wallaroo.
 
-# More material on how to deal with overload
+## More material on how to deal with overload
+
+If you were to read only two items to learn more about handling
+overload, my recommendations are:
+
+1. Fred Hebert's blog, especially Fred Hebert's "Queues Don't Fix
+Overload" which is linked below.  I love his illustrations with
+kitchen sinks filling & draining with water.
+
+2. I call it the "SEDA paper", but its proper title is "Adaptive
+Overload Control for Busy Internet Servers" by Welsh & Culler.  It is
+also linked below.  This paper from 2003 is one that I believe
+everyone ought to read; its ideas will color your thoughts on software
+design for many years to come.
 
 Articles & presentations that you might find useful places to learn more.
 
@@ -253,6 +266,7 @@ Articles & presentations that you might find useful places to learn more.
 * Fred Hebert: [Handling Overload](https://ferd.ca/handling-overload.html),
   a survey of overload mitigation techniques in general & code libraries
   available in Erlang.
+* Matt Welsh & David Culler. ["Adaptive Overload Control for Busy Internet Servers"](http://static.usenix.org/legacy/events/usits03/tech/welsh.html)
 * dataArtisans: [How Apache Flink™ handles backpressure](https://data-artisans.com/blog/how-flink-handles-backpressure)
 * Reactive Streams initiative: [Introduction to JDK9 java.util.concurrent.Flow](http://www.reactive-streams.org)
 * Henn Idan: [Reactive Streams and the Weird Case of Back Pressure](https://blog.takipi.com/reactive-streams-and-the-weird-case-of-back-pressure/)
@@ -260,14 +274,16 @@ Articles & presentations that you might find useful places to learn more.
   an overview of Clojure's `core.async` library.
 * Douglas Comer & Pearson Education (image credit): [Figure 25.7 from "Fundamentals Of Computer Networking And Internetworking"](https://www.cs.csustan.edu/~john/classes/previous_semesters/CS3000_Communication_Networks/2015_02_Spring/Notes/CNAI_Figures/figure-25.7.jpeg)
 
-# Wallaroo's Back-Pressure Mechanisms
+## TODO: Break here for end of first article / start of second article?
+
+## Wallaroo's Back-Pressure Mechanisms
 
 Wallaroo uses end-to-end back-pressure to limit queue sizes of all
 actors within the system.  This section describes how it back-pressure
-is implmented by Wallaroo today and how it will change in a
+is implemented by Wallaroo today and how it will change in a
 near-future release.
 
-## Where Does the Term Back-Pressure Come From?
+### Where Does the Term Back-Pressure Come From?
 
 Originally, the term "back-pressure" refers to the resistance to
 forward flow of gas or liquid in a confined space, e.g., air duct or
@@ -284,7 +300,7 @@ following tubes:
   house/apartment.
   * I.e., the hallway is a very large-sized tube for this experiment
 
-## TCP's Back-Pressure Mechanism: Sliding Window Flow Control
+### TCP's Back-Pressure Mechanism: Sliding Window Flow Control
 
 This isn't the time & place to describe TCP's sliding window flow
 control in detail.  However, a picture is worth at least a thousand
@@ -305,7 +321,8 @@ example.)
   single 1,000 byte block can cause the writing application to pause
   for several seconds.
 
-In Figure 25.7 by Prof. Douglas Comer of Purdue University, we assume
+Shown below in Figure 25.7 by Prof. Douglas Comer of Purdue
+University, we assume
 that a TCP connection is already established between a sender and
 receiver.  This diagram tracks one of the two "advertise windows" of
 the sliding window protocol for the connection.  We look at one
@@ -349,7 +366,7 @@ Wallaroo is sending data faster than the TCP sink can read it.
 Wallaroo needs to spread this information to other parts of itself
 ... and that dissemination process is "back-pressure".
 
-## Wallaroo is a distributed system of actors in a single OS process
+### Wallaroo is a distributed system of actors in a single OS process
 
 Wallaroo is an application written in the Pony language.
 (We have `TODO blog post XXX` that explains why we use Pony to write Wallaroo.)
@@ -357,6 +374,10 @@ Wallaroo is an application written in the Pony language.
 Pony implements the "Actor Model" of concurrency, which means that a
 Pony program is a collection of independent actor objects that perform
 computations within their own private state.
+
+TODO: Rec by Sean: this could use a diagram.
+* Move up from next section?
+* Steal a simpler diagram from another article?
 
 In our example, there is an actor called a `TCPSink` that is
 responsible for writing data to a TCP socket to send to one of
@@ -385,18 +406,17 @@ uncontrollable memory use.
 
 TODO ^^^ needs more work
 
-## Wallaroo today: the "mute" protocol
+### Wallaroo today: the "mute" protocol
 
 Inside of Wallaroo today, a custom protocol is used to control the
 back-pressure of stopping & starting computation in the data stream
-pipeline.  Pony doesn't have a broadcast mechanism to send a message
-to all actors in the system.  We don't really want to broadcast to all
+pipeline.  We don't really want to broadcast to all
 actors: many Wallaroo actors don't need to know about back-pressure or
 flow control.  But we do need a scheme to help determine what
 actors really do need to participate in the protocol.
 
 The protocol is informally called the "mute protocol", based on the
-name of one of the messages it uses, called `mute()`.  The word "mute"
+name of one of the messages it uses, called `mute`.  The word "mute"
 means to be silent or to cause a speaker to become silent.  That's
 what we want for back-pressure: to cause sending actors "upstream" in
 a Wallaroo pipeline to stop sending messages to the `TCPSink`.
@@ -412,10 +432,10 @@ data stream.
 
 When the `TCPSink` actor becomes aware of back-pressure on the TCP
 socket (via the `EWOULDBLOCK` error status when trying to send data),
-then `TCPSink` sends `mute()` messages up the chain all the way back
+then `TCPSink` sends `mute` messages up the chain all the way back
 to the `TCPSource` actor.
 
-When the `mute()` message reaches the `TCPSource` actor, then reading
+When the `mute` message reaches the `TCPSource` actor, then reading
 from the source TCP socket will stop.  Now, the same TCP flow control
 scenario that told us that the data sink is slow can be used by
 Wallaroo to force the sender of the source TCP socket to stop sending.
@@ -427,9 +447,96 @@ Now we have all three pieces of back-pressure in place:
 * From a slow sink TCP socket to Wallaroo's `TCPSink` actor, via TCP's
   advertise window reduced to zero.
 * Backward along the stream processing chain from `TCPSink` to
-  `TCPSource`, using the custom `mute()` protocol within Wallaroo
+  `TCPSource`, using the custom `mute` protocol within Wallaroo
 * From Wallaroo's `TCPSource` actor to the source's TCP socket, also
   via TCP's advertise window reduced to zero.
   
-## Wallaroo tomorrow: plans to use Pony's built-in back-pressure
+![Wallaroo word count example diagram plus mute and unmute messages](/images/post/back-pressure/wallaroo2.png)
 
+This mute/unmute messaging protocol between Wallaroo actors is
+software much like any other.  Software tends to have bugs.  It would
+be good to rip out the artisanal, hand-crafted mute/unmute protocol
+and rely on a back-pressure system that applies to all Pony programs
+at the runtime level.  That general back-pressure system is described
+next.
+
+### Wallaroo tomorrow: plans to use Pony's built-in back-pressure
+
+A comprehensive back-pressure system was added to Pony in November
+2017 by
+[Sean T. Allen, VP of Engineering at Wallaroo Labs](https://www.wallaroolabs.com/about).
+Look for a Wallaroo Labs blog post by Sean in the future that
+describes this the back-pressure scheduler in more detail.
+
+Pony's back-pressure system operates at the actor scheduling layer
+within the Pony runtime.  Pony's actor scheduler maintains internal
+status of actors that are paused due to back-pressure.  The scheduler
+propagates pause & resume signals similar to the mute/unmute diagram
+above.  However, in the Pony runtime's implementation, the Pony
+developer usually does not write any code to get back-pressure
+scheduling behavior.
+
+In Wallaroo's case, some source code change is required to take full
+advantage of the runtime's back-pressure scheduling.  The necessary
+changes fall into two categories:
+
+1. Removal of most of the existing back-pressure mechanism, with its
+   `mute` and `unmute` message protocol.
+2. Add small pieces of glue code to allow TCP sockets that experience
+   `EWOULDBLOCK` errors when writing data to signal to the runtime
+   that the socket's owner actor should initiate back-pressure
+   propagation.
+
+I have already made many of the above code changes, but I haven't
+tested them yet.  If you are a frequent reader of the Wallaroo blog,
+then you know that we devote a lot of time and effort to correctness
+testing.
+
+Testing-wise, I've first done a lot of preparation work to permit Wallaroo
+to control the kernel's TCP buffer sizes.  If you don't know how
+much data is required to sent to a TCP socket before back-pressure
+signals start, then it's very difficult to create reliable, repeatable
+tests to confirm that the back-pressure system works correctly.  This
+argument goes for both the current back-pressure `mute` protocol and
+the new Pony runtime's back-pressure scheduling features.
+
+We at Wallaroo Labs aren't completely sure that the Pony runtime's
+back-pressure scheduler will actually work as Wallaroo needs it.
+Here's a partial list of open questions:
+
+* We hope that the runtime's back-pressure scheduler will sharply
+  limit the amount of memory used by Wallaroo when back-pressure is
+  active.  But we haven't measured Wallaroo's actual memory behavior
+  yet.
+* We suspect that some additional tuning parameters will be
+  necessary.  For example, how many messages must exist in an actor's
+  mailbox before scheduler back-pressure is triggered?
+* The back-pressure scheduler may yet be buggy.  Its code is not half
+  a year old yet.  More bugfixes may be needed.
+
+These open questions drive my investment in test infrastructure: I
+want to find all the bugs in Wallaroo's workload/overload management
+before our customers do.  It's a fun task.  And when we find
+performance changes and/or interesting bugs in this work, we'll write
+about it here.  Stay tuned.
+
+### Pointers to other back-pressure systems
+
+The need for back-pressure in computer systems has long been
+recognized by industry practitioners.  Links in
+((TODO first part article? Below?))
+
+## Give Wallaroo a Try
+
+We hope that this post has piqued your interest in Wallaroo!
+
+If you are just getting started, we recommend you try our [Docker image](https://docs.wallaroolabs.com/book/getting-started/docker-setup.html), which allows you to get Wallaroo up and running in only a few minutes.
+
+Some other great ways to learn about Wallaroo:
+
+* [Follow us on Twitter](https://twitter.com/wallaroolabs)
+* [Join our Developer Mailing List](https://groups.io/g/wallaroo)
+* [Chat with us on IRC](https://webchat.freenode.net/?channels=#wallaroo)
+* [Wallaroo Community](https://www.wallaroolabs.com/community)
+
+Thank you! We always appreciate your candid feedback (and a [GitHub star](https://github.com/WallarooLabs/wallaroo))!
