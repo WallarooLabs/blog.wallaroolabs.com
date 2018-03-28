@@ -149,7 +149,7 @@ increasing service throughput or decreasing service latency.
 Strategies are commonly used to implement them are "horizontal scaling"
 and "load shedding", respectively.
 
-#### Solution 2a: horizontal scaling (a.k.a. "make your cluster bigger")
+#### Increase the Departure Rate by horizontal scaling (a.k.a. "make your cluster bigger")
 
 Sometimes, it is possible to add more space (RAM, NVRAM, disk, etc.)
 or CPU capacity to a single machine, but it isn't common.
@@ -159,29 +159,36 @@ name for this technique.
 
 Service providers like Azure, Google, Amazon, and many others have
 APIs that include "Add More, Just Click Here!".  (But perhaps not with
-that exact name.)  
-Adding
-more capacity to the system is fantastic for the future, but the extra
-capacity cannot help your overloaded system *right now*.
+that exact name.)  Adding
+more capacity to the system is fantastic for the future, but
+it cannot help now.  The extra
+capacity cannot help your overloaded system *right now*, because:
 
-* Adding extra capacity may be impossible or difficult
-* Adding extra capacity may be expensive
-* You may wait a long time before extra capacity is available
+* Adding extra capacity may be impossible or difficult.  For example,
+  the API is easy to use, but the data center is full, which causes the API
+  requests fail.
+* Adding extra capacity probably costs more money.
+* You may wait a long time before extra capacity is available.
 * Overhead of adding extra capacity may *reduce* capacity of
   existing system during the transition time.
 
-Aside: You're probably also adding storage space to the system by making
-your cluster bigger.
+To be effective, you have to choose some earlier time to start the
+process of adding capacity.
+And also, be careful not to act too hastily and/or to add too much
+capacity.  It's not an easy balance to find and maintain.
 
-#### Solution 2b: Load shedding
+(Aside: You're probably also adding storage space to the system by making
+your cluster bigger.)
+
+#### Increase the Departure Rate by Load shedding
 
 "Load shedding" is another way to increase the `Departure Rate` side of our
 service equation.  Load shedding implementations can include:
 
 * Do not compute the requested value, but instead send an immediate
   reply to the client ... usually a reply that also signals that the
-  system is overloaded.  (Whether clients actually act upon the overload
-  signal is a worthwhile question to ask.)
+  system is overloaded.  (Will clients actually act upon the overload
+  signal? Good question.)
 * Choose an alternative computation that requires less time.
   * If the service is text search, then only search 10% of the text corpus
     instead of the full 100%.
@@ -194,19 +201,10 @@ service equation.  Load shedding implementations can include:
 
 It's unfortunate, but many computer systems have very little control
 over a service's arrival rate.  You don't have full control over your
-customers & their arrival rates.  Perhaps 1,000 customers really can
-arrive in one second at your local Post Office?
+customers & their arrival rates.  Perhaps 200 customers really can
+arrive in one minute at your local Post Office?
 
-#### Solution 3a: Do nothing? Ride out the storm?
-
-If your buffer sizes are large enough, and if
-`Arrival Rate > Departure Rate` is true only for a short amount of
-time, then perhaps you can simply do nothing and wait for your arrival
-rate to drop.  Perhaps your system is busiest after suppertime, and
-arrival rates drop when customers start going to sleep in the
-evening.  Simply waiting for the natural decline 
-
-#### Solution 3b: Filter out some requests
+#### Decrease the Arrival Rate by filtering out some requests
 
 Earlier this month, on
 [March 1st, 2018, GitHub experienced a denial-of-service attack](https://githubengineering.com/ddos-incident-report/).
@@ -216,51 +214,60 @@ Engineering department explains how Akamai's services were used to
 reduce the `Arrival Rate` by filtering out millions of packets per
 second of junk.
 
-From GitHub's point of view, the arrival rate was reduced by filtering
-the workload.  From Akamai's point of view, Akamai acted as load
-shedding system.  The denial-of-service traffic arrival rate didn't
-fall until the attackers gave up and stopped their network traffic.
+From GitHub's point of view, the `Arrival Rate` was reduced by Akamai's
+filtering of the workload before it arrived at GitHub's servers.
+From Akamai's point of view, Akamai acted as load
+shedding system; until the attackers relented and stopped their
+attack, `Arrival Rate` remained record-breakingingly high.
 
-#### Solution 3c: 
+#### Decrease the Arrival Rate by back-pressure ("Hey, customers, stop!")
 
 Many decades of computer systems research has given us a lot of rate
-limiting schemes.  Most are based on a notion of credit or money or
-tokens or a ticket before a customer can be admitted to a queue.  If a
-customer doesn't have the credit/money/token/ticket before arriving in
-the queue, then the customer isn't admitted to the system (or perhaps
-a particular queue in the system).  "Admission control" and "flow
-control" are two common names for these schemes.  (It would be nice if
-they were the only two!)
+limiting schemes.  Most are based on an idea of credit or fake money
+or tokens or a ticket that a customer must have before the customer
+can be admitted to a queue.  Without the credit/money/token/ticket,
+then the customer isn't permitted into the system.  "Admission
+control" and "flow control" are two common names for these schemes.
 
-Admission/flow control systems are usually very effective at
-reducing the `Arrival Rate`.  Perhaps your system can handle 900
-operations/second, but you wish to force all users to a sum of only 7
-operations/second.  Sure, admission/flow control can do that.
-
-I'm guessing that most of my audience knows a little something about
+I'm guessing that most of my audience knows a little bit about
 the TCP protocol.
-TCP includes two (at least) mechanisms for controlling `Arrival Rate`.
-One is TCP's "sliding window", which permits a limited
+TCP includes two mechanisms for controlling `Arrival Rate`.
+One is TCP's "sliding window" protocol, which permits a limited
 number of network packets to be "in transit" in the network without
 overloading the receiving system's capacity.
-When the sliding window is large, the sender is permitted to send a
-large number of packets to the receiver.  When the window is zero, the
-sender must stop sending.
+When the sliding window is non-zero, the sender is permitted to send
+some bytes to the receiver, up to the window's size (in bytes).
+When the sliding window is zero, the sender must stop sending.
 
-I'll have a much more detailed example of TCP's sliding window feature
+I'll have a much more detailed example of TCP's sliding window protocol
 in next week's follow-up article.  My apologies, please hold on for
 part two!
 
-## Back-Pressure force customers to reduce their Arrival Rate
+#### Decrease the Arrival Rate by ... doing nothing? (Ride out the storm)
 
-TCP's sliding window is a example of a back-pressure mechanism.  When
+If your queue sizes are large enough, and if
+`Arrival Rate > Departure Rate` is true only for a short amount of
+time, then perhaps you can simply do nothing.  Instead, simply wait
+for your arrival rate to drop.
+Perhaps your system is busiest after suppertime, and
+`Arrival Rate` natually drops when your customers start going to sleep in the
+evening.  (And your customers tend to eat and sleep at similar times.)
+
+If you can predict your customer's peak `Arrival Rate` with 100%
+accuracy, congratulations, you live in a wonderful world.  But if you
+cannot predict with 100% accuracy, you need another option.  Attacks
+like the GitHub denial-of-service anecdote describes are not easy to predict.
+
+## Back-Pressure forces customers to reduce their Arrival Rate
+
+TCP's sliding window protocol is a example of a back-pressure mechanism.  When
 the window is zero, the receiver is telling the sender, "I am
 overloaded.  You must stop sending now.  I will tell you when you can
 send more."
 
-To be most effective, back-pressure must be built into a system, from
-end to end.  Wallaroo's back-pressure mechanisms will propagate a
-back-pressure signal that warns of a slow sink all the way back to
+To be most effective, back-pressure must be built into a system from
+end to end.  Wallaroo's back-pressure mechanisms will send
+back-pressure signals that warns of a slow sink all the way back to
 Wallaroo's data sources.  Next week's follow-up to this article will
 detail how those back-pressure mechanisms work.  Thanks for reading!
 I hope you'll read again next week.
@@ -281,7 +288,12 @@ also linked below.  This paper from 2003 is one that I believe
 everyone ought to read; its ideas will color your thoughts on software
 design for many years to come.
 
-* Wikipedia: [Back-Pressure](https://en.wikipedia.org/wiki/Back_pressure)
+Here's the list, please explore!
+
+* Wikipedia: [Admission Control](https://en.wikipedia.org/wiki/Admission_control),
+[Back-Pressure](https://en.wikipedia.org/wiki/Back_pressure), and
+[Sliding window protocol](https://en.wikipedia.org/wiki/Sliding_window_protocol)
+topics
 * Wikipedia: [Queueing theory](https://en.wikipedia.org/wiki/Queueing_theory)
 * Fred Hebert: [Queues Don't Fix Overload](https://ferd.ca/queues-don-t-fix-overload.html)
   * If you like this article, Fred's follow-up article is called is
@@ -295,7 +307,7 @@ design for many years to come.
 
 The queue network figures in this articles are excerpts from the book
 "Quantitative System Performance" by Lazowska, Jahorjan, Graham, and
-Sevcik.
+Sevcik, Prentice-Hall, Inc., 1984.
 [Full text of this book is available online.](https://homes.cs.washington.edu/~lazowska/qsp/)
 
 
