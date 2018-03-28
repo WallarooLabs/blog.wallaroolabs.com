@@ -60,7 +60,8 @@ average.  If customers arrive at a rate of `X` people per minute, then
 how long will the queue time typically be?  How many people will
 usually waiting in the queue?
 
-Mathematicians have about 100 years defining scenarios & models for
+Mathematicians have worked for roughly 100 years to define scenarios &
+models for many
 different kinds of arrival rate schemes, service time schemes, and queue
 size limits, then applying those schemes to this very simple model.
 It's surprising how powerful a tool this single queue+service model
@@ -143,7 +144,7 @@ queues will strike us.
 
 ### Solution 2: Increase the Departure Rate
 
-Two common strategies to increase the departure rate are
+Two common strategies to increase `Departure Rate` are
 increasing service throughput or decreasing service latency.
 Strategies are commonly used to implement them are "horizontal scaling"
 and "load shedding", respectively.
@@ -169,19 +170,25 @@ capacity cannot help your overloaded system *right now*.
 * Overhead of adding extra capacity may *reduce* capacity of
   existing system during the transition time.
 
+Aside: You're probably also adding storage space to the system by making
+your cluster bigger.
+
 #### Solution 2b: Load shedding
 
-This is another way to increase the `Departure Rate` side of our
-service equation.  These strategies include:
+"Load shedding" is another way to increase the `Departure Rate` side of our
+service equation.  Load shedding implementations can include:
 
-* Drop the request/query/packet.  Literally, do nothing.
+* Do not compute the requested value, but instead send an immediate
+  reply to the client ... usually a reply that also signals that the
+  system is overloaded.  (Whether clients actually act upon the overload
+  signal is a worthwhile question to ask.)
 * Choose an alternative computation that requires less time.
   * If the service is text search, then only search 10% of the text corpus
     instead of the full 100%.
   * If the service calculates square roots with 25 digits of
     precision, then reduce the precision to 5 digits instead.
-* Do not compute the requested value, but instead send an immediate
-  reply to the client that signals that the system is overloaded.
+* Drop the request (or query or packet).  Do nothing more, literally, as
+  quickly as possible.
 
 ### Solution 3: Decrease the Arrival Rate
 
@@ -193,7 +200,7 @@ arrive in one second at your local Post Office?
 #### Solution 3a: Do nothing? Ride out the storm?
 
 If your buffer sizes are large enough, and if
-`Arrival rate > Departure rate` is true only for a short amount of
+`Arrival Rate > Departure Rate` is true only for a short amount of
 time, then perhaps you can simply do nothing and wait for your arrival
 rate to drop.  Perhaps your system is busiest after suppertime, and
 arrival rates drop when customers start going to sleep in the
@@ -214,7 +221,7 @@ the workload.  From Akamai's point of view, Akamai acted as load
 shedding system.  The denial-of-service traffic arrival rate didn't
 fall until the attackers gave up and stopped their network traffic.
 
-#### Solution 3c: Force customers to reduce their Arrival Rate
+#### Solution 3c: 
 
 Many decades of computer systems research has given us a lot of rate
 limiting schemes.  Most are based on a notion of credit or money or
@@ -244,34 +251,25 @@ I'll have a much more detailed example of TCP's sliding window feature
 in next week's follow-up article.  My apologies, please hold on for
 part two!
 
-#### Solution 3b variation: Reduce Arrival Rate via back-pressure
+## Back-Pressure force customers to reduce their Arrival Rate
 
-It would be fantastic to be able to enforce a reduction in the
-`Arrival Rate` side of our equation for all customers.  I have
-already mentioned three of ways to do it.
+TCP's sliding window is a example of a back-pressure mechanism.  When
+the window is zero, the receiver is telling the sender, "I am
+overloaded.  You must stop sending now.  I will tell you when you can
+send more."
 
-1. The filtering approach, e.g. Akamai's denial-of-service filtering
-   service.
-2. A credit/token/admission system, which (ideally!) is much more
-   difficult to overload than the system that it protects.
-3. Load shedding plus some kind of "I am overloaded" response.
-
-Unfortunately, the "I am overloaded" style of load shedding doesn't
-guarantee a lower `Arrival Rate`.  The customer probably does not have
-to wait before trying to re-enter the service queue.  Impolite
-customers can still overload the system.
-
-There is a technique that can force customer `Arrival Rate` to slow
-down: "back-pressure".  It's a technique that must be comprehensively
-designed into a system to be effective.  Back-pressure is the
-technique that Wallaroo uses to avoid overload.  The next section
-discusses how back-pressure was designed for & implemented by
-Wallaroo.
+To be most effective, back-pressure must be built into a system, from
+end to end.  Wallaroo's back-pressure mechanisms will propagate a
+back-pressure signal that warns of a slow sink all the way back to
+Wallaroo's data sources.  Next week's follow-up to this article will
+detail how those back-pressure mechanisms work.  Thanks for reading!
+I hope you'll read again next week.
 
 ## More material on how to deal with overload
 
-If you were to read only two items to learn more about handling
-overload, my recommendations are:
+Here are some articles & presentations that you might find useful
+places to learn more.  If you were to read only two items to learn
+more about handling overload, my recommendations are:
 
 1. Fred Hebert's blog, especially Fred Hebert's "Queues Don't Fix
 Overload" which is linked below.  I love his illustrations with
@@ -283,15 +281,11 @@ also linked below.  This paper from 2003 is one that I believe
 everyone ought to read; its ideas will color your thoughts on software
 design for many years to come.
 
-Here are some articles & presentations that you might find useful
-places to learn more.
-
 * Wikipedia: [Back-Pressure](https://en.wikipedia.org/wiki/Back_pressure)
 * Wikipedia: [Queueing theory](https://en.wikipedia.org/wiki/Queueing_theory)
 * Fred Hebert: [Queues Don't Fix Overload](https://ferd.ca/queues-don-t-fix-overload.html)
-* Fred Hebert: [Handling Overload](https://ferd.ca/handling-overload.html),
-  a survey of overload mitigation techniques in general & code libraries
-  available in Erlang.
+  * If you like this article, Fred's follow-up article is called is
+    [Handling Overload](https://ferd.ca/handling-overload.html),
 * Matt Welsh & David Culler. ["Adaptive Overload Control for Busy Internet Servers"](http://static.usenix.org/legacy/events/usits03/tech/welsh.html)
 * dataArtisans: [How Apache Flink™ handles backpressure](https://data-artisans.com/blog/how-flink-handles-backpressure)
 * Reactive Streams initiative: [Introduction to JDK9 java.util.concurrent.Flow](http://www.reactive-streams.org)
@@ -300,7 +294,7 @@ places to learn more.
   an overview of Clojure's `core.async` library.
 
 The queue network figures in this articles are excerpts from the book
-"Quantative System Performance" by Lazowska, Jahorjan, Graham, and
+"Quantitative System Performance" by Lazowska, Jahorjan, Graham, and
 Sevcik.
 [Full text of this book is available online.](https://homes.cs.washington.edu/~lazowska/qsp/)
 
