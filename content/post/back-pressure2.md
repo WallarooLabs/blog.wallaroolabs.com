@@ -7,9 +7,10 @@ description = "A detailed look at how several back-pressure mechanisms inside Wa
 tags = [
     "back-pressure",
     "overload",
-    "workload management",
     "pony",
-    "wallaroo"
+    "testing",
+    "wallaroo",
+    "workload management"
 ]
 categories = [
     "back-pressure",
@@ -64,13 +65,13 @@ example.)
 * The sender application is Wallaroo.
 * Wallaroo is attempting to send 50,000 bytes of data to the receiver
   as quickly as possible.
-* The sender can only send as many bytes as specified by the
-  receiver's advertise window.
-* The receiver app is some TCP data sink that stores Wallaroo's
+* The receiver is a TCP data sink application that stores Wallaroo's
   computation output in 1,000 byte chunks.
 * The receiver's disk drive is very old and slow.  To write a single
   single 1,000 byte block can cause the writing application to pause
   for several seconds.
+* The Wallaroo sender can only send as many bytes as specified by the
+  receiver's advertise window.
 
 Shown below in [Figure 25.7](#figure257) by Prof. Douglas Comer of Purdue
 University, we assume
@@ -95,15 +96,14 @@ Dr. Comer's diagram of this sequence of network events looks like this:
 <a name="figure257"></a>
 ![Figure 25.7 from "Fundamentals Of Computer Networking And Internetworking"](https://www.cs.csustan.edu/~john/classes/previous_semesters/CS3000_Communication_Networks/2015_02_Spring/Notes/CNAI_Figures/figure-25.7.jpeg)
 
-The advertise window falls to zero twice in this example.  Wallaroo
-has over 40,000 bytes of data waiting to be transmitted.  However,
-when the advertise window is zero, the sender must stop transmitting
-and wait for an 'ack' message with a non-zero advertise window.
+The advertise window falls to zero twice in this example.
+When the advertise window is zero, the Wallaroo sender must stop transmitting
+and wait for an "ack" message with a non-zero advertise window.
 
 How does Wallaroo know the receiver's advertise window size?  That
 level of detail is not available through the POSIX network socket API!
 
-In truth, a POSIX kernel can tell a user application when the
+A POSIX system can tell a user application when the
 advertise window size (or a related value, the congestion window) is
 zero.  If the socket has been configured in non-blocking I/O mode,
 then a `write(2)` or `writev(2)` system call to the socket will fail
@@ -121,7 +121,8 @@ Wallaroo needs to spread this information to other parts of itself
 ### Wallaroo is a distributed system of actors in a single OS process
 
 Wallaroo is an application written in the Pony language.
-(We have `TODO blog post XXX` that explains why we use Pony to write Wallaroo.)
+For a more in-depth overview, check out our post:
+[“Why We Used Pony to Write Wallaroo.”](https://blog.wallaroolabs.com/2017/10/why-we-used-pony-to-write-wallaroo/)
 
 Pony implements the "Actor Model" of concurrency, which means that a
 Pony program is a collection of independent actor objects that perform
@@ -144,19 +145,16 @@ In an Actor Model system, actors communicate with each other by
 sending messages.  Therefore, the `TCPSink` needs to send messages to
 other Wallaroo actors to tell the other actors to stop work.  If all
 actors in the system are told to stop, then Wallaroo as a whole can
-act as if a big finger reached into the system and pressed the "PAUSE"
+act as if a big finger reached into the system and pressed a "PAUSE"
 button.
 
 When that metaphorical "PAUSE" button is pressed, the system no longer
 creates data to send to the sink.  Wallaroo's internal queues become
 frozen as producing actors stop sending messages.  When paused, the
 message mailbox queues for each actor are effectively limited in
-size.  Neither Wallaroo nor Pony provide strict limits on the mailbox
-service queue length, but strict limits aren't necessary.  As long as
+size.  As long as
 the pause happens quickly enough, we shouldn't have to worry about
 uncontrollable memory use.
-
-TODO ^^^ needs more work
 
 ### Wallaroo today: the "mute" protocol
 
@@ -184,7 +182,7 @@ data stream.
 ![Wallaroo word count example diagram](/images/post/back-pressure/wallaroo1.png)
 Figure 27: View of a Wallaroo application "word count"
 
-Now, let's see what happens when stops consuming data as quickly as
+Now, let's see what happens when a data sink stops consuming data as quickly as
 Wallaroo produces it.
 
 When the `TCPSink` actor becomes aware of back-pressure on the TCP
@@ -235,7 +233,7 @@ next.
 A comprehensive back-pressure system was added to Pony in November
 2017 by
 [Sean T. Allen, VP of Engineering at Wallaroo Labs](https://www.wallaroolabs.com/about).
-Look for a Wallaroo Labs blog post by Sean in the future that
+Look for a Wallaroo Labs article by Sean in the future that
 describes this the back-pressure scheduler in more detail.
 
 Sean's back-pressure implementation operates at the actor scheduling layer
@@ -256,6 +254,23 @@ changes fall into two categories:
    `EWOULDBLOCK` errors when writing data to signal to the runtime
    that the socket's owner actor should initiate back-pressure
    propagation.
+
+## Details omitted
+
+I've left out some important details in this explanation.  My
+omissions include:
+
+* Wallaroo's Kafka source & sink actors.  Wallaroo's Kafka client uses TCP
+  for both the source and sink.  Kafka's own protocol imposes
+  additional constraints on flow control, but the general TCP
+  principles also apply to the Kafka-related actors.
+
+* Wallaroo uses TCP sockets data copying between nodes in a
+  multi-worker Wallaroo system.  The names of the actors used for that
+  internal communication are different, but the back-pressure
+  principles are the same as `TCPSource` and `TCPSink` actors.
+
+## Testing Wallaroo and back-pressure
 
 I have already made many of the above code changes
 [on a development branch](https://github.com/WallarooLabs/wallaroo/compare/socket-bufsiz),
@@ -290,6 +305,12 @@ Here's a partial list of open questions:
 * How will the runtime react when back-pressure scheduling has taken
   effect, and then a system administrator wants to query the cluster's
   state?  Or change the cluster's size, larger or smaller?
+* Do either of the back-pressure implementations stop too much
+  processing?  Zach Tellman points out in his talk
+  ([linked below](#refs)) that buffer space can be traded for latency
+  and throughput improvements.  Perhaps Wallaroo pipelines may stall
+  for too long, with processing steps idle while waiting for upstream steps
+  to resume sending after back-pressure enforcement?
 
 These open questions drive my interest in test infrastructure: I
 want to find as many bugs in Wallaroo's workload/overload management
@@ -297,34 +318,20 @@ as possible before our customers do.  It's a fun task!  And when we find
 performance changes and/or interesting bugs in this work, we'll write
 about it here.  Stay tuned.
 
-## Details omitted
-
-I've left out some important details in this explanation.  My
-omissions include:
-
-* Wallaroo's Kafka source & sink actors.  Wallaroo's Kafka client uses TCP
-  for both the source and sink.  Kafka's own protocol imposes
-  additional constraints on flow control, but the general TCP
-  principles also apply to the Kafka-related actors.
-
-* Wallaroo uses TCP sockets data copying between nodes in a
-  multi-worker Wallaroo system.  The names of the actors used for that
-  internal communication are different, but the back-pressure
-  principles are the same as `TCPSource` and `TCPSink` actors.
-
+<a name="refs"></a>
 ## Pointers additional online resources and to other back-pressure systems
 
+* dataArtisans: [How Apache Flink™ handles backpressure](https://data-artisans.com/blog/how-flink-handles-backpressure)
+* Henn Idan: [Reactive Streams and the Weird Case of Back Pressure](https://blog.takipi.com/reactive-streams-and-the-weird-case-of-back-pressure/)
+* Reactive Streams initiative: [Introduction to JDK9 java.util.concurrent.Flow](http://www.reactive-streams.org)
+* Zach Tellman: [Everything Will Flow](https://www.youtube.com/watch?time_continue=1&v=1bNOO3xxMc0),
+  an overview of Clojure's `core.async` library.
 * Wikipedia: 
 [Back-Pressure](https://en.wikipedia.org/wiki/Back_pressure),
 [TCP Flow Control](https://en.wikipedia.org/wiki/Transmission_Control_Protocol#Flow_control),
 and
 [Sliding window protocol](https://en.wikipedia.org/wiki/Sliding_window_protocol)
 topics
-* dataArtisans: [How Apache Flink™ handles backpressure](https://data-artisans.com/blog/how-flink-handles-backpressure)
-* Reactive Streams initiative: [Introduction to JDK9 java.util.concurrent.Flow](http://www.reactive-streams.org)
-* Henn Idan: [Reactive Streams and the Weird Case of Back Pressure](https://blog.takipi.com/reactive-streams-and-the-weird-case-of-back-pressure/)
-* Zach Tellman: [Everything Will Flow](https://www.youtube.com/watch?time_continue=1&v=1bNOO3xxMc0),
-  an overview of Clojure's `core.async` library.
 
 Figure 25.7 is excerpted from ["Fundamentals Of Computer Networking And Internetworking" class notes, chapter 25](https://www.cs.csustan.edu/~john/classes/previous_semesters/CS3000_Communication_Networks/2015_02_Spring/Notes/chap25.html)
 by Douglas Comer & Pearson Education

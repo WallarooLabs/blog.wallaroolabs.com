@@ -19,7 +19,7 @@ categories = [
 
 ## Series Introduction: Overload and how Wallaroo mitigates overload
 
-This is the first of a pair of Wallaroo Labs blog articles about
+This is the first of a pair of Wallaroo Labs articles about
 overload.  Here's a sketch of the series.
 
 1. Part one presents a brief overview of queueing networks and what
