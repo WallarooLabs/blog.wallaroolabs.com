@@ -262,8 +262,10 @@ before our customers do.  It's a fun task.  And when we find
 performance changes and/or interesting bugs in this work, we'll write
 about it here.  Stay tuned.
 
-### Pointers to other back-pressure systems
+### Pointers additional online resources and to other back-pressure systems
 
+* Wikipedia: [TCP Flow Control](https://en.wikipedia.org/wiki/Transmission_Control_Protocol#Flow_control)
+* Douglas Comer & Pearson Education (image credit): [Figure 25.7 from "Fundamentals Of Computer Networking And Internetworking"](https://www.cs.csustan.edu/~john/classes/previous_semesters/CS3000_Communication_Networks/2015_02_Spring/Notes/CNAI_Figures/figure-25.7.jpeg)
 * dataArtisans: [How Apache Flink™ handles backpressure](https://data-artisans.com/blog/how-flink-handles-backpressure)
 * Reactive Streams initiative: [Introduction to JDK9 java.util.concurrent.Flow](http://www.reactive-streams.org)
 * Henn Idan: [Reactive Streams and the Weird Case of Back Pressure](https://blog.takipi.com/reactive-streams-and-the-weird-case-of-back-pressure/)
