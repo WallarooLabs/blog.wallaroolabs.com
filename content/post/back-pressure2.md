@@ -17,7 +17,7 @@ categories = [
 ]
 +++
 
-## How the end-to-end back-pressure mechanisms inside Wallaroo work
+## Introduction to part two
 
 This is part two of a two-part series on how a Wallaroo system reacts
 to workload demands that exceed Wallaroo's capacity, i.e., how
