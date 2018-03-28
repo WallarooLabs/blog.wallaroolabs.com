@@ -29,7 +29,7 @@ overload.  Here's a sketch of the series.
 2. Part two discusses the details of how Wallaroo uses one of those
    techniques, back-pressure, to manage overload conditions.
 
-Part two is planned for April 3rd, 2018. TODOTODOTODOTODOTODOTODO
+Part two is planned for April 3rd, 2018.
 
 ## Introduction: An overview to queueing networks
 

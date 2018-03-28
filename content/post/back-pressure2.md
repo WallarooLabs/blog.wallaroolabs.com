@@ -1,6 +1,6 @@
 +++
 title = "How the end-to-end back-pressure mechanisms inside Wallaroo work"
-date = 2018-03-27T06:30:12-06:00
+date = 2018-04-02T06:30:12-06:00
 draft = false
 author = "slfritchie"
 description = "A detailed look at how several back-pressure mechanisms inside Wallaroo create an end-to-end back-pressure mechanism to protect Wallaroo from overload by high-volume data sources.  Part two of a two-part series."
@@ -273,7 +273,7 @@ omissions include:
 ## Testing Wallaroo and back-pressure
 
 I have already made many of the above code changes
-[on a development branch](https://github.com/WallarooLabs/wallaroo/compare/socket-bufsiz),
+[on a development branch](https://github.com/WallarooLabs/wallaroo/compare/gh1740),
 but I haven't
 tested them yet.  If you are a frequent reader of the Wallaroo blog,
 then you know that we devote a lot of time and effort to correctness
