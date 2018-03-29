@@ -276,7 +276,7 @@ The load shedding technique is a poor fit for Wallaroo's goal of
 accurately processing 100% of the data stream(s) without loss.
 Wallaroo systems can grow and shrink horizontally today,
 but full integration with data center or cloud services management
-APIs is future feature, not available yet.
+APIs is a future feature, not available yet.
 We believe that waiting for `Arrival Rate` to drop on its own isn't
 a good idea.  `^_^`
 
