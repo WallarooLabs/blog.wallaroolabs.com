@@ -42,11 +42,11 @@ Here's a diagram of a very simple queueing system.
 
 ![A Single Service Center](/images/post/back-pressure/1-svc-center.png)
 
-This basic model has been used for modeling lots of systems,
+This basic model has been applied to many different types of systems,
 including:
 
-* Waiting at the deli counter or at the post office
 * Phone calls in telephone exchanges
+* Waiting at the deli counter or at the post office
 * Street and expressway traffic congestion
 * Computer systems, especially for capacity planning purposes
 
@@ -54,15 +54,16 @@ In the case of a deli counter or the post office, you might know (or
 assume) that deli/postal service requires 60 seconds per customer, on
 average.  If customers arrive at a rate of `X` people per minute, then
 how long will the queue time typically be, you wonder?  Or, perhaps
-you want to predict how many people will usually waiting in the queue.
+you want to predict how many people will usually be waiting in the queue.
 
 Mathematicians have worked for roughly 100 years to define scenarios &
 models for many
 different kinds of arrival rate schemes, service time schemes, and queue
 size limits.
-It's surprising how powerful a tool this single queue+service model
-is.  Furthermore, when the model's simplicity is found lacking,
-mathematicians started putting multiple service centers
+It's surprising how powerful a tool this single abstraction is, one queue
+plus one service.
+Furthermore, when the model's simplicity is found lacking,
+mathematicians started putting multiple queue+service centers together
 into networks to solve bigger problems.  Here's a multi-service center
 network model:
 
@@ -73,7 +74,7 @@ development:
 
 ![A Network Model for Software Development](/images/post/back-pressure/dev-cycle-network.png)
 
-I'm intentionally not discussing any of the many methods that are used
+I'm intentionally omitting all of the many methods that are used
 to predict
 answers to questions like, "How long will the queue be?" or "How long
 will I wait?"  Instead, I wish to highlight one of the fundamental
@@ -81,9 +82,9 @@ assumptions that most of those methods require: steady state.
 
 The assumption of steady state might instead be called "flow balance
 assumption" or "stability", depending on the book or paper that you're
-reading.  A network queue model in steady state  has an arrival rate less
+reading.  A steady state network queue model has an arrival rate less
 than or equal to the departure rate.  If a system is not in steady
-state, then one (or more!) queues in the model's network start growing
+state, then one (or more!) queues in the model's network will grow
 without limit.
 
 What does a steady state assumption mean for your system?  From a
@@ -113,32 +114,28 @@ If this simple equation is true for short periods of time, then a
 system is not necessarily overloaded.  Is your local post office
 overloaded if the arrival rate exceeds the departure rate for a 1
 minute time period?  Usually, no.  However, what if 200 customers
-arrived in that one minute?
-
-My local post office is not big enough to "store" 200 customers in
-its queue, regardless of how quickly those customers arrived.
-If my post office's line fills the lobby and runs out of
-the door, then I call that post office overloaded.  (And I call
-myself lucky not to be waiting in that line.)
+arrived in that one minute?  Then perhaps you declare the post office
+overloaded if the queue cannot fit inside of the building and spills
+out onto the sidewalk.
 
 Let's look at some methods for mitigating overload conditions.  We'll
 see that the methods available depend on changing the conditions of
-the steady state equation or increasing system's storage space.
+the steady state equation or on increasing the system's storage space.
 
 ### Solution 1: Add more queue space
 
-If an service's buffer gets full, then we simply add more space.  Most
+If an service's queue gets full, then we simply add more space.  Most
 modern operating systems will do this for you, via the wonderful magic
 of virtual memory.
 
 We know that computer systems do not have infinite storage
 space.  If the `Arrival Rate > Departure Rate` equation is true for
 long enough, any single machine will run out of space.  The same
-statement holds true for a multi-machine system.  
-If we add more space without changing the balance of steady state
+statement holds true for a multi-machine system.
+If we add more space without changing the balance of the steady state
 equation, then we are simply delaying when the consequences of full
 queues will strike us.
-You will probably ought to consider an alternative solution.
+You will probably ought to consider an alternative technique.
 
 ### Solution 2: Increase the Departure Rate
 
@@ -147,26 +144,36 @@ increasing service throughput or decreasing service latency.
 Strategies are commonly used to implement them are horizontal scaling
 and load shedding, respectively.
 
+#### Increase the Departure Rate by using faster machines
+
+I'll mention this option briefly.  Using faster computers (and/or
+storage devices, networks, etc.) is frequently an excellent way to
+increase the `Departure Rate` of your service.  If your service is
+already running on slower hardware, then you also have a migration
+problem to solve.  That migration problem pops up in other
+techniques discussed here, so let's move on to the next technique.
+
 #### Increase the Departure Rate by horizontal scaling (a.k.a. make your cluster bigger!)
 
 Sometimes, it is possible to add more space (RAM, NVRAM, disk, etc.)
-or CPU capacity to a single machine, but it isn't common.
-It's usually far easier to add additional machines.  Or add virtual
+or CPU capacity to a single machine.
+In many of today's data centers, it is
+far easier to add additional machines.  Or add virtual
 machines (VMs).  Or add containers.
 
-Service providers like Azure, Google, Amazon, and many others have
-APIs that include "Add More, Just Click Here!".  (But perhaps not with
+Azure, Google, Amazon, and many other service providers have
+APIs that include a "Add More, Just Click Here!" feature.  (But perhaps not with
 that exact name.)  Adding
-more capacity to the system is fantastic for the future, but
+more capacity to your system is fantastic for the future, but
 it cannot help now.  The extra
 capacity cannot help your overloaded system *right now*, because:
 
-* Adding extra capacity probably costs more money.
 * Adding extra capacity may be impossible.  For example,
   the API is easy to use, but the data center is full, which causes the API
   requests fail.
 * You may wait a long time before extra capacity is available.
-* Overhead of adding extra capacity may *reduce* the capacity of
+* Adding extra capacity probably costs more money.
+* Overhead from adding capacity may *reduce* the capacity of
   the existing system during the transition time.
 
 To be effective, you need to plan ahead.
@@ -181,8 +188,8 @@ Load shedding is another way to increase the `Departure Rate` side of our
 service equation.  Load shedding implementations can include:
 
 * Do not compute the requested value, but instead send an immediate
-  reply to the client ... usually a reply that also signals that the
-  system is overloaded.  (Will clients actually act upon the overload
+  reply to the client.  Usually this reply that also signals that the
+  system is overloaded.  (Will clients act upon the overload
   signal and actually change their behavior? Good question.)
 * Choose an alternative computation that requires less time.
   * If the service is text search, then only search 10% of the text corpus
@@ -203,10 +210,11 @@ customers and their arrival rates, but you likely still have options.
 #### Decrease the Arrival Rate by filtering out some requests
 
 Earlier this month, on
-[March 1st, 2018, GitHub experienced a denial-of-service attack](https://githubengineering.com/ddos-incident-report/).
+March 1st, 2018, GitHub experienced a record setting denial-of-service attack.
 At its peak, the attack generated 1.35 terabits/second of network
-traffic at 126.9 million packets/second.  The report from GitHub's
-Engineering department explains how Akamai's services were used to
+traffic at 126.9 million packets/second.
+[The incident report from GitHub's Engineering department](https://githubengineering.com/ddos-incident-report/)
+explains how Akamai's services were used to
 reduce the `Arrival Rate` by filtering out millions of packets per
 second of junk.
 
@@ -245,31 +253,37 @@ part two!
 
 If your queue sizes are large enough, and if
 `Arrival Rate > Departure Rate` is true only for a short amount of
-time, then perhaps you can simply do nothing.  Instead, simply wait
-for your arrival rate to drop.
+time, then perhaps you can simply do nothing.  Simply wait
+for `Arrival Rate` to drop.
 Perhaps your system is busiest after suppertime, and
 `Arrival Rate` naturally drops when your customers start going to sleep in the
 evening.  (If your customers tend to eat and sleep at similar times!)
 
 If you can predict your customer's peak `Arrival Rate` with 100%
 accuracy, congratulations, you live in a wonderful world.
-Otherwise, you probably ought to consider an alternate solution.
+Otherwise, you probably ought to consider an alternate technique.
 
-## Conclusion: Back-pressure forces customers to reduce their Arrival Rate
-
-TCP's sliding window protocol is an example of a back-pressure mechanism.  When
-the window is zero, the receiver is telling the sender, "I am
-overloaded.  You must stop sending now.  I will tell you when you can
-send more."
+## Conclusion of part one: Wallaroo's choices of overload mitigation techniques
 
 Wallaroo Labs has chosen back-pressure as the primary overload
-mitigation technique for Wallaroo applications.  Another technique,
-load shedding, is a poor fit for Wallaroo's goal of accurately
-processing all data flowing through it without data loss.
+mitigation technique for Wallaroo applications.  TCP's sliding window
+protocol is part of Wallaroo's end-to-end back-pressure system.
+When a TCP connection's advertised window is zero, the receiver is
+telling the sender, "I am overloaded.  You must stop sending now.  I
+will tell you when you can send more."
+
+The load shedding technique is a poor fit for Wallaroo's goal of
+accurately processing 100% of the data stream(s) without loss.
+Wallaroo systems can grow and shrink horizontally today,
+but full integration with data center or cloud services management
+APIs is future feature, not available yet.
+We believe that waiting for `Arrival Rate` to drop on its own isn't
+a good idea.  `^_^`
 
 Next week's follow-up to this article will
-detail how Wallaroo's back-pressure mechanisms work together toward a
-larger overload mitigation goal.  Thanks for reading!
+detail how Wallaroo's back-pressure mechanisms work together with
+TCP's sliding window protocol to mitigate overload conditions.
+Thanks for reading!
 I hope you'll read Part Two next week.
 
 ---
@@ -308,7 +322,7 @@ and
 [Sliding window protocol](https://en.wikipedia.org/wiki/Sliding_window_protocol)
 topics
 
-The queue network figures in this articles are excerpts from the book
+The queue network figures in this article are excerpts from the book
 "Quantitative System Performance" by Lazowska, Jahorjan, Graham, and
 Sevcik, Prentice-Hall, Inc., 1984.
 [Full text of this book is available online.](https://homes.cs.washington.edu/~lazowska/qsp/)
