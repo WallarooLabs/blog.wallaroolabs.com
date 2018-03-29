@@ -1,7 +1,7 @@
 +++
 title = "How the end-to-end back-pressure mechanisms inside Wallaroo work"
 date = 2019-04-01T00:00:00-06:00
-draft = false
+draft = true
 author = "slfritchie"
 description = "A detailed look at how several back-pressure mechanisms inside Wallaroo create an end-to-end back-pressure mechanism to protect Wallaroo from overload by high-volume data sources.  Part two of a two-part series."
 tags = [
