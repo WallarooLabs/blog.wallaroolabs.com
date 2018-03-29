@@ -1,6 +1,6 @@
 +++
 title = "Some Common Mitigation Techniques for Overload in Queueing Networks"
-date = 2018-03-26T06:30:12-06:00
+date = 2018-03-28T06:30:12-06:00
 draft = false
 author = "slfritchie"
 description = "A review of overload mitigation techniques for queuing networks and distributed systems.  Part one in a two-part series."
