@@ -1,6 +1,6 @@
 +++
 title = "How the end-to-end back-pressure mechanisms inside Wallaroo work"
-date = 2019-04-01T00:00:00-06:00
+date = 2018-03-01T00:00:00-06:00
 draft = false
 author = "slfritchie"
 description = "A detailed look at how several back-pressure mechanisms inside Wallaroo create an end-to-end back-pressure mechanism to protect Wallaroo from overload by high-volume data sources.  Part two of a two-part series."
@@ -48,9 +48,6 @@ following tubes:
 * A regular drink straw, for example, a straw from the soda fountain
   at McDonalds
 * The cardboard tube from a roll of paper towels or toilet paper
-* A hallway in your favorite school, office building, or your
-  house/apartment.
-  * I.e., the hallway is the very large tube for this experiment
 
 ### TCP's Back-Pressure Mechanism: Sliding Window Flow Control
 
@@ -67,11 +64,9 @@ TCP connection.
   as quickly as possible.
 * The receiver is a TCP data sink application that stores Wallaroo's
   computation output in 1,000 byte chunks.
-* The receiver's disk drive is very old and slow.  To write a single
-  single 1,000 byte block can cause the writing application to pause
+* The receiver's disk drive is very old and slow.  Writing a single
+  1,000 byte block can cause the application to pause
   for several seconds.
-* The Wallaroo sender can only send as many bytes as specified by the
-  receiver's advertise window.
 
 See below [Figure 25.7](#figure257) by Prof. Douglas Comer of Purdue
 University.
@@ -86,14 +81,15 @@ sent in the other direction.
 From the receiver's point of view:
 
 * The advertise window starts at 2,500 bytes.
-* Packets start arriving from the sender.  However, the receiver app
-  has been put to sleep by the kernel because of very slow file
-  I/O speeds.  The app does not read any more data from the connection
-  for a while.
-* The disk finally finished, so the app wakes up, reads 2,000 bytes
+
+* Packets start arriving from the sender.  The app has read 2,500
+  bytes quickly but then does not read any more network data for a
+  while: the app
+  is put to sleep by the kernel due to very slow file I/O speeds.
+* The disk finally finished, so the app wakes up, reads 2,000 more bytes
   from the TCP connection, writes 
-  the data to disk, then goes to sleep again
-  while waiting for disk I/O to finish.
+  the new data to disk, then goes to sleep a second time,
+  waiting for disk I/O to finish.
 * The app wakes up and then reads another 1,000 bytes from the TCP connection.
 
 The advertise window falls to zero twice in this example.
@@ -104,8 +100,8 @@ How does Wallaroo know the receiver's advertise window size?  That
 level of detail is not available through the POSIX network socket API!
 
 A POSIX system can tell a user application when the
-advertise window size is exactly
-zero.  If the socket has been configured in non-blocking I/O mode,
+advertise window size is exactly zero.
+If the socket has been configured in non-blocking I/O mode,
 then a `write(2)` or `writev(2)` system call to the socket will fail
 with the `errno` value of `EWOULDBLOCK` or `EAGAIN`, depending on the
 operating system.  (I will assume the `EWOULDBLOCK` value for this article.)
@@ -113,31 +109,35 @@ The `EWOULDBLOCK` condition
 tells the application that the kernel was not able to send any data on
 the socket immediately.
 
-When Wallaroo sends a data to a sink with the `writev(2)` system call,
+When Wallaroo sends data to a sink with the `writev(2)` system call,
 and the call fails with `EWOULDBLOCK` status,
 then we know that the sink is slow.  We don't
-know why the receiving sink is slow, but we definitely know that
-Wallaroo is sending data faster than the TCP sink can read it.
+know why the receiving sink is slow.  The `EWOULDBLOCK` status can be
+caused by other conditions, such as lack of buffer space in the
+sender's kernel.  However,  we do know that
+Wallaroo is sending data faster than the TCP sink can read it and/or
+faster than the sender's OS can handle it.
 Wallaroo needs to spread this information to other parts of itself.
-A side-effect of dissemination process will create back-pressure.
+A side-effect of Wallaroo's dissemination process will create back-pressure.
 
 ### Wallaroo is a distributed system of actors in a single OS process
 
 Wallaroo is an application written in the Pony language.
-For a more in-depth overview, check out our article:
+For an in-depth overview, check out our article:
 [“Why We Used Pony to Write Wallaroo.”](https://blog.wallaroolabs.com/2017/10/why-we-used-pony-to-write-wallaroo/)
 
 Pony implements the Actor Model of concurrency, which means that a
 Pony program is a collection of independent actor objects that perform
-computations within their own private state.
+computations upon their own private state.  Actors communicate with
+other actors only using message passing.
 
 <a name="figure26"></a>
 ![Wallaroo word count example diagram](/images/post/back-pressure/wallaroo1-partial.png)
 Figure 26: Partial view of a Wallaroo application, with actors
 
 In our example, there is an actor called `TCPSink` that is
-responsible for writing data to a TCP socket to send to one of
-Wallaroo's data sinks.  When that actor experiences an `EWOULDBLOCK`
+responsible for writing data to a TCP socket that is connected a
+Wallaroo data sink.  When that actor experiences an `EWOULDBLOCK`
 event when sending data, it is the only actor that is aware of the
 sink's speed problem.  Pony does not allow global variables.  We
 cannot simply use a global variable like we can (very naively!) in C,
@@ -145,8 +145,9 @@ e.g., `hey_everyone_slow_down = 1`, to cause the rest of Wallaroo to
 slow down.
 
 In an Actor Model system, actors communicate with each other by
-sending messages.  Therefore, the `TCPSink` needs to send messages to
-other Wallaroo actors to tell the other actors to stop work.  If all
+sending messages.  Therefore, to tell the other actors about the TCP
+connection slowdown,
+the `TCPSink` needs to send messages to other Wallaroo actors.  If all
 actors in the system are told to stop, then Wallaroo as a whole can
 act as if a big finger reached into the system and pressed a "PAUSE"
 button.
@@ -157,7 +158,7 @@ frozen as producing actors stop sending messages.  When paused, the
 message mailbox queues for each actor are effectively limited in
 size.  As long as
 the pause happens quickly enough, we shouldn't have to worry about
-uncontrollable memory use.
+uncontrollable memory use by the application as a whole.
 
 ### Wallaroo today: the mute protocol
 
@@ -169,7 +170,7 @@ flow control.  But we do need a scheme to help determine what
 actors really do need to participate in the protocol.
 
 The protocol is informally called the mute protocol, based on the
-name of one of the messages it uses, called `mute`.  The word "mute"
+name of one of the messages it sends, called `mute`.  The word "mute"
 means to be silent or to cause a speaker to become silent.  That's
 what we want for back-pressure: to cause sending actors upstream in
 a Wallaroo pipeline to stop sending messages to the `TCPSink`.
@@ -190,26 +191,30 @@ Wallaroo produces it.
 
 When the `TCPSink` actor becomes aware of back-pressure on the TCP
 socket (via the `EWOULDBLOCK` error status when trying to send data),
-then `TCPSink` sends `mute` messages up the chain all the way back
-to the `TCPSource` actor.
+then `TCPSink` sends a `mute` message up the chain to its predecessor.
+That predecessor sends a `mute` message to its predecessor, and so on,
+all the way backward to the `TCPSource` actor.  (See
+[Figure 28](#figure28) below.)
 
-When the `mute` message reaches the `TCPSource` actor, the `TCPSource`
+When a `mute` message reaches the `TCPSource` actor, the `TCPSource`
 actor stops reading from its socket.
 The same TCP flow control
 condition that told us that the *data sink* is slow will now
 eventually force the *data source* to stop sending.
 If the data source sends enough data, then the TCP advertise window will
-drop all the way down to zero.  In reaction, the source will be forced to stop.
+drop all the way down to zero.  In reaction, the source is forced to stop.
 
 <a name="figure28"></a>
 ![Wallaroo word count example diagram plus mute and unmute messages](/images/post/back-pressure/wallaroo2.png)
-Figure 28: View of Wallaroo application "word count" plus mute and unmute messages
+Figure 28: View of a Wallaroo application "word count" with `mute` and
+`unmute` message sending.
 
 When the sink TCP socket becomes writeable again, then the `TCPSink`
-actor sends an `unmute` message back up the chain.  Eventually, the
+actor sends an `unmute` message to its predecessor.  The `unmute`
+message is forwarded step by step back up the chain.  Eventually, the
 `unmute` message reaches the `TCPSource` actor.  The `TCPSource` actor
-resumes reading from the source TCP socket, which TCP translates into
-sending a non-zero advertise window to the data source.  The pipeline starts
+resumes reading from the source TCP socket, which triggers TCP to
+send a non-zero advertise window to the data source.  The pipeline starts
 flowing again!
 
 Now we have all three pieces of back-pressure in place:
@@ -231,7 +236,7 @@ and rely instead on a back-pressure system that applies to all Pony programs,
 including Wallaroo.  That general back-pressure system is described
 next.
 
-### Wallaroo tomorrow: plans to use Pony's built-in back-pressure
+### Wallaroo's future: plans to use Pony's built-in back-pressure scheduler
 
 A comprehensive back-pressure system was added to Pony in November
 2017 by
@@ -241,16 +246,17 @@ describes this the back-pressure scheduler in more detail.
 
 Sean's back-pressure implementation operates at the actor scheduling layer
 within the Pony runtime.  Pony's actor scheduler maintains internal
-status of actors that are paused due to back-pressure.  The scheduler
+state of actors that are paused due to back-pressure.  The scheduler
 propagates pause & resume signals in a manner
 similar to the mute/unmute diagram
 above.  Because the back-pressure system is inside the Pony actor scheduler,
 a Pony developer needs to add little or no additional code to get
-comprehensive back-pressure scheduling behavior.
+comprehensive back-pressure scheduling behavior.  In fact, the current
+0.4.1 release of Wallaroo uses the back-pressure scheduler today.
 
-In Wallaroo's case, some source code change is required to take full
-advantage of the runtime's back-pressure scheduling.  The
-changes fall into two categories:
+To create full end-to-end back-pressure,
+Wallaroo needs some
+source code change.  The changes fall into two categories:
 
 1. Removal of most of the existing back-pressure mechanism, with its
    `mute` and `unmute` protocol messages.
@@ -271,9 +277,18 @@ participate in back-pressure propagation.
   principles described here also apply to the Kafka-related actors.
 
 * Wallaroo uses TCP to copy data between nodes in a
-  multi-worker Wallaroo system.  The names of the actors used for that
+  multi-worker Wallaroo system.
+  Figure 29 has a simplified view of the actors involved in a pipeline
+  that is split across two Wallaroo worker processes.
+  The names of the actors used for that
   internal communication are different, but the back-pressure
   principles are the same as for the `TCPSource` and `TCPSink` actors.
+  The `OutgoingBoundary` and `DataChannel` actors also implement the
+  `mute` protocol (today) and are
+  subject to the back-pressure mechanism in the scheduler (future).
+
+![Multi-worker communication example](/images/post/back-pressure/wallaroo3.png)
+Figure 29: Actors & socket involved in multi-worker communication
 
 ## Testing Wallaroo and back-pressure
 
@@ -286,14 +301,14 @@ testing.
 
 Testing-wise, I've first done a lot of preparation work to permit Wallaroo
 to control the kernel's TCP buffer sizes.
-(It's much easier to create reliable, repeatable tests to confirm that
-the back-pressure system works correctly if you can predict the TCP
+(It's much easier to create reliable, repeatable tests
+for the back-pressure system if you can predict the TCP
 sockets' buffer sizes in advance!)
-This testing work applies to both the current back-pressure `mute`
+The new tests apply to both the current back-pressure `mute`
 protocol and to the new Pony runtime's back-pressure scheduler
 implementation.
 
-We at Wallaroo Labs aren't completely sure that the Pony runtime's
+We aren't completely sure that the Pony runtime's
 back-pressure scheduler will actually meet Wallaroo's needs.
 "Trust, but Verify," was Ronald Reagan's best advice about software.
 Here's a partial list of open questions:
@@ -313,7 +328,7 @@ Here's a partial list of open questions:
   processing?  Zach Tellman points out in his talk
   ([linked below](#refs)) that buffer space can be traded for latency
   and throughput improvements.  Perhaps Wallaroo pipelines may stall
-  for too long, with processing steps idle while waiting for upstream steps
+  for too long, with some processing steps idle while waiting for upstream steps
   to resume sending after back-pressure has been released?
 
 These open questions drive my interest in test infrastructure: I
@@ -339,7 +354,9 @@ and
 topics
 
 Figure 25.7 is excerpted from ["Fundamentals Of Computer Networking And Internetworking" class notes, chapter 25](https://www.cs.csustan.edu/~john/classes/previous_semesters/CS3000_Communication_Networks/2015_02_Spring/Notes/chap25.html)
-by Douglas Comer & Pearson Education
+by Douglas Comer & Pearson Education.  I used #25 as the basis for
+all of the following fitures.  I hope my unorthodox
+numbering scheme didn't lead you on a goosechase to try to find Figure 3.
 
 ## Give Wallaroo a Try
 
