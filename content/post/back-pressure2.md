@@ -1,5 +1,5 @@
 +++
-title = "How the end-to-end back-pressure mechanisms inside Wallaroo work"
+title = "How the end-to-end back-pressure mechanism inside Wallaroo works"
 date = 2018-03-01T00:00:00-06:00
 draft = false
 author = "slfritchie"
@@ -24,7 +24,7 @@ This is part two of a two-part series on how a Wallaroo system reacts
 to workload demands that exceed Wallaroo's capacity, i.e., how
 Wallaroo reacts to overload.  Part one, which defines what overload is
 and summarizes overload mitigation techniques, can be found here:
-["Some Common Mitigation Techniques for Overload in Queueing Networks"](https://blog.wallaroolabs.com/2018/03/some-common-mitigation-techniques-for-overload-in-queueing-networks/)
+["Some Common Mitigation Techniques for Overload in Queueing Networks"](https://blog.wallaroolabs.com/2018/03/some-common-mitigation-techniques-for-overload-in-queueing-networks/).
 
 Wallaroo uses several back-pressure techniques to limit message queue
 sizes of all actors within the system.  Together, these techniques form an
@@ -344,6 +344,24 @@ want to find as many bugs in Wallaroo's workload/overload management
 as possible before our customers do.  It's a fun task!  And when we find
 performance changes and/or interesting bugs in this work, we'll write
 about it here.  Stay tuned.
+
+## Series conclusion: Wallaroo uses back-pressure to create end-to-end back-pressure during overload conditions
+
+[The first part of this short series](https://blog.wallaroolabs.com/2018/03/some-common-mitigation-techniques-for-overload-in-queueing-networks/)
+on overload mitigation first
+gave an informal definition for the term "overload" in the context of
+queueing networks.  It then presented several techniques that can
+mitigate the effect of overload conditions.  One of those techniques,
+back-pressure, nicely fits the goals and constraints of Wallaroo.
+
+The second article (this one) describes three back-pressure mechanisms
+used by Wallaroo: the TCP protocol's sliding window protocol,
+Wallaroo's `mute` protocol, and an actor scheduler-based back-pressure
+implementation.  Wallaroo integrates these techniques into an
+end-to-end back-pressure system that can mitigate overload in a
+Wallaroo cluster of any size.  As we strive to make Wallaroo a robust
+and reliable data stream processing platform, we have more work ahead
+to fully integrate and test the back-pressure system.
 
 <a name="refs"></a>
 ## Pointers additional online resources and to other back-pressure systems
