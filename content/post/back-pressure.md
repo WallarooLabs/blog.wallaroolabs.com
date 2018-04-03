@@ -285,7 +285,7 @@ Next week's follow-up to this article will
 detail how Wallaroo's back-pressure mechanisms work together with
 TCP's sliding window protocol to mitigate overload conditions.
 Thanks for reading!
-I hope you'll read Part Two next week.
+I hope you'll read [Part Two next week](/2018/04/how-the-end-to-end-back-pressure-mechanism-inside-wallaroo-works/).
 
 ---
 
