@@ -30,7 +30,7 @@ overload.  Here's a sketch of the series.
    techniques, back-pressure, to manage overload conditions.
 
 Part two of the series is now available at:
-[How the end-to-end back-pressure mechanism inside Wallaroo works](/2018/03/how-the-end-to-end-back-pressure-mechanisms-inside-wallaroo-work/).
+[How the end-to-end back-pressure mechanism inside Wallaroo works](/2018/04/how-the-end-to-end-back-pressure-mechanism-inside-wallaroo-works/).
 
 ## Introduction: An overview to queueing networks
 
