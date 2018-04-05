@@ -2,6 +2,8 @@
 <script src="{{ "js/index.js" | relURL }}"></script>
 <script src="{{ "js/smooth-scroll.min.js" | relURL }}"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/languages/pony.min.js"></script>
+
 {{ range .Site.Params.customJS }}
 <link rel="stylesheet" href="{{ . | relURL }}">
 {{ end }}
