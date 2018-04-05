@@ -7,7 +7,8 @@ description = "Learn more about how we implemented Wallaroo's Python API on top 
 tags = [
     "wallaroo",
     "python",
-    "api"
+    "api",
+    "pony"
 ]
 categories = [
     "Python API"
