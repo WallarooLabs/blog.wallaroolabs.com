@@ -90,7 +90,9 @@ class PyComputation is Computation[PyData val, PyData val]
     _name = Machida.get_name(_computation)
     _is_multi = Machida.implements_compute_multi(_computation)
 
-  fun apply(input: PyData val): (PyData val | Array[PyData val] val |None) =>
+  fun apply(input: PyData val):
+    (PyData val | Array[PyData val] val |None)
+  =>
     let r: Pointer[U8] val =
       Machida.computation_compute(_computation, input.obj(), _is_multi)
 
@@ -107,8 +109,8 @@ class PyComputation is Computation[PyData val, PyData val]
 The `_computation` field holds a pointer to the Python object that represents the computation. When the `apply(...)` method is called, this pointer, along with a pointer to the underlying Python object stored in `input`, is passed on to `Machida.computation_compute(...)`.
 
 ```pony
-  fun computation_compute(computation: Pointer[U8] val, data: Pointer[U8] val,
-    multi: Bool): Pointer[U8] val
+  fun computation_compute(computation: Pointer[U8] val,
+    data: Pointer[U8] val, multi: Bool): Pointer[U8] val
   =>
     let method = if multi then "compute_multi" else "compute" end
     let r = @computation_compute(computation, data, method.cstring())
@@ -119,8 +121,8 @@ The `_computation` field holds a pointer to the Python object that represents th
 This in turn calls `@computation_compute(...)`. We can tell this is an FFI call to a C function, because of the `@` at the beginning of the function name. `computation_compute(...)` is [a C function that we have defined](https://github.com/WallarooLabs/wallaroo/blob/0.4.1/machida/cpp/python-wallaroo.c#L151); it calls the Python C API functions required to look up the appropriate method on the Python computation object, call it, and return the value.
 
 ```c
-extern PyObject *computation_compute(PyObject *computation, PyObject *data,
-  char* method)
+extern PyObject *computation_compute(PyObject *computation,
+  PyObject *data, char* method)
 {
   PyObject *pFunc, *pValue;
 
