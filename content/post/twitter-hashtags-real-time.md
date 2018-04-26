@@ -47,7 +47,7 @@ cd wallaroo_blog_examples/twitter-trending-hashtags
 
 ### Install Wallaroo
 
-Before we get started, you should make sure you have Wallaroo installed. You can find detailed instructions [here](https://docs.wallaroolabs.com/book/getting-started/setup.html).
+Before we get started, you should make sure you have Wallaroo installed. You can find detailed instructions [here](https://docs.wallaroolabs.com/book/getting-started/setup.html). Everything has been implemented in the [current version of Wallaroo (0.2.2)](https://github.com/WallarooLabs/wallaroo/tree/0.2.2). The full code can be found on [GitHub](https://github.com/WallarooLabs/wallaroo_blog_examples/tree/master/twitter-trending-hashtags). If you have any technical questions that this post didn't answer, or if you have any suggestions, please get in touch at [hello@WallarooLabs.com](mailto:hello@WallarooLabs.com), via [our mailing list](https://groups.io/g/wallaroo) or [our IRC channel](https://webchat.freenode.net/?channels=#wallaroo).
 
 ### Install Dependencies
 
