@@ -163,7 +163,7 @@ Our atomic version will have much better performance characteristics than our mu
 
 ## `RWMutex` vs `Mutex`
 
-The Go standard library contains both an [exclusive mutex]() that we saw in our `IdGenerator` and a [read/write mutex]() that was used earlier in our `ConcurrentMap`.
+The Go standard library contains both an exclusive mutex that we saw in our `IdGenerator` and a read/write mutex that was used earlier in our `ConcurrentMap`.
 
 You should use `Mutex` when you want to make sure that only one thing has access to the protected code at a time. Use `RWMutex` when it’s safe to allow many readers to have access, but you want to make sure that access is exclusive if you need "write access," that is, you intend to update a variable that is protected by the lock.
 
