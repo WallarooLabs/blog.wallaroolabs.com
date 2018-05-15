@@ -17,6 +17,8 @@ categories = [
 ]
 +++
 
+Note: Wallaroo will be hosting a live webinar stepping through the example in this blog post on Thursday, May 24th at 1 PM EST.  Please register [here] (https://zoom.us/webinar/register/WN_FBfvmYizRy6W3TaBHNxhmg)
+
 I work on Wallaroo day to day and one of early challenges I encountered was to find ways to explain how one might use Wallaroo without assuming anything about what kind of application someone might be working with. On day one, I would have said, it's great for your "stream processing" needs, but this itself is already assuming one might know when they need stream processing. This blog post aims to introduce Wallaroo concepts that an application developer would need to get started, rather than deeper theory on why stream processing might matter to you.
 
 I've prepared a [companion repository](https://github.com/WallarooLabs/wallaroo-python-example) so we don't have to cut & paste or finding the right versions of things to download. I invite everyone to follow along on their machine. You might find yourself surprised at how many things stream processing is a natural fit when the machinery around many of these technologies is set aside and the focus is put on code.
