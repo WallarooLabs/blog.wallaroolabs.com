@@ -88,7 +88,7 @@ def filter_interesting_events(event):
 
 This function runs one event at a time. Each event represents something that happened on a public GitHub repository which made it's way to us through the ghevents Kafka topic we're using as a source. There are dozens of events we could look at but for our example here, we'll start with just three types. Forks, pull requests, and watches. The last one there is a bit of a [misnomer](https://developer.github.com/changes/2012-09-05-watcher-api/), as it represents staring a repository not subscribing to its activity.
 
-If we don't return anything here (or return `None`) then Wallaroo will assume we don't want to keep that event around for whatever step follows. We could also do some basic transformations on the event like trimming down fields but we'll keep the whole event payload around for purposes. Here is an example of what one of these might look like as our JSON input.
+If we don't return anything here (or return `None`) then Wallaroo will assume we don't want to keep that event around for whatever step follows. We could also do some basic transformations on the event like trimming down fields but we'll keep the original event for now and leave that for later optimization. Here is an example of what one of these might look like as our JSON input.
 
 ```json
 {
@@ -187,6 +187,8 @@ If you want to get your hands a little more dirty, check out the event type defi
 ## Next Steps
 
 There's more to show but this hopefully gives an idea of what Wallaroo is like in practice. There were a few things we didn't have time or space to dive into like testing and clustering which we'll follow up on in future blog posts.
+
+For those who read and or skipped to the bottom, you can browse the repository [here](https://github.com/WallarooLabs/wallaroo-python-example). We'll be keeping this up to date as a starting point for those who want a quick way to dive into Wallaroo using Python so it'll be worth bookmarking or staring.
 
 In the meantime, here are some links to learn if you want to learn more:
 
