@@ -158,7 +158,7 @@ def calculate_leaders(event, state):
         return (None, True)
 ```
 
-There is a lot going on here and more in `RepoMetadata` which is defined in repo_metadata.py. Looking at the `calculate_leaders` function, we can see that we're adding a star to each repository and then checking to see if the top 10 in this partition have changed at all (we'll call these the leaders according to recent stars). If we've got new leaders we send a new set down for this partition. Otherwise we send nothing. The tuple is there to let Wallaroo know that we've changed our state and that it might need to checkpoint it if we're running with resilience turned on.
+There is a lot going on here and more in `RepoMetadata` which is defined in repo_metadata.py. Looking at the `calculate_leaders` function, we can see that we're adding a star to each repository and then checking to see if the top 10 in this partition have changed at all (we'll call these the leaders according to recent stars). If we've got new leaders we send a new set down for this partition. Otherwise we send nothing. The tuple is there to let Wallaroo know that [we've changed our state](https://docs.wallaroolabs.com/book/core-concepts/working-with-state.html) and that it might need to checkpoint it if we're running with resilience turned on.
 
 ## Windowing
 
