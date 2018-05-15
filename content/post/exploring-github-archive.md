@@ -122,11 +122,11 @@ If we don't return anything here (or return `None`) then Wallaroo will assume we
 }
 ```
 
-## Counting Stars with a Stateful Computation
+## Counting Stars with a State Computation
 
 The next step is a bit more complex: `ab.to_state_partition(...)`. We're doing a couple things here, but let's break it down.
 
-First, we're telling Wallaroo that we're a stateful step. This is a bit of a mouthful but it means we can do more than simple event transformations by using state. This can mean things like keeping a tally on the number of stars a repository has or doing some other kind of book keeping or annotation across many events. To use state we'll need to tell Wallaroo what class we're using to represent our state as well as a name which identifies this specific use of that class (Wallaroo supports something called pipeline joins through named state, though we won't be using it in this application).
+First, we're telling Wallaroo that we're a state computation step. This is a bit of a mouthful but it means we can do more than simple event transformations by using state. This can mean things like keeping a tally on the number of stars a repository has or doing some other kind of book keeping or annotation across many events. To use state we'll need to tell Wallaroo what class we're using to represent our state as well as a name which identifies this specific use of that class (Wallaroo supports something called pipeline joins through named state, though we won't be using it in this application).
 
 Second, we're telling Wallaroo that we're a partitioned step. This means we can break our work up into chunks to be processed in parallel and optionally distributed among many workers on potentially many machines. Wallaroo will handle this state management for you. What you'll need to do is tell it how to route events to a partition. We are using RepoPartitioner for this. You can check it out in repo_partitioner.py. If you'd like to read more on this I'd recommend checking out the [documentation](https://docs.wallaroolabs.com/book/core-concepts/partitioning.html).
 
