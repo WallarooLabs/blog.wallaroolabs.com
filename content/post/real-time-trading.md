@@ -8,12 +8,10 @@ tags = [
     "Wallaroo",
     "Use Case",
     "Python",
-    "Example",
-    "Tutorial",
     "Electronic Trading",
 ]
 categories = [
-    "Examples"
+    "Wallaroo in Action"
 ]
 +++
 
