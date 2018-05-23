@@ -145,7 +145,7 @@ Both pipelines use the [to_state_partition_u64](https://docs.wallaroolabs.com/bo
 
 For stateful partitioning you can either use to_state_partition or to_state_partition_u64.  The to_state_partition_u64 expects an unsigned 64-bit data type as a key, which provides better performance.
 
-For the market data pipeline, the state is updated by executing the [update_market_data](https://github.com/WallarooLabs/wallaroo/blob/0.4.2/examples/python/market_spread/market_spread.py#L197) function.  The update logs the last bid and ask price for a particular symbol and sets a true/false flag based on if the security violates our global trading constraint.
+For the market data pipeline, the state is updated by executing the [update_market_data](https://github.com/WallarooLabs/wallaroo/blob/0.4.3/examples/python/market_spread/market_spread.py#L197) function.  The update logs the last bid and ask price for a particular symbol and sets a true/false flag based on if the security violates our global trading constraint.
 
 For the orders pipeline, the state is read by executing the "check_order" function, and a "rejected order" message is generated and passed along if the order should be rejected.
 
