@@ -1,5 +1,5 @@
 +++
-title = "Wallaroo in Action: Real-Time Electronic Trading Risk Checks"
+title = "Streaming with Wallaroo: Fast Algorithmic Trading Checks"
 date = 2018-05-23T07:30:00-04:00
 draft = false
 author = "cblake"
@@ -26,6 +26,8 @@ The Wallaroo [repo](https://github.com/WallarooLabs/wallaroo) contains several e
 If you don’t see an example that fits your needs, or if you have any questions about implementation or Wallaroo best practices, please reach out to us.  We enjoy speaking with development folks about use cases and how Wallaroo can help.  Email us  to get the conversation started. [hello@wallaroolabs.com](mailto:hello@wallaroolabs.com).
 
 In this post, we will be going through one such example in detail and talk about the use case that inspired it. Currently, we have both Python and Go APIs, this blog post covers the Python version. 
+
+The Python version can respond within a millisecond. For much lower latencies, check out our Golang version which can respond in under 100 microseconds.
 
 Before we step through the use case, we’ll give you a little background on Wallaroo, feel free to skip the next section of you are already familiar with it.
 
