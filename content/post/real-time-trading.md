@@ -17,7 +17,8 @@ categories = [
 ]
 +++
 
-## Introduction ##
+## Introduction
+
 Many of you have been reading our engineering blog and enjoy our deep technical dives. You know that we are excited to talk about how we are going about building Wallaroo, hard distributed systems problems, our approach to testing etc. 
 
 We think that a another great way to introduce developers to Wallaroo and get them inspired and considering how to apply our technology to their particular use cases is by jumping right in and digging into some examples.
@@ -30,14 +31,15 @@ In this post, we will be going through one such example in detail and talk about
 
 Before we step through the use case, we’ll give you a little background on Wallaroo, feel free to skip the next section of you are already familiar with it.
 
-## What is Wallaroo ##
+## What is Wallaroo
+
 Wallaroo is a modern framework that makes it simple to build, deploy, and scale data applications that react to events in real-time.
 
 Writing stateful streaming applications in Wallaroo is easy.  We like to say that Wallaroo makes it as easy as writing a Python script! 
 
 Wallaroo manages streaming data applications with state on a distributed infrastructure for the application programmer. This allows Wallaroo applications to run on any number of workers without having to make any code changes.  We generally refer to this as ["scale-independent" computing](https://vimeo.com/270509076).
 
-## Background on This Case Study ##
+## Background on This Case Study
 
 In the early days of Wallaroo Labs, we were working closely with a large bank on a variety of use cases within their electronic trading division.
 
@@ -49,10 +51,11 @@ For this reason, even though applications that support the trading activity need
 
 Generally, these supporting applications run in parallel to the execution path and will read messages off the common messaging bus infrastructure, [TIBCO Messaging](https://www.tibco.com/products/tibco-messaging) is one such messaging bus that is commonly used.
 
-## Market Spread ##
+## Market Spread
+
 The Market Spread application is based on one of these supporting applications.  Its purpose is to track the current state of the market and incoming orders and generate a warning alert if a particular order violates some risk criteria.
 
-The example code for Market Spread can be found [here] (https://github.com/WallarooLabs/wallaroo/tree/0.4.3/examples/python/market_spread).
+The example code for Market Spread can be found [here](https://github.com/WallarooLabs/wallaroo/tree/0.4.3/examples/python/market_spread).
 
 Our market spread application uses the same risk criteria for all clients in our system.  The alert is generated when a trade happens on an instrument that is trading with the particular bid and ask prices.
 
@@ -66,7 +69,7 @@ When the Market Spread application receives a market data message, and state obj
 
 The second data feed is "orders."  These messages simulate the trades. When our application processes these messages, it uses the symbol for that trade and looks up the latest state object for that symbol. The trade is considered risky (the risk flag is on) an alert message is generated and sent to an external system.
 
-## Application Builder ##
+## Application Builder
 
 Now that you have a general idea of how the application works let's take a look at the Wallaroo application builder.
 
@@ -76,14 +79,15 @@ Wallaroo's application builder defines the application's topology and is a great
 ab = wallaroo.ApplicationBuilder("market-spread")
 ab.new_pipeline(
             "Orders",
-            wallaroo.TCPSourceConfig(order_host, order_port, order_decoder)
+            wallaroo.TCPSourceConfig(order_host, order_port, 
+                                     order_decoder)
         )
 ab.to_state_partition_u64(
             check_order, SymbolData, "symbol-data",
             symbol_partition_function, symbol_partitions
         )
 ab.to_sink(wallaroo.TCPSinkConfig(out_host, out_port,
-                                        order_result_encoder)
+                                  order_result_encoder)
         )
 ab.new_pipeline(
             "Market Data",
@@ -109,7 +113,8 @@ Each pipeline has a beginning, end, and one computation. The respective beginnin
 ```python
 ab.new_pipeline(
             "Orders",
-            wallaroo.TCPSourceConfig(order_host, order_port, order_decoder)
+            wallaroo.TCPSourceConfig(order_host, order_port, 
+                                     order_decoder)
         )
 ```
 
@@ -146,7 +151,8 @@ For the market data pipeline, the state is updated by executing the [update_mark
 
 For the orders pipeline, the state is read by executing the "check_order" function, and a "rejected order" message is generated and passed along if the order should be rejected.
 
-## Conclusion ##
+## Conclusion
+
 Wallaroo provides a robust platform that enables developers to implement business logic within a streaming data pipeline quickly.  This tour of the Wallaroo application builder for the "Market Spread" use case should give you a good idea of how to make use of Wallaroo for your own use cases.
 
 If you would like to talk to use about your use case, or  have any questions and want to find out how to best fit Wallaroo to your use case, please reach out to us at [hello@wallaroolabs.com](mailto:hello@wallaroolabs.com).
