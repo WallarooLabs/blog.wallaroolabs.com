@@ -1,6 +1,6 @@
 +++
-title = "Streaming with Wallaroo: Trending Twitter Hashtags - Part 1"
-date = 2018-06-07T07:30:00-04:00
+title = "Stream processing, trending hashtags, and Wallaroo"
+date = 2018-06-06T18:00:00-04:00
 draft = false
 author = "seantallen"
 description = "See how you can chain Wallaroo state computations together for build a Twitter trending hashtags application."
@@ -18,15 +18,13 @@ categories = [
 +++
 
 
-A prospective Wallaroo user contacted us and asked for an example of chaining state computations together so the output of one could be fed into another to take still further action. In particular, their first step was doing aggregation. 
+A prospective Wallaroo user contacted us and asked for an example of chaining state computations together so the output of one could be fed into another to take still further action. In particular, their first step was doing aggregation.
 
-Doing chained state computations in Wallaroo is straightforward. Picking a problem domain that is realistic and everyone can understand yet isn't so complicated that it swamps the core principle we are teaching, that's a bit harder.
-
-I decided to go with an updated version of a previous blog post. Back in November of 2017, we published an example Wallaroo app that [identified top twitter hashtags in real-time](https://blog.wallaroolabs.com/2017/11/identifying-trending-twitter-hashtags-in-real-time-with-wallaroo/).
+Doing chained state computations is a general problem with many applications and is straightforward in Wallaroo. To illustrate the concepts using a realistic yet relatively easy to understand use-case I decided to go with an updated version of a previous blog post. Back in November of 2017, we published an example Wallaroo app that [identified top twitter hashtags in real-time](https://blog.wallaroolabs.com/2017/11/identifying-trending-twitter-hashtags-in-real-time-with-wallaroo/).
 
 My example is a rewrite of the Wallaroo code that powers that example while keeping the supporting twitter client and flask-based web application intact. 
 
-The original ["Trending Hashtags"](https://blog.wallaroolabs.com/2017/11/identifying-trending-twitter-hashtags-in-real-time-with-wallaroo/) application differs in a few fundamental ways from our updated example.
+The original ["Trending Hashtags"](https://github.com/WallarooLabs/wallaroo_blog_examples/tree/master/twitter-trending-hashtags) application differs in a few fundamental ways from our updated example.
 
 First, the original application has no chained state computations. There's a single one. Second, it's not parallelized. There's a single hashtag finder instance and a single state object responsible for tracking the top hashtags.
 
