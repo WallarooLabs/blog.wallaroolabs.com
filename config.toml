@@ -22,6 +22,7 @@ paginate = 5
 	favicon   = "favicon.ico"
 	customCSS = []
 	customJS  = []
+  logo      = "img/logo_horiz.png"
 
 	# To provide some metadata for search engines and the about section in the footer
 	# feel free to add a few information about you and your website.
@@ -47,9 +48,46 @@ paginate = 5
 	pageNotFoundTitle = "404 - Page not found"
 	useSummaryIfNoDescription = true
 
-[[menu.main]]
-    name = "Wallaroo Labs"
-    pre = "<i class='fa fa-heart'></i>"
-    weight = -110
-    identifier = "Wallaroo Labs"
-    url = "https://www.wallaroolabs.com/"
+[menu]
+
+  [[menu.main]]
+    name = "All Topics"
+    # pre = "<i class='fa fa-road'></i>"
+    url = "/tags/"
+    weight = -100
+
+  [[menu.main]]
+    name = "Python"
+    # pre = "<i class='fa fa-road'></i>"
+    url = "/tags/python/"
+    weight = -90
+
+  [[menu.main]]
+    name = "Performance"
+    # pre = "<i class='fa fa-road'></i>"
+    url = "/tags/performance/"
+    weight = -80
+
+  [[menu.main]]
+    name = "Examples"
+    # pre = "<i class='fa fa-road'></i>"
+    url = "/tags/example/"
+    weight = -70
+
+  # [[menu.main]]
+  #   name = "" # Save for later, if client wants to implement search
+  #   pre = "<i class='fa fa-search fa-flip-horizontal'></i>"
+  #   url = "/tags/search/"
+  #   weight = -60
+
+  [[menu.splash]]
+    name = "Star me on GitHub"
+    pre = "<i class='fa fa-github bounce'></i>"
+    url = "https://github.com/wallaroolabs/wallaroo"
+    weight = -100
+
+  [[menu.splash]]
+    name = "Answer our 30-second survey, and be entered to win a Wallaroo T-Shirt"
+    pre = "<i class='fa fa-check bounce'></i>"
+    url = "https://wallaroolabs.typeform.com/to/HS6azY?source=wallaroo_blog"
+    weight = -90
