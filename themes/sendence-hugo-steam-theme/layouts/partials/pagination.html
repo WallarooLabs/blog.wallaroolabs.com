@@ -5,7 +5,7 @@
     {{ end }}
 
     <span class="page-number">Page {{ .Paginator.PageNumber }} of {{ .Paginator.TotalPages }}</span>
-    
+
     {{ if .Paginator.HasNext }}
     <a class="older-posts" href="{{ .Paginator.Next.URL }}">Older <i class="fa fa-chevron-circle-right"></i></a>
     {{ end }}
