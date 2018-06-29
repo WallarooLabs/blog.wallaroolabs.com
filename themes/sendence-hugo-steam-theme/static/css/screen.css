@@ -90,7 +90,8 @@ kbd {
       0 1px 0 rgba(0, 0, 0, 0.2),
       0 1px 0 0 #fff inset;
 }
-h1 {
+h1,
+h2 {
   color: #151515;
   font-family: "Raleway", "Merriweather", "Open Sans", "Helvetica Neue", Helvetica, Arial, "Nimbus L", sans-serif;
   font-size: 36px;
@@ -98,6 +99,10 @@ h1 {
   line-height: 42px;
   margin: 0;
   padding: 0;
+}
+
+h2 {
+   font-size: 34px;
 }
 
 article,
@@ -158,6 +163,7 @@ article.preview p.readmore {
 }
 /* === Header === */
 #blog-logo {
+  margin-right: 5%;
 }
 #blog-logo img.bloglogo {
   width: 310px;
@@ -291,14 +297,19 @@ div.authorimage {
   margin-right: 17px;
   float: left;
 }
-h1.post-title {
+h1.post-title,
+h2.post-title {
   margin-top: 35px;
 }
 h1.post-title a,
-h1.blog-title a {
+h1.blog-title a,
+h2.post-title a {
   color: #151515;
   transition: color ease 0.7s;
   -webkit-transition: color ease 0.7s;
+}
+h2.post-title {
+  text-align: center;
 }
 h1.post-title a:focus,
 h1.post-title a:hover,
@@ -728,67 +739,54 @@ h1.posts-tagged {
   font-size: 16px;
 }
 
-div#splash {
-  position: absolute;
-  right: -270px;
-  width: 400px;
-  transition:right .5s linear;
-  transition-delay: .25s;
+#splash {
+  border: 1px solid #f0f0f2;
+  border-radius: 2px;
+  padding: 1rem 2rem 1.5rem;
+  text-align: center;
+  max-width: 600px;
+  width: 90%;
+  margin: 4rem auto 4rem;
+  color: #95a5a6;
 }
-div#splash:hover {
-  right: -10px;
-}
-#splash ul {
-  list-style: none;
-  width: 400px;
-}
-#splash ul li {
-  margin: 5px;
-}
-#splash ul li a {
-  width: 100%;
-}
-#splash ul li a i {
-  min-width: 14%;
-  display: inline-block;
-  vertical-align: top;
-  font-size: 35px;
+
+#splash .button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border-radius: 2px;
   color: #fff;
-  border-radius: 5px;
-  padding: 5px 20px 5px 10px;
-  text-align: left;
-  margin-right: -12px;
-  z-index: 2500;
-  -webkit-animation-duration: 1s;
-  animation-duration: 1s;
-  -webkit-animation-fill-mode: both;
-  animation-fill-mode: both;
-  animation-delay: 1.5s;
-}
-
-@-webkit-keyframes bounce {
-  0%, 20%, 50%, 80%, 100% {-webkit-transform: translateY(0);}
-  40% {-webkit-transform: translateY(-14px);}
-  60% {-webkit-transform: translateY(-6px);}
-}
-
-@keyframes bounce {
-  0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
-  40% {transform: translateY(-14px);}
-  60% {transform: translateY(-6px);}
-}
-
-.bounce {
-  -webkit-animation-name: bounce;
-  animation-name: bounce;
-}
-
-#splash ul li a .prompt {
-  width: 65%;
+  cursor: pointer;
   display: inline-block;
-  color: #fff;
-  border-radius: 0 0 0 5px;
-  padding: .5em .85em .5em .85em;
-  z-index: 2499;
-  min-height: 25px;
+  font-size: 1.2rem;
+  font-weight: 300;
+  min-width: 9rem;
+  padding: 0.35em 1em;
+  text-align: center;
+  text-decoration: none;
+  -webkit-transition: background-color 250ms ease;
+  transition: background-color 250ms ease;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.home-template h1 {
+  text-align: center;
+  margin: 6rem 2rem .5rem;
+  font-size: 44px;
+  font-weight: 600;
+}
+.home-template .site-meta {
+  text-align: center;
+  margin: .5rem 2rem 2.5rem;
+}
+@media only screen and (max-width: 639px) {
+  #blog-logo,
+  nav {
+    margin-right: 0;
+  }
 }

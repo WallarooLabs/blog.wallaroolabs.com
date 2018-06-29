@@ -2,7 +2,6 @@
 	<a id="blog-logo" href="/" alt="{{ with .Site.Params.title }}{{ . | markdownify }}{{ end }}">
 		{{ with .Site.Params.logo }}
 		<div class="bloglogo" style="background-image: url({{ . | relURL }})"></div>
-		<!-- <img class="bloglogo" src="{{ . | relURL }}" alt="Wallaroo Labs logo"/> -->
 		{{ end }}
 	</a>
 	{{ partial "navigation" . }}

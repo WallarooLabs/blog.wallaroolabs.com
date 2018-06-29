@@ -1,0 +1,8 @@
+{{ if .Page.IsHome }}
+  {{ if .Site.Params.title }}
+    <h1>{{ .Site.Params.title }}</h1>
+  {{end}}
+  {{ if .Site.Params.orghome }}
+    <div class="site-meta"><p>by <a href="{{ .Site.Params.orghome }}" target="_blank" aria-haspopup="true">{{ .Site.Params.name }}</a></p></div>
+  {{end}}
+{{end}}

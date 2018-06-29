@@ -1,12 +1,4 @@
 <div id="splash" class="splash-parent">
-  <ul>
-    {{ range .Site.Menus.splash }}
-      <li class="spash-item">
-          <a href="{{ .URL }}">
-            {{ .Pre }}
-            <div class="prompt">{{ .Name }}</div>
-          </a>
-      </li>
-    {{ end }}
-  </ul>
+  <p>{{ .Site.Params.splashprompt }}</p>
+  <a class="btn button" href="{{ .Site.Params.splashurl }}">{{ .Site.Params.splashbutton }}</a>
 </div>
