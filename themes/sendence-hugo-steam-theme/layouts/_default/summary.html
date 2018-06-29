@@ -15,7 +15,7 @@
           <p>
             {{ $author_file :=  printf "/data/author/%s.json" .Params.author }}
             {{ $author_json := getJSON $author_file }}
-            <span class="author-name">by {{ $author_json.name }}</span><span class="date"> on <time datetime="{{ .Date.Format "02 January 2006" }}">{{ .Date.Format "Monday, January 02, 2006" }}</time></span>
+            <span class="author-name">by {{ $author_json.name }}</span>
           </p>
           {{ if .Params.categories }}
             <div class="post-meta categories">
