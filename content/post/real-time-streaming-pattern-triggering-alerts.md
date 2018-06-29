@@ -15,6 +15,7 @@ categories = [
 +++
 
 ## Introduction
+
 This week, I will continue to look at data processing patterns used to build event triggered stream processing applications, the use cases that the patterns relate to, and how you would go about implementing within Wallaroo.
 
 This purpose of these posts is to help you understand the data processing use cases that Wallaroo is best designed to handle and how you can go about building them right away.
@@ -39,7 +40,7 @@ You see this pattern implemented in a variety of applications.  Some examples in
 You might want to trigger an alert when:
 
 + A raw threshold is reached (alert if over 100 degrees)
-+ A threshold based on a time window is reached (if latest reading is > average of the last 5 minutes) *** this is weird
++ A threshold based on a time window is reached (if latest reading is > average of the last 5 minutes)
 + A particular rate of increase or decrease is noticed (previous reading is up 10% compared to 5 minutes ago)
 
 Part of the power of Wallaroo is that we allow you to implement any logic you need to accomplish your business objectives; there is no new API or programming model to learn, you implement your business logic in Python or Golang.
