@@ -473,7 +473,13 @@ a.archive-link {
   font-size: 20px;
   color: #596364;
   text-align: center;
-  padding: 0.5em 0;
+  padding: 0.5em .75em;
+  border-bottom: 1px solid #ecf0f1;
+  border-top: 1px solid #ecf0f1;
+  margin-bottom: 2em;
+  text-align: center;
+  margin: 20px auto 2em auto;
+  max-width: 500px;
 }
 .pagination a {
   /*color: #33cc99;*/
