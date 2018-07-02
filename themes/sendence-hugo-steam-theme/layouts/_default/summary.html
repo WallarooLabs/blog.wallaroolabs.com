@@ -12,11 +12,6 @@
         <p class="readmore"><a href="{{ .RelPermalink }}">{{ .Site.Params.keepReadingStr }} <i class="fa fa-angle-double-right" style="padding-left: 5px;"></i></a></p>
         <div class="post-meta">
           <!-- All metadata elements combined below readmore button -->
-          <p>
-            {{ $author_file :=  printf "/data/author/%s.json" .Params.author }}
-            {{ $author_json := getJSON $author_file }}
-            <span class="author-name">by {{ $author_json.name }}</span>
-          </p>
           {{ if .Params.categories }}
             <div class="post-meta categories">
             Posted in
