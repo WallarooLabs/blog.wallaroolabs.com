@@ -1,5 +1,4 @@
-<div id="splash">
-  <a href="https://wallaroolabs.typeform.com/to/HS6azY?source=wallaroo_blog">
-    Answer our 30-second survey, and be entered to win a Wallaroo T-Shirt
-  </a>
+<div id="splash" class="splash-parent">
+  <p>{{ .Site.Params.splashprompt }}</p>
+  <a class="btn button" href="{{ .Site.Params.splashurl }}">{{ .Site.Params.splashbutton }}</a>
 </div>

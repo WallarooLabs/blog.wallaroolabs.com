@@ -2,7 +2,7 @@
 <div class="terms-list">
 	<ul>
         {{ $data := .Data }}
-        {{ range $key, $value := .Data.Terms.ByCount }}
+        {{ range $key, $value := .Data.Terms.Alphabetical }}
         {{ $url := printf "/%s/%s" $data.Plural ($value.Name | urlize) }}
         <li><a href="{{ $url | relURL }}">{{ $value.Name |title }}</a> {{ $value.Count }}</li>
         {{ end }}

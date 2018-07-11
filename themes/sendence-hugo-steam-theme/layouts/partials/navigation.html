@@ -1,9 +1,16 @@
-{{ if .Site.Menus.main }}
 <nav class="menu" role="nav">
-    <ul>
+  <ul>
+    {{ $currentPage := . }}
         {{ range .Site.Menus.main }}
-        	<li class="nav nav-current"><a href="{{ .URL }}">{{ .Name }}</a></li>
-      	{{end}}
+                <li class="nav{{ if $currentPage.IsMenuCurrent "main" . }} active nav-current{{ end }}">
+                    <a href="{{ .URL }}">
+                        {{ .Pre }}
+                        <span>{{ .Name }}</span>
+                    </a>
+                </li>
+        {{ end }}
+        <!-- <li>
+            <a href="#" target="_blank">Hardcoded Link 1</a>
+        </li> -->
     </ul>
-</nav>
-{{ end }}
+  </nav>

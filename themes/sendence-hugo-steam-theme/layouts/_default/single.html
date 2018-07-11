@@ -1,21 +1,42 @@
 {{ define "main" }}
 <article class="post">
     <header>
-        {{ if .Params.categories }}
-          <div class="post-meta categories">
-          Posted in
-          {{ $ncats := sub (len .Params.categories) 1}}
-          {{ range $index, $tag := .Params.categories }}
-            {{ $url := printf "categories/%s" ( . | urlize) }}
-            <a href="{{ $url | relURL }}">{{ . }}</a>{{if ne $index $ncats }}, {{ end }}
-          {{ end }}
-          </div>
-        {{ end }}
         <h1 class="post-title">{{ .Title }}</h1>
         <div class="post-meta">
-            <time datetime="{{ .Date.Format "02 January 2006" }}">
+          {{ $author_file :=  printf "/data/author/%s.json" .Params.author }}
+          {{ $author_json := getJSON $author_file }}
+          <p>
+            <span class="date">
+              <time datetime="{{ .Date.Format "02 January 2006" }}">
                 {{ .Date.Format "Monday, January 02, 2006" }}
-            </time>
+              </time>
+            </span>
+          </p>
+          {{ if .Type | eq "post" }}
+            {{ if .Params.categories }}
+              <div class="post-meta categories">
+              Posted in
+              {{ $ncats := sub (len .Params.categories) 1}}
+              {{ range $index, $tag := .Params.categories }}
+                {{ $url := printf "categories/%s" ( . | urlize) }}
+                <a href="{{ $url | relURL }}">{{ . }}</a>{{if ne $index $ncats }}, {{ end }}
+              {{ end }}
+              </div>
+            {{ end }}
+            {{ if .Params.tags }}
+            <section class="post-tags" style="">
+              <div class="post-meta tags">
+                <i class="fa fa-fw fa-tag"></i>
+                {{ $ntags := sub (len .Params.tags) 1}}
+                {{ range $index, $tag := .Params.tags }}
+                  {{ $url := printf "tags/%s" ( . | urlize) }}
+                  <a href="{{ $url | relURL }}">{{ . }}</a>{{if ne $index $ntags }}, {{ end }}
+                {{ end }}
+              </div>
+            </section>
+            {{ end }}
+          {{ end }}
+
         </div>
     </header>
 
@@ -24,18 +45,6 @@
     </section>
 
     {{ if .Type | eq "post" }}
-      {{ if .Params.tags }}
-      <section class="post-tags" style="padding-bottom:60px;">
-        <div class="post-meta tags">
-          <i class="fa fa-fw fa-tag"></i>
-          {{ $ntags := sub (len .Params.tags) 1}}
-          {{ range $index, $tag := .Params.tags }}
-            {{ $url := printf "tags/%s" ( . | urlize) }}
-            <a href="{{ $url | relURL }}">{{ . }}</a>{{if ne $index $ntags }}, {{ end }}
-          {{ end }}
-        </div>
-      </section>
-      {{ end }}
 
     {{ template "_internal/disqus.html" . }}
     {{ partial "share" . }}

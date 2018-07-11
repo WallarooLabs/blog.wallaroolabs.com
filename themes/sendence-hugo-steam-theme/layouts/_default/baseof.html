@@ -5,14 +5,9 @@
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
 
-    <!-- fork me on github -->
-    <a href="https://github.com/wallaroolabs/wallaroo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="/images/star-me.png" alt="Star me on GitHub"></a>
-    <!-- end fork me on github -->
-
     {{ partial "header" . }}
+    {{ partial "blogtitle" . }}
     {{ partial "splash" . }}
-    {{ partial "navigation" . }}
-
 
     <main class="content" role="main">
     {{ block "main" . }}{{ end }}

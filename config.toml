@@ -1,6 +1,6 @@
 baseurl = "https://blog.wallaroolabs.com"
 languageCode = "en-us"
-title = "Wallaroo Labs Engineering"
+title = "Wallaroo Labs Engineering Blog"
 theme = "sendence-hugo-steam-theme"
 # Enable Google Analytics be inserting your tracking code
 googleAnalytics = ""
@@ -11,7 +11,7 @@ paginate = 5
   post = "/:year/:month/:title/"
 
 [params]
-	title = "Wallaroo Labs"
+	title = "Wallaroo Labs Engineering Blog"
 	subtitle = "\"I wanna go fast\""
 	copyright = ""
 
@@ -22,12 +22,14 @@ paginate = 5
 	favicon   = "favicon.ico"
 	customCSS = []
 	customJS  = []
+  logo      = "img/logo_horiz.png"
 
 	# To provide some metadata for search engines and the about section in the footer
 	# feel free to add a few information about you and your website.
 	name = "Wallaroo Labs"
 	bio = ""
 	description = "Official blog of the Wallaroo Labs Engineering team"
+  orghome = "https://www.wallaroolabs.com/"
 
 	# Link your social networks (optional)
 	location = ""
@@ -47,9 +49,39 @@ paginate = 5
 	pageNotFoundTitle = "404 - Page not found"
 	useSummaryIfNoDescription = true
 
-[[menu.main]]
-    name = "Wallaroo Labs"
-    pre = "<i class='fa fa-heart'></i>"
-    weight = -110
-    identifier = "Wallaroo Labs"
-    url = "https://www.wallaroolabs.com/"
+  # Splash segment prompt and button label
+  splashprompt = "Answer our 30-second survey, and be entered to win a Wallaroo T-Shirt"
+  splashurl = "https://wallaroolabs.typeform.com/to/HS6azY?source=wallaroo_blog"
+  splashbutton = "Go to survey"
+
+[menu]
+
+  [[menu.main]]
+    name = "All Tags"
+    # pre = "<i class='fa fa-road'></i>"
+    url = "/tags/"
+    weight = -100
+
+  [[menu.main]]
+    name = "Python"
+    # pre = "<i class='fa fa-road'></i>"
+    url = "/tags/python/"
+    weight = -90
+
+  [[menu.main]]
+    name = "Performance"
+    # pre = "<i class='fa fa-road'></i>"
+    url = "/tags/performance/"
+    weight = -80
+
+  [[menu.main]]
+    name = "Examples"
+    # pre = "<i class='fa fa-road'></i>"
+    url = "/tags/example/"
+    weight = -70
+
+  [[menu.main]]
+    name = "" # Save for later, if client wants to implement search
+    pre = "<i class='fa fa-github' style='margin-left:5px;'></i>"
+    url = "https://github.com/wallaroolabs/wallaroo"
+    weight = -60
