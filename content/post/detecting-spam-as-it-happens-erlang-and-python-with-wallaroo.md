@@ -97,7 +97,7 @@ Wallaroo app.
 
 Sending binaries over TCP is the minimalist's way of feeding data to
 Wallaroo. If you need resilience, replayability, and the capability to connect
-multiple applications to the same data source, you'll want to use [Kafka]() as
+multiple applications to the same data source, you'll want to use [Kafka](http://kafka.apache.org/) as
 the message bus. If you’d like to integrate different sources, there’s good news around the corner: we are in the process of rolling out our BYOI (Bring Your Own Integrations) framework, which will let you leverage existing libraries to connect to other systems, such as Amazon Kinesis, RabbitMQ, etc. Join our low-traffic [announcement group at Groups.io](https://groups.io/g/wallaroo) to stay in the loop!
 
 
