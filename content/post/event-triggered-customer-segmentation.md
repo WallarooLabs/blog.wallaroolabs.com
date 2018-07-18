@@ -1,6 +1,6 @@
 +++
 title = "Event Triggered Customer Segmentation"
-date = 2018-07-17T10:40:34+02:00
+date = 2018-07-19T10:40:34-05:00
 draft = false
 author = "rblasucci"
 description = "In which we quickly and easily create a full application to use Wallaroo to manage an ad campaign for a Marsupial Fan Club."
@@ -8,6 +8,7 @@ tags = [
     "Python",
     "State",
     "Wallaroo",
+    “example”, “use-case”, “tutorial”, “adtech”
 ]
 categories = [
     "Python-Api",
@@ -16,10 +17,10 @@ categories = [
 ]
 +++
 
-Today I'm going to show you how fast and easy it can be to set up a simple application with Wallaroo to manage an ad campaign.
+Today I'm going to show you how fast and easy it can be to set up a simple application using the [Wallaroo](https://blog.wallaroolabs.com/2017/03/hello-wallaroo/) [Python API](https://docs.wallaroolabs.com/book/python/wallaroo-python-api.html) to manage an ad campaign.
 
 ## Backstory
-You’re a data engineer getting hounded by the marketing team at the fictional online Marsupial Fan Club to support an online ad campaign they have conjured up with a goal of converting an ad for a hoodie with an adorable marsupial on the front to purchases..  The Marsupial-Fan-Club has a single mission - market marsupial chatzky to the adoring fans.  The marketing channels are Instagram and Facebook -  dedicated to adorable pictures of marsupials of all flavors and kinds. You support the business through  running a modest storefront with assorted items for sale -- coffee cups, hoodies, and the like. For the Marsupial aficionados, you also have a special loyalty-members-only list where you send out additional coupons and special content. Today, you'd like to run a promotion for 10% off your newest hoodie. But there's a twist! If one of your known loyalty members clicks on your ad, you want to send them a coupon for an additional 10% off. With Wallaroo, this is super easy! Let's take an in-depth look at how to get there.
+You’re a data engineer getting hounded by the marketing team at the fictional online Marsupial Fan Club to support an online ad campaign they have conjured up with a goal of converting an ad for a hoodie with an adorable marsupial on the front to purchases..  The Marsupial-Fan-Club has a single mission - market marsupial tchotchkes to the adoring fans.  The marketing channels are Instagram and Facebook -  dedicated to adorable pictures of marsupials of all flavors and kinds. You support the business through running a modest storefront with assorted items for sale -- coffee cups, hoodies, and the like. For the Marsupial aficionados, you also have a special loyalty-members-only list where you send out additional coupons and special content. Today, you'd like to run a promotion for 10% off your newest hoodie. But there's a twist! If one of your known loyalty members clicks on your ad, you want to send them a coupon for an additional 10% off. With Wallaroo, this is super easy! Let's take an in-depth look at how to get there.
 
 ## Data structures
 First, let's consider what our data looks like, so you'll know what pieces of information you'll need to consider.
@@ -32,7 +33,8 @@ wackywallaroo@fakeemail.com, , wackywallaroo, M
 ...
 ```
 This will easily convert into a python object, like so: 
-```
+
+```python
 class Customer(object):
     def __init__(self, customer_email, fb_user, insta_user, gender):
         self.customer_email = customer_email
@@ -41,7 +43,8 @@ class Customer(object):
         self.gender = gender
 ```
 It's also a good idea to add a `LoyaltyCustomers` object containing a dictionary of all of the `Customer`s. This way we can search through the list for a specific loyalty member. This should also have an `add` function to add a new loyalty customer, to populate that list! 
-```
+
+```python
 class LoyaltyCustomers(object):
     def __init__(self):
         self.customers = {}
@@ -82,7 +85,8 @@ MarsupialHoodie, PurchaseConversion, wally@veryrealemail.com, [6], 9.45
 ```
 
 Finally, you'll need a basic object to track each specific conversion, like so: 
-```
+
+```python
 class ClickConversion(object):
     def __init__(self, promo_ad, conversion, customer_email, where):
         self.promo_ad = promo_ad
@@ -110,7 +114,8 @@ And that's it! Let's get ready to work with our data now!
 
 ## Application setup and pipelines
 If you've used Wallaroo before, you'll be aware that the `application_setup` function is the central point of your application. Here you'll set up the fundamentals and create your pipelines. You'll need to ensure your app knows the data inputs and outputs. For the promotion today, you'll need two inputs: one for the loyalty list, and one for your conversions. You'll also need to set up your partitions for any partitioned state you'll need. 
-```
+
+```python
 def application_setup(args):
     input_addrs = wallaroo.tcp_parse_input_addrs(args)
     
@@ -122,8 +127,9 @@ def application_setup(args):
 
     initial_partitions = range(0,10)
 ```
-Next, you'll create your pipelines! You'll start by creating an `ApplicationBuilder` named "Ad Tech Application". This will contain your pipelines. 
-```
+Next, you'll create your pipelines! You'll start by creating an `ApplicationBuilder` named "Ad Tech Application". This will contain your pipelines.
+
+```python
 ab = wallaroo.ApplicationBuilder("Ad Tech Application")
 ```
 To manage today's ad campaign, you'll need only two pipelines. One to manage the loyal members list, holding it in state, and adding members as needed, and another to process the conversions as they come in. Let’s look at each individually. 
@@ -135,12 +141,13 @@ Let’s start with the loyalty customers pipeline. Here, you’ll be processing 
 
 So let’s set up a pipeline to do this! You'll need to name the pipeline, here `"Load loyalty customers"`, then let Wallaroo know where to find, and how to decode, the incoming data using the `wallaroo.TCPSourceConfig` function.
 
-```
+```python
 ab.new_pipeline("Load loyalty customers",
     wallaroo.TCPSourceConfig(ll_host, ll_port, ll_decoder))
 ```
 You've already seen the `ll_host` and `ll_port` variables, as they were set at the beginning of the function. Let's look more closely at `ll_decode`. This is where you'll convert the incoming information into a `Customer` object, for use in the application later. All decoders must be wrapped with a `@wallaroo.decoder` decorator, specifying the header length and the length format. Once that is declared, the remaining function is simply a matter of splitting the incoming data and mapping it into the `Customer` object.
-```
+
+```python
 @wallaroo.decoder(header_length=4, length_fmt=">I")
 def ll_decoder(data):
     info = data.split(",")
@@ -149,19 +156,22 @@ def ll_decoder(data):
 ```
 
 Next, you'll save the incoming customers to the `LoyaltyCustomers` object that you created before, so that they're available for use in later steps. There's a fair amount to unpack in this next step, so let's look at it piece by piece. You're using the `to_state_partition` method. This means that you'll be calling a function that requires working with state, and that state will be partitioned. `save_customer` is the function you're calling. `LoyaltyCustomers` is the state object you'll be accessing. `"loyalty customers"` is the name of the state. The state object name functions as the object’s unique key, so using this same name will ensure that the same state object is being accessed and used in different computations. `extract_conversion_key` is the method to get the partition keys. And finally, `initial_partitions` is the list of the initial state partitions you'll be using. 
-```
+
+```python
 ab.to_state_partition(save_customer, LoyaltyCustomers,
     "loyalty customers", extract_conversion_key, initial_partitions)
 ```
 The `LoyaltyCustomers` object and `initial_partitions` have been already set up. Let's look at the `save_customer` function. Since this is a state computation function, it must be wrapped in the `@wallaroo.state_computation` decorator, and given a name. As part of the pipeline, this function takes in the information, `data` that was returned by the previous step. In this case, that is a fully formed `LoyaltyCustomer` object. It also takes in the state object that is being referenced, `loyalty_customers`. You then add the loyalty member information into the loyalty members list, and return. Here, you want to return `None`, because you're not passing any information any further along, and `True`. You need to return the tuple so that Wallaroo knows whether or not to save the current state of the data. Since it was updated, and it makes sense to save here, you'll return `True`. 
-```
+
+```python
 @wallaroo.state_computation(name="save customers")
 def save_customer(data, loyalty_customers):
     loyalty_customers.add(data.customer_email, data)
     return (None, True)
 ```
 Now, the `extract_conversion_key` method is where you'll define your partition keys. For your ad campaign today, it makes sense to hash the `customer_emails`, then take that number, modulo 10. If you used modulo 100, for example, you would be able to create 100 partitions. This is a convenient way to divide things into 10 partitions. The partition key function needs to be wrapped in a `@wallaroo.partition` decorator to be identified correctly. 
-```
+
+```python
 @wallaroo.partition
 def extract_conversion_key(data):
     return hash(data.customer_email) % 10
@@ -176,12 +186,13 @@ Let's move on to your second, and final, pipeline. This one manages the flow of 
 
 Let's create this pipeline. 
 
-```    
+```python
 ab.new_pipeline("Conversions",
     wallaroo.TCPSourceConfig(cc_host, cc_port, cc_decoder))
 ```
 Let's call the pipeline `"Conversions"`. You'll also need a new decoding function, and this time, it will be a more drawn-out process, as you'll need to manage all three types of conversions. The process is very similar, however. You'll split the data as it comes in, determine which type of conversion it is, and call the appropriate function. The decoder returns an object containing the decoded information. 
-```
+
+```python
 @wallaroo.decoder(header_length=4, length_fmt=">I")
 def cc_decoder(data):
     info = data.split(",")
@@ -194,7 +205,8 @@ def cc_decoder(data):
     return conversion
 ```
 Then the individual functions handle separating the data into the specific conversion types for later use. 
-```
+
+```python
 def build_click_conversion(info):
     return ClickConversion(info[0].strip(), info[1].strip(),
 			   info[2].strip(), info[3].strip())
@@ -209,12 +221,14 @@ def build_purchase_conversion(info):
 			      info[3].strip())
 ```
 The next step in the pipeline will process your conversions data.  
-```
+
+```python
 ab.to_state_partition(process_email_add_customer, LoyaltyCustomers,
     "loyalty customers", extract_conversion_key, initial_partitions)
 ```
 Similarly to your first pipeline, you'll call the `process_email_add_customer` function using the `LoyaltyCustomers` state object, using the same conversion keys and initial partitions as last time. The `process_email_add_customer` function actually handles two things: determining whether to send the extra 10% off to your loyalty customers when they've clicked your ad, and adding a new customer as a loyalty customer once they've completed a purchase. You'll need to send on both the full conversion information, as well as the `should_email` information to your next processor, for the email to be sent. So you'll need to return a tuple within a tuple. 
-```
+
+```python
 @wallaroo.state_computation(name="add_new_loyalty_customer")
 def process_email_add_customer(conversion, loyalty_customers):
     should_email = False
@@ -228,11 +242,13 @@ def process_email_add_customer(conversion, loyalty_customers):
     return ((conversion, should_email), True)
 ```
 This time, rather than calling `ab.done()`, you'll want to send the data on to a sink. Wallaroo needs to know how to reach it. You'll also need to create a new encoder function.
-```
+
+```python
 ab.to_sink(wallaroo.TCPSinkConfig(out_host, out_port, cc_encoder))
 ```
 Your encoder message can be quite simple. Here, you'll quickly unpack the tuple that was sent from the previous pipeline step, and format that into a string. You might also want to send a message out to, for example, Kafka, for further processing. This function ensures that the message is formatted correctly for your next step. 
-```
+
+```python
 @wallaroo.encoder
 def cc_encoder(data):
     (conversion, should_email) = data
@@ -240,8 +256,9 @@ def cc_encoder(data):
             + ", " + str(should_email) + "\n")
 ```
 This is the last step in the conversions pipeline. So, let's return the `ApplicationBuilder`, and you're done! 
-```
+
+```python
 return ab.build()
 ```
 ## Conclusions
-In just over 120 lines of code, you've quickly and smoothly created a lightweight stream-processed application to manage an aspect of your ad campaigns. We'll be looking at more examples in future blog posts of small, quick applications that you can add on to your current setup. At Wallaroo, we're just excited to help you be more effective! 
+In just over 120 lines of code, you've quickly and smoothly created a lightweight stream-processed application to manage an aspect of your ad campaigns. We'll be looking at more examples in future blog posts of small, quick applications that you can add on to your current setup. Are you currently creating or managing an ad tech application and looking for new ways to improve? Contact us! We'd love to help you out with your application. At Wallaroo, we're just excited to help you be more effective! 
