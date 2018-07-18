@@ -8,7 +8,10 @@ tags = [
     "Python",
     "State",
     "Wallaroo",
-    “example”, “use-case”, “tutorial”, “adtech”
+    "example",
+    "use-case",
+    "tutorial",
+    "adtech"
 ]
 categories = [
     "Python-Api",
