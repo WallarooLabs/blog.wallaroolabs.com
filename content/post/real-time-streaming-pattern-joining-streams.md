@@ -16,7 +16,7 @@ categories = [
 
 ## Introduction
 
-This week I will continue to look at data processing patterns used to build event triggered streaming applications.  I'll cover some related use cases and how you would go about implementing within Wallaroo.
+This week I will continue series of posts to looking at data processing patterns used to build event triggered streaming applications, focusing on joining event streams. I’ll cover some related use cases and how you would go about implementing within Wallaroo.
 
 This purpose of these posts is to help you understand the data processing use cases that Wallaroo is best designed to handle and how you can go about building them.
 
