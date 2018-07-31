@@ -57,31 +57,32 @@ paginate = 5
 [menu]
 
   [[menu.main]]
-    name = "All Tags"
+    name = "Home"
     # pre = "<i class='fa fa-road'></i>"
-    url = "/tags/"
+    url = "http://www.wallaroolabs.com/"
     weight = -100
 
   [[menu.main]]
-    name = "Python"
+    name = "Technology"
     # pre = "<i class='fa fa-road'></i>"
-    url = "/tags/python/"
+    url = "http://www.wallaroolabs.com/technology/"
     weight = -90
 
-  [[menu.main]]
-    name = "Performance"
-    # pre = "<i class='fa fa-road'></i>"
-    url = "/tags/performance/"
-    weight = -80
 
   [[menu.main]]
-    name = "Examples"
+    name = "Developers"
     # pre = "<i class='fa fa-road'></i>"
-    url = "/tags/example/"
+    url = "http://www.wallaroolabs.com/developers/"
     weight = -70
+
+    [[menu.main]]
+      name = "Blog"
+      # pre = "<i class='fa fa-road'></i>"
+      url = "/"
+      weight = -50
 
   [[menu.main]]
     name = "" # Save for later, if client wants to implement search
     pre = "<i class='fa fa-github' style='margin-left:5px;'></i>"
     url = "https://github.com/wallaroolabs/wallaroo"
-    weight = -60
+    weight = -30
