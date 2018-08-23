@@ -24,7 +24,6 @@ I will be looking at the Wallaroo application builder, the part of your applicat
 
 You should also check out all the posts in the ["Wallaroo in Action"](https://blog.wallaroolabs.com/categories/wallaroo-in-action/) category.
 
-
 ## Pattern: Analyzing Trends
 
 What makes stream processing different from alternatives like batch processing is that we continuously run our application logic over data as it comes in. Rather than running that logic in periodic intervals.
@@ -88,7 +87,7 @@ ab.to_sink(wallaroo.TCPSinkConfig(out_host, out_port, encoder))
 return ab.build()
 ```
 
-Lastly we tell wallaroo the host and port to send the results. This could be another application listening on that host and port or a kafka topic. In the case of our Twitter trending hashtags example, this data eventually was rendered on a webpage so the user could see the top 10 hashtags in real-time.
+Lastly we tell Wallaroo the host and port to send the results. This could be another application listening on that host and port or a Kafka topic. In the case of our Twitter trending hashtags example, this data eventually was rendered on a webpage so the user could see the top 10 hashtags in real-time.
 
 ## Conclusion
 
