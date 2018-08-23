@@ -61,7 +61,7 @@ ab.to_stateful(compute_hashtags, HashtagState, "hashtags state")
 ab.to_sink(wallaroo.TCPSinkConfig(out_host, out_port, encoder))
 return ab.build()
 ```
-![Decoder -> extract_hashtags -> compute_hashtags](/static/images/post/real-time-streaming-pattern-analyzing-trends/image1.png)
+![Decoder -> extract_hashtags -> compute_hashtags](/images/post/real-time-streaming-pattern-analyzing-trends/image1.png)
 
 ```python
 ab.new_pipeline(
