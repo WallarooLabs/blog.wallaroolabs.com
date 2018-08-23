@@ -1,6 +1,6 @@
 +++
 title= "Real-time Streaming Pattern: Analyzing Trends"
-date = 2018-08-24T00:00:00-00:00
+date = 2018-08-23T19:42:35+00:00
 draft = false
 author = "erikn"
 description = "This week, we continue to look at data processing patterns used to build event driven stream processing applications with Wallaroo. One of our most frequent use-cases is Analysing trends, either from third-party external or your internal data."
