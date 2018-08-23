@@ -22,7 +22,7 @@ This purpose of these posts is to help you understand the data processing use ca
 
 I will be looking at the Wallaroo application builder, the part of your application that hooks into the Wallaroo framework, and some the business logic of the pattern.
 
-You should also check out all the posts in the ["Wallaroo in Action"](https://blo g.wallaroolabs.com/categories/wallaroo-in-action/) category.
+You should also check out all the posts in the ["Wallaroo in Action"](https://blog.wallaroolabs.com/categories/wallaroo-in-action/) category.
 
 
 ## Pattern: Analyzing Trends
