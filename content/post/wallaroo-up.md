@@ -63,8 +63,10 @@ We're very excited with Wallaroo Up and opening up Wallaroo to more of you. We'r
 We would like to encourage you to give Wallaroo Up a try, just run the following to get up and running:
 
 ```
-curl https://raw.githubusercontent.com/WallarooLabs/wallaroo/0.5.2/misc/wallaroo-up.sh -o /tmp/wallaroo-up.sh -J -L
-bash /tmp/wallaroo-up.sh -t python # replace python with golang for Wallaroo Go
+curl -o /tmp/wallaroo-up.sh -J -L \
+  https://raw.githubusercontent.com/WallarooLabs/wallaroo/0.5.2/misc/wallaroo-up.sh
+# replace python with golang for Wallaroo Go
+bash /tmp/wallaroo-up.sh -t python
 ```
 
 Wallaroo provides a robust platform that enables developers to implement business logic within a streaming data pipeline quickly. Wondering if Wallaroo is right for your use case? Please reach out to us at [hello@wallaroolabs.com](hello@wallaroolabs.com), and we’d love to chat.
