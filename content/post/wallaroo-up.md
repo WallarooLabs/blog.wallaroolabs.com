@@ -1,5 +1,5 @@
 +++
-title= "Wallaroo Up"
+title= "Wallaroo Up: automating the Linux developer experience for Wallaroo"
 date = 2018-08-30T00:00:00-00:00
 draft = false
 author = "dipin"
@@ -53,6 +53,8 @@ We explored several options in order to simplify the getting started process and
 Wallaroo Up officially supports CentOS 7, Fedora 28, Debian Stretch, Ubuntu Trusty, Ubuntu Xenial, and Ubuntu Bionic Linux distributions. Additionally, it should work on Red Hat Enterprise Linux 7, Fedora 26, Fedora 27, Ubuntu Artful, Debian Jessie, Debian Buster/Testing Linux distributions.
 
 Wallaroo Up allows you to preview the actions it will take (including adding repositories, installing development compilers and libraries, and setting up Wallaroo itself) and also keeps a detailed log of all actions to ensure you're able to examine everything that it does. Wallaroo Up takes the first step to allow you to have multiple versions of Wallaroo installed concurrently by installing each version of Wallaroo in its own version specific directory. Wallaroo Up also includes a handy script to source that automagically sets up your environment for compiling and running wallaroo applications (i.e. like python virtualenv).
+
+![Wallaroo Up](/images/post/wallaroo-up/wallaroo-up.png)
 
 ## Future
 
