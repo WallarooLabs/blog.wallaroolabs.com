@@ -56,6 +56,8 @@ Our application is a perfect use case for Wallaroo. We have data coming from Coi
 
 For this to work we need to have two different pipelines. One for when we are adding new price data from coinbase and the other to store alert data from our django application. Pipelines in Wallaroo are how you split up your application logic. Each pipeline has its own source, and messages from the source are processed sequentially through the pipeline's computations. Computations can access both the state inside its' own pipeline and the state outside of its' pipeline. This is how updates to buy/sell prices always read the most up to date alert settings that are set by a separate pipeline.
 
+![High level wallaroo architecture](/images/post/celery-to-stream-processing/high-level-wallaroo-architecture.png)
+
 Normally running application logic on each piece of data as it flows through would be considered expensive and we might batch operations to save time or resources. Stream processors like Wallaroo make this style of computation fast through parallelism and scaling ability.
 
 Let’s take a quick look at a few pieces of code to show what the difference between both applications are. The full application is available [here](https://github.com/WallarooLabs/wallaroo_blog_examples/master/pricealert).
