@@ -48,15 +48,15 @@ def notify_on_price():
 
 There are quite a few problems with the approach above. Batch jobs are hard to scale and if our jobs were to take longer than 10 minutes to run then things really become a problem. Our users are only getting notifications once every ten minutes. Ideally as soon as the average price of Bitcoin changes, an alert is sent. Imagine if we later decided that we wanted to use this application to purchase and sell bitcoin, we'd certainly need to react to prices much faster.
 
-One way this could be done is by using Stream Processor. Rather than batch computation to a larger set of data, we run our application logic on each piece of data individually.
+One way this could be done is by using a stream processor. Rather than batch computation to a larger set of data, we run our application logic on each piece of data individually.
 
 ## Wallaroo Application Structure
 
-Our application is a perfect use case for Wallaroo. We have data coming from Coinbase and can save the average price and our user’s alerts in Wallaroo as state objects. If you are not familiar with Wallaroo terminology please see our [documentation](https://docs.wallaroolabs.com/book/core-concepts/core-concepts.html).
+Our application is a perfect use case for Wallaroo. We have data coming from Coinbase and can save the average price and our user’s alerts in Wallaroo as state objects. If you need a refresher on Wallaroo terminology check out our [core-concepts](https://docs.wallaroolabs.com/book/core-concepts/core-concepts.html).
 
-For this to work we need to have two different pipelines. One for when we are adding new price data from coinbase and the other to store alert data from our django application. Pipelines in Wallaroo are how you split up your application logic. Each pipeline has its own source, and messages from the source are processed sequentially through the pipeline's computations. Computations can access both the state inside its' own pipeline and the state outside of its' pipeline. This is how updates to buy/sell prices always read the most up to date alert settings that are set by a separate pipeline.
+For this to work we need to have two different pipelines. One for when we are adding new price data from coinbase and the other to store alert data from our django application. Pipelines in Wallaroo are how you split up your application logic. Each pipeline has its own source, and messages from the source are processed sequentially through the pipeline's computations. Computations can access both the state inside its own pipeline and the state outside of its' pipeline. This is how updates to buy/sell prices always read the most up to date alert settings that are set by a separate pipeline.
 
-![High level wallaroo architecture](/images/post/celery-to-stream-processing/high-level-wallaroo-architecture.png)
+![High level Wallaroo architecture](/images/post/celery-to-stream-processing/high-level-wallaroo-architecture.png)
 
 Normally running application logic on each piece of data as it flows through would be considered expensive and we might batch operations to save time or resources. Stream processors like Wallaroo make this style of computation fast through parallelism and scaling ability.
 
@@ -68,7 +68,7 @@ class Alerts(object):
         self.alerts = dict()
 ```
 
-Rather than access our alerts from the database like we did in the Celery example, our Wallaroo application initializes an Alert object that stores our alerts in a python dictionary. Additionally, we provide two methods to access this object. The ability to add and remove from our dictionary. `Alerts.alerts` eventually will look like this `{"price_to_notify": [user_ids], ...}`.
+Rather than access our alerts from the database like we did in the Celery example, our Wallaroo application initializes an Alerts object that stores our alerts in a python dictionary. Additionally, we provide two methods to access this object; The ability to add and remove from our dictionary. `Alerts.alerts` eventually will look like this `{"price_to_notify": [user_id1, user_id2, ...]}`.
 
 ```python
 class BTCPrice(object):
@@ -93,7 +93,7 @@ def maybe_send_alerts_based_on_average_price(btc_price, alerts):
     return (None, False)
 ```
 
-In our `maybe_send_alerts_based_on_average_price` function, we call this inside of our `average BTC price` pipeline but we first created it in our `Load users' created alerts` pipeline. Instead of needing to query a snapshot of the database(which could be outdated by the time our application logic runs), sharing state like this lets us make sure that we are always using the most up-to-date data.
+Even though the `maybe_send_alerts_based_on_average_price` function is called in the pipeline responsible for keeping track of the average BTC price, we are able to pass our Alerts object to this pipeline. This means that we are always using the most recent dictionary of alerts rather than needing to query for all of our alerts that match a certain criteria.
 
 If you haven't already, go ahead and try running this application on your own. Clone the repository [here](https://github.com/enilsen16/pricealert) and start messing around with different intervals or add the ability to set alerts on eth-usd on the same pipeline.
 
