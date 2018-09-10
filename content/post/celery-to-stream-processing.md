@@ -1,6 +1,6 @@
 +++
 title= "Converting a Batch Job to Real-time"
-date = 2018-09-06T00:00:00-00:00
+date = 2018-09-11T00:00:00-00:00
 draft = false
 author = "erikn"
 description = "In this post, we'll provide an overview of what stream processing is, some of the advantages it has over batch jobs and then take a brief look at an example."
@@ -32,7 +32,7 @@ Using the coinbase-pro client, connecting and managing the websocket connection 
 
 ## Celery Periodic Task Structure
 
-I chose to use Celery to run our periodic tasks. Setting up Celery was pretty simple, just install the pip package and require the celery and crontab packages. For the purpose of this blog post, the calculation is pretty simple. Users set an alert on a price and we send an alert to the client when the average of the last ten minutes of BTC transactions are greater than the specified threshold (You can view the full file [here](https://github.com/enilsen16/pricealert/blob/master/pricealert/tasks.py)).
+I chose to use Celery to run our periodic tasks. Setting up Celery was pretty simple, just install the pip package and require the celery and crontab packages. For the purpose of this blog post, our calculation is straightforward. Users set an alert on a price and we send an alert to the client when the average of the last ten minutes of BTC transactions are greater than the specified threshold (You can view the full file [here](https://github.com/enilsen16/pricealert/blob/master/pricealert/tasks.py)).
 
 ```python
 @app.task
@@ -46,7 +46,7 @@ def notify_on_price():
 
 ## Stream Processing Overview
 
-There are quite a few problems with the approach above. Batch jobs are hard to scale and if our jobs were to take longer than 10 minutes to run then things really become a problem. Our users are also only getting notifications once every ten minutes. Ideally as soon as the average price of Bitcoin changes, an alert is sent. Imagine if we later decided that we wanted to use this application to purchase and sell bitcoin we'd certainly need to react to prices much faster.
+There are quite a few problems with the approach above. Batch jobs are hard to scale and if our jobs were to take longer than 10 minutes to run then things really become a problem. Our users are only getting notifications once every ten minutes. Ideally as soon as the average price of Bitcoin changes, an alert is sent. Imagine if we later decided that we wanted to use this application to purchase and sell bitcoin, we'd certainly need to react to prices much faster.
 
 One way this could be done is by using Stream Processor. Rather than batch computation to a larger set of data, we run our application logic on each piece of data individually.
 
@@ -58,7 +58,7 @@ For this to work we need to have two different pipelines. One for when we are ad
 
 Normally running application logic on each piece of data as it flows through would be considered expensive and we might batch operations to save time or resources. Stream processors like Wallaroo make this style of computation fast through parallelism and scaling ability.
 
-Let’s take a quick look at a few pieces of code to show what the difference between both applications are. The full application is available [here]().
+Let’s take a quick look at a few pieces of code to show what the difference between both applications are. The full application is available [here](https://github.com/WallarooLabs/wallaroo_blog_examples/master/pricealert).
 
 ```python
 class Alerts(object):
@@ -78,7 +78,7 @@ class BTCPrice(object):
 
 Our price object also looks a bit different than our Celery example. With Celery we were using SQLite's `AVG` function to take the average of all the prices that came in a predefined time interval. In our Wallaroo application I keep a count of the number of results we've seen so far, the total, and the current average. The average is calculated by dividing the total by the count. It's a fairly basic calculation but you could use any python library to do this as well. Things like Pandas and NumPy work great with Wallaroo.
 
-The computation logic is very similar to what we we're doing with Celery. The Wallaroo computations(view the full file [here](https://github.com/enilsen16/pricealert/blob/master/coinbase.py)) may be more explicit but both extract the price data from Coinbase, calculate the average price, and then check to see if any users' alert thresolds were crossed.
+The computation logic is very similar to what we we're doing with Celery. The Wallaroo computations(view the full file [here](https://github.com/enilsen16/pricealert/blob/master/coinbase.py)) may be more explicit but both extract the price data from Coinbase, calculate the average price, and then check to see if any users' alert thresholds were crossed.
 
 ```python
 def maybe_send_alerts_based_on_average_price(btc_price, alerts):
@@ -101,6 +101,6 @@ As you can see while there are a few differences between our Celery logic and ou
 
 Wallaroo allows us to avoid all the problems we first talked about. We went from running somewhat simple logic every ten minutes to being able to react to prices in real-time. Which is great if we wanted to add more functionality to our application, like buying and selling on our behalf or viewing real-time charts of this data.
 
-There are many different use-cases for wanting to use a Stream Processor over Batch Processing. Many of which have been covered as examples in our blog. If you're interested in learning more about Wallaroo for a personal project or for use at your company, send us an [email](hello@wallaroolabs.com).
+There are many different use-cases for wanting to use a stream processor over batch processing. Many of which have been covered as examples in our blog. If you're interested in learning more about Wallaroo for a personal project or for use at your company, send us an [email](hello@wallaroolabs.com).
 
 Thanks to my coworkers Simon, Nisan, Andy and Jonathan for providing feedback on both the blog post and the application.
