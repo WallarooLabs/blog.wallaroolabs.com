@@ -32,7 +32,7 @@ Using the coinbase-pro client, connecting and managing the websocket connection 
 
 ## Celery Periodic Task Structure
 
-I chose to use Celery to run our periodic tasks. Setting up Celery was pretty simple, just install the pip package and require the celery and crontab packages. For the purpose of this blog post, our calculation is straightforward. Users set an alert on a price and we send an alert to the client when the average of the last ten minutes of BTC transactions are greater than the specified threshold (You can view the full file [here](https://github.com/enilsen16/pricealert/blob/master/pricealert/tasks.py)).
+I chose to use Celery to run our periodic tasks. Setting up Celery was pretty simple, just install the pip package and require the celery and crontab packages. For the purpose of this blog post, our calculation is straightforward. Users set an alert on a price and we send an alert to the client when the average of the last ten minutes of BTC transactions are greater than the specified threshold (You can view the full file [here](https://github.com/WallarooLabs/wallaroo_blog_examples/blob/master/pricealert/pricealert/tasks.py)).
 
 ```python
 @app.task
@@ -54,13 +54,13 @@ One way this could be done is by using a stream processor. Rather than batch com
 
 Our application is a perfect use case for Wallaroo. We have data coming from Coinbase and can save the average price and our user’s alerts in Wallaroo as state objects. If you need a refresher on Wallaroo terminology check out our [core-concepts](https://docs.wallaroolabs.com/book/core-concepts/core-concepts.html).
 
-For this to work we need to have two different pipelines. One for when we are adding new price data from coinbase and the other to store alert data from our django application. Pipelines in Wallaroo are how you split up your application logic. Each pipeline has its own source, and messages from the source are processed sequentially through the pipeline's computations. Computations can access both the state inside its own pipeline and the state outside of its' pipeline. This is how updates to buy/sell prices always read the most up to date alert settings that are set by a separate pipeline.
+For this to work we need to have two different pipelines. One for when we are adding new price data from coinbase and the other to store alert data from our Django application. Pipelines in Wallaroo are how you split up your application logic. Each pipeline has its own source, and messages from the source are processed sequentially through the pipeline's computations. Computations can access both the state inside its own pipeline and the state outside of its' pipeline. This is how updates to buy/sell prices always read the most up to date alert settings that are set by a separate pipeline.
 
 ![High level Wallaroo architecture](/images/post/celery-to-stream-processing/high-level-wallaroo-architecture.png)
 
 Normally running application logic on each piece of data as it flows through would be considered expensive and we might batch operations to save time or resources. Stream processors like Wallaroo make this style of computation fast through parallelism and scaling ability.
 
-Let’s take a quick look at a few pieces of code to show what the difference between both applications are. The full application is available [here](https://github.com/WallarooLabs/wallaroo_blog_examples/master/pricealert).
+Let’s take a quick look at a few pieces of code to show what the difference between both applications are. The full application is available [here](https://github.com/WallarooLabs/wallaroo_blog_examples/tree/master/pricealert).
 
 ```python
 class Alerts(object):
@@ -80,7 +80,7 @@ class BTCPrice(object):
 
 Our price object also looks a bit different than our Celery example. With Celery we were using SQLite's `AVG` function to take the average of all the prices that came in a predefined time interval. In our Wallaroo application I keep a count of the number of results we've seen so far, the total, and the current average. The average is calculated by dividing the total by the count. It's a fairly basic calculation but you could use any python library to do this as well. Things like Pandas and NumPy work great with Wallaroo.
 
-The computation logic is very similar to what we we're doing with Celery. The Wallaroo computations(view the full file [here](https://github.com/enilsen16/pricealert/blob/master/coinbase.py)) may be more explicit but both extract the price data from Coinbase, calculate the average price, and then check to see if any users' alert thresholds were crossed.
+The computation logic is very similar to what we we're doing with Celery. The Wallaroo computations(view the full file [here](https://github.com/WallarooLabs/wallaroo_blog_examples/blob/master/pricealert/coinbase.py)) may be more explicit but both extract the price data from Coinbase, calculate the average price, and then check to see if any users' alert thresholds were crossed.
 
 ```python
 def maybe_send_alerts_based_on_average_price(btc_price, alerts):
@@ -95,7 +95,7 @@ def maybe_send_alerts_based_on_average_price(btc_price, alerts):
 
 Even though the `maybe_send_alerts_based_on_average_price` function is called in the pipeline responsible for keeping track of the average BTC price, we are able to pass our Alerts object to this pipeline. This means that we are always using the most recent dictionary of alerts rather than needing to query for all of our alerts that match a certain criteria.
 
-If you haven't already, go ahead and try running this application on your own. Clone the repository [here](https://github.com/enilsen16/pricealert) and start messing around with different intervals or add the ability to set alerts on eth-usd on the same pipeline.
+If you haven't already, go ahead and try running this application on your own. Clone the repository [here](https://github.com/WallarooLabs/wallaroo_blog_examples/tree/master/pricealert) and start messing around with different intervals or add the ability to set alerts on eth-usd on the same pipeline.
 
 ## Conclusion
 
