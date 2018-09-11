@@ -7,6 +7,7 @@ description = "In this post, we'll provide an overview of what stream processing
 tags = [
   "wallaroo",
   "example",
+  "python",
 ]
 categories = [
   "python"
