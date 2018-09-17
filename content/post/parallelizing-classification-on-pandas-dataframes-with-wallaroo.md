@@ -301,6 +301,7 @@ Now, with the 100,000-line file:
 
 And with the million-line file:
 
+
 | original code | 1 worker | 2 workers | 4 workers | 8 workers |
 |---------------|----------|-----------|-----------|-----------|
 |      58:21.12 | 1:03:46  | 1:03:35*   | 32:12.76  |  16:33.03 |
@@ -310,10 +311,10 @@ _________________________________________________________
 #### Why is there no speed improvement with 2 workers running in parallel?
 
 This phenomenon is a side-effect of Python’s execution model. A single
-`machida` process, even though it’s a concurrent
-[Pony](https://www.ponylang.org/) program itself, can only use a single Pony
-scheduler so as not to disrupt the embedded Python interpreter’s assumption of
-a single-threaded world.
+`machida` process, even though it’s a concurrent [Pony
+program](https://github.com/WallarooLabs/wallaroo/blob/master/machida/machida.pony)
+itself, can only use a single Pony scheduler so as not to disrupt the
+embedded Python interpreter’s assumption of a single-threaded world.
 
 When we specify that a step be run in parallel, the
 first chunk of parallelized work gets executed on the initializer node. Only
