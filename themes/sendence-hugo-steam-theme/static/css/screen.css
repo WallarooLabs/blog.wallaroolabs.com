@@ -609,6 +609,10 @@ table thead {
   font-weight: 600;
   border-bottom: 1px solid #ecf0f1;
 }
+table thead tr th {
+  text-align: left;
+  padding-left: 0.5em;
+}
 table tbody tr:nth-child(even) {
   background-color: #ecf0f1;
   border-top: 1px solid #e3e9eb;

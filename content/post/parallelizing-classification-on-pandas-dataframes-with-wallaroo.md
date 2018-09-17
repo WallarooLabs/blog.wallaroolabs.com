@@ -114,9 +114,7 @@ among the available CPU cores (8 of them) on this machine. First, we'll need som
 scaffolding to set up input and output for Wallaroo.
 
 
-```
-  [send.py] ---> [wallaroo source | wallaroo app] ----> [data_receiver]
-```
+![Three process architecture: send.py sends data, wallaroo processes it, and sends to data_receiver](/images/post/parallelizing-classification-on-pandas-dataframes-with-wallaroo/sendpy-wallaroo-data-receiver.png)
 
 
 ### Step 1: Sending the CSV file to Wallaroo
@@ -301,7 +299,7 @@ Now, with the 100,000-line file:
 |       5:47.69 |  6:28.21 | 6.28.65*  |   3:16.28 |  1:41.35  |
 
 
-And with the Million-line file:
+And with the million-line file:
 
 | original code | 1 worker | 2 workers | 4 workers | 8 workers |
 |---------------|----------|-----------|-----------|-----------|
