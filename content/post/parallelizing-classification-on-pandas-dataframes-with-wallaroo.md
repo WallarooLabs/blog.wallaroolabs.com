@@ -157,8 +157,7 @@ def decode(bs):
 ```
 
 As you can see, if our data is the EOT byte (`\x04`), we'll create an object
-that makes the "End Of Input" meaning explicit. Otherwise, we'll take the data
-it as-is.
+that makes the "End Of Input" meaning explicit. Otherwise, we'll take the data as-is.
 
 ### Step 2: Batching the CSV Rows
 
