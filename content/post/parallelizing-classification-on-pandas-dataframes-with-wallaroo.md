@@ -34,12 +34,11 @@ pipeline might get completely clogged up.
 
 You can use Wallaroo to efficiently parallelize the work so you can be sure it
 completes in time. Let’s see how we can dip our toes in Wallaroo-land!  We’ll
-use an ad-hoc Wallaroo cluster to parallelize a batch job and reduce its
-run-time by ¾ on one machine, with the potential to easily scale out
-horizontally onto multiple machines, if needed. This means that we can roll out
-a little piece of streaming architecture in our own backyard, and have a story
-ready when the time comes to move other parts of the stack into the evented
-streaming world.
+use an ad-hoc cluster to parallelize a batch job and reduce its run-time by ¾
+on one machine, with the potential to easily scale out horizontally onto
+multiple machines, if needed. This means that we can roll out a little piece of
+streaming architecture in our own backyard, and have a story ready when the
+time comes to move other parts of the stack into the evented streaming world.
 
 ## The Existing Pipeline
 
@@ -106,8 +105,8 @@ run-time complexity -- the time taken to perform the task is linearly dependent 
 the size of the input. We can estimate that our pipeline will be in trouble if
 the rate of data coming in exceeds ~270 rows/second, on average.
 
-This means that if the hourly job inputs start to approach 1 million rows, we are
-in trouble.
+This means that if the hourly job inputs start to approach 1 million rows, new
+jobs may start 'running into' old jobs that haven't yet finished.
 
 
 ## Parallelizing Pandas with Wallaroo
