@@ -32,11 +32,14 @@ everyone on board with migrating to a streaming architecture will take time and
 a lot of effort. By the time that happens, your particular piece of the
 pipeline might get completely clogged up.
 
-Let's see how we can dip our toes in Wallaroo-land. We’ll use an ad-hoc Wallaroo
-cluster to parallelize a batch job and reduce its run-time by ¾ on one machine, with the potential to easily scale out horizontally onto multiple machines, if needed. This means that we
-can roll out a little piece of streaming architecture in our own backyard, and
-have a story ready when the time comes to move other parts of the stack into
-the evented streaming world.
+You can use Wallaroo to efficiently parallelize the work so you can be sure it
+completes in time. Let’s see how we can dip our toes in Wallaroo-land!  We’ll
+use an ad-hoc Wallaroo cluster to parallelize a batch job and reduce its
+run-time by ¾ on one machine, with the potential to easily scale out
+horizontally onto multiple machines, if needed. This means that we can roll out
+a little piece of streaming architecture in our own backyard, and have a story
+ready when the time comes to move other parts of the stack into the evented
+streaming world.
 
 ## The Existing Pipeline
 
@@ -286,40 +289,37 @@ and receiver) and sending all the data over the network twice.
 
 Now, let's see the gains to be had on bigger inputs. First, the 10,000-line file:
 
-| original code | 1 worker | 2 workers | 4 workers | 8 workers |
-|---------------|----------|-----------|-----------|-----------|
-|       0:35.53 |  0:38.91 | 0:39.27*  |   0:20.02 |   0:10.85 |
+| original code | 1 worker | 4 workers | 8 workers |
+|---------------|----------|-----------|-----------|
+|       0:35.53 |  0:38.91 |   0:20.02 |   0:10.85 |
 
 
 Now, with the 100,000-line file:
 
-| original code | 1 worker | 2 workers | 4 workers | 8 workers |
-|---------------|----------|-----------|-----------|-----------|
-|       5:47.69 |  6:28.21 | 6.28.65*  |   3:16.28 |  1:41.35  |
+| original code | 1 worker | 4 workers | 8 workers |
+|---------------|----------|-----------|-----------|
+|       5:47.69 |  6:28.21 |   3:16.28 |  1:41.35  |
 
 
 And with the million-line file:
 
 
-| original code | 1 worker | 2 workers | 4 workers | 8 workers |
-|---------------|----------|-----------|-----------|-----------|
-|      58:21.12 | 1:03:46  | 1:03:35*   | 32:12.76  |  16:33.03 |
+| original code | 1 worker | 4 workers | 8 workers |
+|---------------|----------|-----------|-----------|
+|      58:21.12 | 1:03:46  | 32:12.76  |  16:33.03 |
 
 
 _________________________________________________________
-#### Why is there no speed improvement with 2 workers running in parallel?
 
-This phenomenon is a side-effect of Python’s execution model. A single
-`machida` process, even though it’s a concurrent [Pony
-program](https://github.com/WallarooLabs/wallaroo/blob/master/machida/machida.pony)
-itself, can only use a single Pony scheduler so as not to disrupt the
-embedded Python interpreter’s assumption of a single-threaded world.
+#### Why didn't you test on 2 workers?
 
-When we specify that a step be run in parallel, the
-first chunk of parallelized work gets executed on the initializer node. Only
-when that first chunk of work is done will the initializer node send out the
-rest of the chunks to the other members of the cluster. From that point onward
-the execution can be said to be truly parallel.
+Due to the single-threaded constraints of Python's execution model, the
+initializer in a wallaroo cluster will often aggressively undertake its share
+of a parallel workload before sending out work to the rest of the cluster.
+
+This means that running a parallel job on 2 workers will not yield speed
+benefits. We recommend running clusters of at least 4 workers in order to
+leverage Wallaroo's scaling capabilities.
 _________________________________________________________
 
 
