@@ -291,14 +291,14 @@ Now, let's see the gains to be had on bigger inputs. First, the 10,000-line file
 
 | original code | 1 worker | 4 workers | 8 workers |
 |---------------|----------|-----------|-----------|
-|       0:35.53 |  0:38.91 |   0:20.02 |   0:10.85 |
+| 35s           | 39s      | 20s       | 11s       |
 
 
 Now, with the 100,000-line file:
 
 | original code | 1 worker | 4 workers | 8 workers |
 |---------------|----------|-----------|-----------|
-|       5:47.69 |  6:28.21 |   3:16.28 |  1:41.35  |
+| 5m48s         | 6m28s    | 3m16s     | 1m41s     |
 
 
 And with the million-line file:
@@ -306,7 +306,7 @@ And with the million-line file:
 
 | original code | 1 worker | 4 workers | 8 workers |
 |---------------|----------|-----------|-----------|
-|      58:21.12 | 1:03:46  | 32:12.76  |  16:33.03 |
+| 58m21s        | 1h03m46s | 32m12s    | 16m33s    |
 
 
 _________________________________________________________
