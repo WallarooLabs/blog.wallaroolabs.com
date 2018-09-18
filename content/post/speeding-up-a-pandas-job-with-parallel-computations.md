@@ -1,5 +1,5 @@
 +++
-title = "Parallelizing Classification on Pandas Dataframes With Wallaroo"
+title = "Speeding up a Pandas job with Parallel Computations"
 date = 2018-09-17T15:16:44-07:00
 draft = false
 author = "simonzelazny"
@@ -12,7 +12,7 @@ tags = [
 	"use-case"
 ]
 categories = [
-    "examples"
+    "Data Science at Scale"
 ]
 +++
 
@@ -116,7 +116,7 @@ among the available CPU cores (8 of them) on this machine. First, we'll need som
 scaffolding to set up input and output for Wallaroo.
 
 
-![Three process architecture: send.py sends data, wallaroo processes it, and sends to data_receiver](/images/post/parallelizing-classification-on-pandas-dataframes-with-wallaroo/sendpy-wallaroo-data-receiver.png)
+![Three process architecture: send.py sends data, wallaroo processes it, and sends to data_receiver](/images/post/speeding-up-a-pandas-job-with-parallel-computations/sendpy-wallaroo-data-receiver.png)
 
 
 ### Step 1: Sending the CSV file to Wallaroo
