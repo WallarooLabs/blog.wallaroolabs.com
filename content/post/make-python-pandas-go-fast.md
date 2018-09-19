@@ -1,6 +1,6 @@
 +++
 title = "Make Python Pandas go fast"
-date = 2018-09-17T15:16:44-07:00
+date = 2018-09-20T07:00:00-07:00
 draft = false
 author = "simonzelazny"
 description = "Converting a batch job to a parallel Wallaroo pipeline, and the speed benefits thereof."
