@@ -80,7 +80,7 @@ Here's how we can do it with Wallaroo:
 ```
 
 The idea is to ingest the csv rows using our TCP source, batch them up into
-smal dataframes, and run the classification algorithm in parallel.
+small dataframes, and run the classification algorithm in parallel.
 
 We’ll preserve the input and output formats of our section of the pipeline,
 maintaining compatibility with upstream and downstream systems, but hopefully
