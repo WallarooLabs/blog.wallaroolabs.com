@@ -1,9 +1,9 @@
 +++
-title = "Speeding up a Pandas job with Parallel Computations"
+title = "Make Python Pandas go fast"
 date = 2018-09-17T15:16:44-07:00
 draft = false
 author = "simonzelazny"
-description = "Converting a batch job to a parallel Wallaroo pipeline."
+description = "Converting a batch job to a parallel Wallaroo pipeline, and the speed benefits thereof."
 tags = [
     "python",
     "batch-processing",
@@ -22,20 +22,26 @@ Suppose you have a Data Analysis batch job that runs every hour on a dedicated
 machine. As the weeks go by, you notice that the inputs are getting larger and
 the time taken to run it gets longer, slowly nearing the one hour mark. You
 worry that subsequent executions might begin to 'run into' each other and cause
-your business pipelines to misbehave.
+your business pipelines to misbehave. Or perhaps you're under SLA to deliver
+results for a batch of information within a given time constraint, and with the
+batch size slowly increasing in production, you're approaching the maximum
+allotted time.
 
 This sounds like you [might have a streaming problem](
 https://blog.wallaroolabs.com/2018/01/you-might-have-a-streaming-data-problem-if.../)!
-But --you say--
-other parts of the analytics pipeline are owned by other teams, and getting
-everyone on board with migrating to a streaming architecture will take time and
-a lot of effort. By the time that happens, your particular piece of the
-pipeline might get completely clogged up.
+But -- you say -- other parts of the analytics pipeline are owned by other teams,
+and getting everyone on board with migrating to a streaming architecture will
+take time and a lot of effort. By the time that happens, your particular piece
+of the pipeline might get completely clogged up. Wallaroo, while originally
+desinged for streaming and event data, can also be used to reliably parallelize
+many workloads not normally thought of as streaming, with little effort.
 
-You can use Wallaroo to efficiently parallelize the work so you can be sure it
-completes in time. Let’s see how we can dip our toes in Wallaroo-land!  We’ll
-use an ad-hoc cluster to parallelize a batch job and reduce its run-time by ¾
-on one machine, with the potential to easily scale out horizontally onto
+Let's make our pandas go faster! We’ll use an ad-hoc cluster to parallelize a
+batch job and reduce its run-time by ¾ on one machine. The cluster will consist
+of several Wallaroo workers on one machine, and can be shut down after the job
+is done.
+
+With this structure in place, we can easily scale out horizontally onto
 multiple machines, if needed. This means that we can roll out a little piece of
 streaming architecture in our own backyard, and have a story ready when the
 time comes to move other parts of the stack into the evented streaming world.
@@ -116,7 +122,7 @@ among the available CPU cores (8 of them) on this machine. First, we'll need som
 scaffolding to set up input and output for Wallaroo.
 
 
-![Three process architecture: send.py sends data, wallaroo processes it, and sends to data_receiver](/images/post/speeding-up-a-pandas-job-with-parallel-computations/sendpy-wallaroo-data-receiver.png)
+![Three process architecture: send.py sends data, wallaroo processes it, and sends to data_receiver](/images/post/make-python-pandas-go-fast/sendpy-wallaroo-data-receiver.png)
 
 
 ### Step 1: Sending the CSV file to Wallaroo
