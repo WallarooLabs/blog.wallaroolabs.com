@@ -353,8 +353,9 @@ Putting your analytics pipelines in a streaming framework opens up not only
 possibilities for scaling your data science, but also for real-time
 insights. Once you're ready to take the plunge into a true evented model, all
 you have to do is send your data directly to Wallaroo, bypassing the CSV stage
-completely. With a little up-front investment, you've unlocked a broad range of
-possibilities to productionize your Python analytics code.
+completely. The actual Wallaroo pipeline doesn't need to change! With a little
+up-front investment, you've unlocked a broad range of possibilities to
+productionize your Python analytics code.
 
 If you'd like to find out more how Wallaroo can help out with scaling Python
 analytics, please reach out to
