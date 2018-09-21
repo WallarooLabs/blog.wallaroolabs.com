@@ -50,9 +50,9 @@ paginate = 5
 	useSummaryIfNoDescription = true
 
   # Splash segment prompt and button label
-  splashprompt = "Answer our 30-second survey, and be entered to win a Wallaroo T-Shirt"
-  splashurl = "https://wallaroolabs.typeform.com/to/HS6azY?source=wallaroo_blog"
-  splashbutton = "Go to survey"
+  splashprompt = "Check out our Scale-Independent Computing intro video"
+  splashurl = "https://vimeo.com/270509076"
+  splashbutton = "Show me the Vimeo!"
 
 [menu]
 
