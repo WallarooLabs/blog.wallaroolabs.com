@@ -17,7 +17,7 @@ I'm very excited to announce the first open source, public release of our ultraf
 
 ## What is Wallaroo?
 
-Wallaroo is an ultrafast and elastic data processing engine that rapidly takes you from prototype to production by making the infrastructure virtually disappear.  We’ve designed it to handle demanding high-throughput, low-latency tasks where the accuracy of results is essential. Wallaroo takes care of mechanics of scaling, resilience, state management, and message delivery. We've designed Wallaroo to make it easy to scale applications with no code changes, and allow programmers to focus on business logic. If you are interested in learning more about Wallaroo, I suggest you start with our introductory blog post ["Hello Wallaroo!" blog post][hello wallaroo post] that we released back in March. 
+Wallaroo is an ultrafast and elastic data processing engine that rapidly takes you from prototype to production by making the infrastructure virtually disappear.  We’ve designed it to handle demanding high-throughput, low-latency tasks where the accuracy of results is essential. Wallaroo takes care of mechanics of scaling, resilience, state management, and message delivery. We've designed Wallaroo to make it easy to scale applications with no code changes, and allow programmers to focus on business logic. If you are interested in learning more about Wallaroo, I suggest you start with our introductory blog post ["Hello Wallaroo!" blog post][hello wallaroo post] that we released back in March.
 
 I've done a [15-minute video of our engineering presentation][scale independence with wallaroo] that has helped people understand what Wallaroo is. If you watch it, you will get:
 
@@ -42,7 +42,7 @@ As our CEO Vid Jain puts it:
 
 And that's what we are looking at every day. Our engineers are always asking themselves, does this feature:
 
-- Make it easier to scale an application? 
+- Make it easier to scale an application?
 - Push the burden of scaling a distributed application from the developer to the framework?
 - Improve performance?
 - Increase a developer's productivity?
@@ -51,7 +51,7 @@ And that's what we are looking at every day. Our engineers are always asking the
 Part of that means that we want to allow developers to use the languages they are used to. The big data landscape is dominated by projects that require you to use the JVM. The JVM is an impressive piece of technology, but it's not for everyone.  To that end, we are launching with a Python API, followed by C++ and Go bindings in the near future. We think that data scientists shouldn't have to rewrite the application they developed in Python to get it into production. The same would apply to C++ and Go; everyone deserves great tools. We're here to provide them to more folks.
 
 So, that's what we are building. But, what's the state of Wallaroo now and where is it going in the immediate future?
- 
+
 ## What's the current state?
 
 Wallaroo has a solid core in place that can be immediately useful for some production workflows now. We do [extensive testing][codemesh16 how did i get here] of Wallaroo that we continue to expand on and improve. Through both internal testing usage and via customer proof of concept engagements, Wallaroo has already processed billions of messages in a single day.
@@ -60,15 +60,15 @@ With our open source release you get:
 
 - A Python 2.7 API for building linear data processing applications
 - [Documentation][documentation website] to get you started
-- Integrated state-management 
+- Integrated state-management
 - Process failure recovery
 - Ability to take your application from running on one process to many without changing code
 - Metrics UI
 
 Wallaroo has been used to build a variety of applications including:
 
-- High-volume position keeping system (using our C++ API, slated for GA in the near future) 
-- Python video transcription and analysis system using TensorFlow and NLP 
+- High-volume position keeping system (using our C++ API, slated for GA in the near future)
+- Python video transcription and analysis system using TensorFlow and NLP
 
 We're looking to work with commercial partners and the open source community to grow the product in line with our vision. We've come a long way from where we started eighteen months ago, and we know there's plenty more to do; software is never done. The problems Wallaroo aims to solve will continue to grow and change. So what are we planning on doing with Wallaroo over the next few months?
 
@@ -86,21 +86,11 @@ If you are interested in more details, check out our [roadmap][roadmap].
 
 ## Licensing
 
-Wallaroo is an open source project. All of the source code is available to you. However, not all of the Wallaroo source code is available under an "open source" license. 
-
-Most of the Wallaroo code base is available under the [Apache License, version 2][apache 2 license]. Parts of Wallaroo are licensed under the [Wallaroo Community License Agreement][wallaroo community license]. The [Wallaroo Community License][wallaroo community license] is based on [Apache version 2][apache 2 license]. However, you should read it for yourself. Here we provide a summary of the main points of the [Wallaroo Community License Agreement][wallaroo community license].
-
-- You can **run** all Wallaroo code in a non-production environment without restriction.
-- You can **run** all Wallaroo code in a production environment for free on up to 3 servers or 24 CPUs.
-- If you want to **run** Wallaroo Enterprise version features in production above 3 servers or 24 CPUs, you have to obtain a license.
-- You can **modify** and **redistribute** any Wallaroo code
-- Anyone who uses your **modified** or **redistributed** code is bound by the same license and needs to obtain a Wallaroo Enterprise license to run on more than 3 servers or 24 CPUs in a production environment. 
-
-Please [contact us][contact us email] if you have any questions about licensing or Wallaroo Enterprise.
+Wallaroo is an open source project. All of the source code is available to you. The code base is available under the [Apache License, version 2][apache 2 license]. In earlier version of Wallaroo some parts were licensed under the Wallaroo Community License Agreement, but the Apache 2.0 license now covers all of the code.
 
 ## Give Wallaroo a try
 
-We're excited to start working with our friends in the open source community and new commercial partners. 
+We're excited to start working with our friends in the open source community and new commercial partners.
 
 If you are interested in getting started with Wallaroo, head over to [our website and get started][website community section]. If you would like a demo or to talk about how Wallaroo can help your business, please get in touch by emailing [hello@wallaroolabs.com][contact us email].
 
