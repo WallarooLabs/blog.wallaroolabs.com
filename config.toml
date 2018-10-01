@@ -50,9 +50,9 @@ paginate = 5
 	useSummaryIfNoDescription = true
 
   # Splash segment prompt and button label
-  splashprompt = "Check out our Scale-Independent Computing intro video"
-  splashurl = "https://vimeo.com/270509076"
-  splashbutton = "Show me the Vimeo!"
+  splashprompt = "Wallaroo 0.5.3 has been released with a ton of improvements!"
+  splashurl = "https://github.com/WallarooLabs/wallaroo/releases/tag/0.5.3"
+  splashbutton = "Learn more!"
 
 [menu]
 
