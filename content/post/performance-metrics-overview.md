@@ -2,7 +2,6 @@
 title = "Building low-overhead metrics collection for high-performance systems"
 date = 2018-02-20T07:20:00-05:00
 draft = false
-slug = "building-low-overhead-metrics-collection-for-high-performance-systems"
 author = "jonbrwn"
 description = "Design decisions that allowed us to capture metrics in Wallaroo with a low-overhead."
 tags = [

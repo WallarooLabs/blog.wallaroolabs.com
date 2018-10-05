@@ -8,7 +8,7 @@ googleAnalytics = ""
 paginate = 5
 
 [permalinks]
-  post = "/:year/:month/:title/"
+  post = "/:year/:month/:slug/"
 
 [params]
 	title = "Wallaroo Labs Engineering Blog"
