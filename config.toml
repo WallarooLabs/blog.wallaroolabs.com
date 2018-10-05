@@ -52,7 +52,7 @@ paginate = 5
   # Splash segment prompt and button label
   splashprompt = "Wallaroo 0.5.3 has been released with a ton of improvements!"
   splashurl = "https://github.com/WallarooLabs/wallaroo/releases/tag/0.5.3"
-  splashbutton = "Learn more!"
+  splashbutton = "Learn more"
 
 [menu]
 
