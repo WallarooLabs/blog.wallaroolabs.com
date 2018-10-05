@@ -7,7 +7,8 @@ description = "In which we announce that Wallaroo is now 100% open source"
 tags = [
     "wallaroo",
     "open source",
-    "announcement"
+    "announcement",
+    "python"
 ]
 categories = [
     "Hello Wallaroo"
