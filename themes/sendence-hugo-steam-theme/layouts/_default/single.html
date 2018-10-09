@@ -44,6 +44,10 @@
         {{ .Content }}
     </section>
 
+    <section class="recommended-articles">
+        {{ partial "recommended" . }}
+    </section>
+
     {{ if .Type | eq "post" }}
 
     {{ template "_internal/disqus.html" . }}
