@@ -44,9 +44,7 @@
         {{ .Content }}
     </section>
 
-    <section class="recommended-articles">
-        {{ partial "recommended" . }}
-    </section>
+    {{ partial "youmightalsolike" . }}
 
     {{ if .Type | eq "post" }}
 

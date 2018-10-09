@@ -4,7 +4,9 @@ This is the source for the blog.wallaroolabs.com blog.
 
 The Wallaroo Labs blog is generated using [Hugo]: a static website generator. If you are making larger changes to the site, you will need to install Hugo locally to verify your changes are working.
 
-Because the site is deploying using a remote server, you should make sure you are developing using whatever version the deploy server is currently run
+Because the site is deploying using a remote server, you should make sure you are developing using whatever version the deploy server is currently running.
+
+Currently, at least Hugo 0.49 is required.
 
 ## blog.wallaroolabs.com hosting
 

@@ -234,6 +234,18 @@ section.share {
   padding-bottom: 1em;
   text-align: right;
 }
+section.you-might-also-like {
+  margin-top: 1em;
+  border-top: 1px solid #ecf0f1;
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+section.you-might-also-like h4 {
+  font-family: "Open Sans Condensed", "Open Sans", "Helvetica Neue", Helvetica, Arial, "Nimbus L", sans-serif;
+  font-weight: 400;
+  font-size: 2em;
+  margin-bottom: 4px;
+}
 section.author h4 {
   margin: 0;
   padding-top: 4px;
