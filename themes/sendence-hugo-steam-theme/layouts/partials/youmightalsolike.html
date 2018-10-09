@@ -101,12 +101,12 @@ This will lead to something like
 <ul>
 {{/*
 
-For every article in the set of the first 5
+For every article in the set of the first 3
 recommended articles shuffled, show their
 anchor.
 
 */}}
-{{- range (shuffle (first 5 $recommendedArticles)) -}}
+{{- range (shuffle (first 3 $recommendedArticles)) -}}
 <li>
   <a href="{{ .Permalink }}">
     {{ .Title }}
