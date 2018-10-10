@@ -7,14 +7,10 @@ description = "We've learned quite a lot while working on the Go API for Wallaro
 tags = [
     "cgo",
     "golang",
-    "c",
-    "ffi",
-    "pony",
-    "wallaroo",
     "performance"
 ]
 categories = [
-    "Adventures with cgo"
+    "Adventures with cgo", "Exploring Wallaroo Internals"
 ]
 +++
 A lot of materials have been created to help Go programmers implement Go "best performance practices". The same can not be said of cgo performance. This is the first post in a series of posts that will discuss cgo performance considerations. Today's post will focus on calling Go code from another language like C. Let's get started by looking at a bit of background on our product Wallaroo and why we ended needing to become well-versed in the ways of cgo. Then, for those you who aren't familiar with what cgo is and how it differs from Go, a quick cgo primer. If you are familiar with [Wallaroo](https://github.com/wallaroolabs/wallaroo), it's [Go API](https://blog.wallaroolabs.com/2018/01/go-go-go-stream-processing-for-go/) and [cgo](https://golang.org/cmd/cgo/), feel free to skip ahead to ["What's tricky about calling Go from 'C'"](#what-s-tricky-about-calling-go-from-c).

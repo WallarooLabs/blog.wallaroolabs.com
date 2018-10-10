@@ -5,15 +5,12 @@ draft = false
 author = "simonzelazny"
 description = "An example Wallaroo application that plugs into a live XMPP traffic stream to detect spambots. Built with Erlang and Python. Spambots included."
 tags = [
-    "Example",
-    "Prototypes",
-    "Python",
-    "Tutorial",
-    "Use-Case",
-    "Wallaroo",
+    "example",
+    "python",
+    "use case",
 ]
 categories = [
-    "Examples",
+    "Example",
 ]
 +++
 

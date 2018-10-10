@@ -5,12 +5,13 @@ draft = false
 author = "aturley"
 description = "A look at how Wallaroo applications can now support new keys"
 tags = [
-    "wallaroo",
     "python",
-    "golang"
+    "golang",
+    "announcement",
+    "api"
 ]
 categories = [
-    "API"
+    "Exploring Wallaroo Internals"
 ]
 +++
 

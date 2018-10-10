@@ -3,13 +3,11 @@ title = "How to update your Wallaroo Python applications to the new API"
 draft = false
 date = 2018-01-12T00:00:00Z
 tags = [
-    "wallaroo",
     "python",
-    "how-to",
-		"api"
+	"api"
 ]
 categories = [
-    "Python API"
+    "announcement"
 ]
 description = "A how-to guide to updating to our new Python API, introduced in version 0.4.0"
 author = "amosca"

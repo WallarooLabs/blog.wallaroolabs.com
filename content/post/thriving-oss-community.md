@@ -3,11 +3,8 @@ title = "How to Build a Thriving Open-source Community"
 draft = false
 date = 2017-11-28T00:00:00Z
 tags = [
-    "wallaroo",
-    "community"
 ]
 categories = [
-    "Community"
 ]
 description = "Some of the initial ideas, tactics, and approaches that we are employing and believe will drive the success of our community."
 author = "cblake"

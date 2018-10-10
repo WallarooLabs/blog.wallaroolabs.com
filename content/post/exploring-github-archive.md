@@ -5,15 +5,13 @@ draft = false
 author = "brian"
 description = "Learn to use Wallaroo with Python, Kafka, and the GitHub Archive"
 tags = [
-    "Wallaroo",
-    "Integration",
-    "Python",
-    "Partitioning",
-    "State",
-    "Resilience"
+    "python",
+    "partitioning",
+    "state",
+    "windowing"
 ]
 categories = [
-    "Hello Wallaroo"
+    "example"
 ]
 +++
 

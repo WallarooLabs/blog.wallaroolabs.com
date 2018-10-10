@@ -8,11 +8,9 @@ tags = [
     "elixir",
     "phoenix",
     "metrics",
-    "wallaroo",
 ]
 categories = [
-    "Monitoring Hub",
-    "Metrics",
+    "Exploring Wallaroo Internals"
 ]
 +++
 

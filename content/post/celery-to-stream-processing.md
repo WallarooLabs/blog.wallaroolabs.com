@@ -5,12 +5,11 @@ draft = false
 author = "erikn"
 description = "In this post, we'll provide an overview of what stream processing is, some of the advantages it has over batch jobs and then take a brief look at an example."
 tags = [
-  "wallaroo",
   "example",
   "python",
 ]
 categories = [
-  "python"
+  "Example"
 ]
 +++
 

@@ -5,13 +5,12 @@ draft = false
 author = "aturley"
 description = "Learn more about how we implemented Wallaroo's Python API on top of Pony."
 tags = [
-    "wallaroo",
     "python",
     "api",
     "pony"
 ]
 categories = [
-    "Python API"
+    "Exploring Wallaroo Internals"
 ]
 +++
 

@@ -7,12 +7,10 @@ description = "Use the dynamic tracing tool DTrace to observe the internals of a
 tags = [
     "dynamic tracing",
     "dtrace",
-    "wallaroo",
     "pony",
     "python"
 ]
 categories = [
-    "observability"
 ]
 +++
 

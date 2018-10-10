@@ -5,12 +5,10 @@ date: 2017-06-30T00:00:00Z
 author: seantallen
 draft: false
 categories: 
-  - Hello Wallaroo
+  - Exploring Wallaroo Internals
 tags:
-  - coordination
   - performance
   - pony
-  - wallaroo
 ---
 Hi there! Welcome to the second blog post on our high-performance stream processor Wallaroo.
  

@@ -5,14 +5,13 @@ draft = false
 author = "haneemedhat"
 description = "Using Wallaroo to connect to a real-time twitter stream and find trending hashtags."
 tags = [
-    "wallaroo",
-    "twitter",
-    "tutorial",
     "example",
-    "python"
+    "python",
+    "twitter",
+    "use case"
 ]
 categories = [
-    "Examples"
+    "example"
 ]
 +++
 

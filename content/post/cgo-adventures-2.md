@@ -7,12 +7,10 @@ description = "We've learned quite a lot while working on the Go API for Wallaro
 tags = [
     "cgo",
     "golang",
-    "locks",
-    "wallaroo",
     "performance"
 ]
 categories = [
-    "Adventures with cgo"
+    "Adventures with cgo", "Exploring Wallaroo Internals"
 ]
 +++
 Hi there! You're about to read part 2 of a 4 part series about Go performance as told from the perspective of [Wallaroo](https://github.com/wallaroolabs/wallaroo), our distributed stream processor. [Part 1](https://blog.wallaroolabs.com/2018/04/adventures-with-cgo-part-1--the-pointering/) covered issues around having non-Go code holding on to pointers to Go objects. This post builds on part 1.

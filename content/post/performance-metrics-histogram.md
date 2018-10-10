@@ -7,10 +7,9 @@ description = "How we implemented Wallaroo's low overhead performance counters a
 tags = [
     "performance",
     "metrics",
-    "monitoring"
 ]
 categories = [
-    "Metrics"
+    "Exploring Wallaroo Internals"
 ]
 +++
 

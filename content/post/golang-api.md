@@ -5,12 +5,12 @@ draft = false
 author = "aturley"
 description = "Wallaroo’s Go API opens the door to writing scale-independent applications in Go."
 tags = [
-    "wallaroo",
     "golang",
-    "api"
+    "api",
+    "announcement"
 ]
 categories = [
-    "Go API"
+    "announcement"
 ]
 +++
 

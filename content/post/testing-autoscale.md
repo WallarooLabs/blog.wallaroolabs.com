@@ -6,11 +6,9 @@ author = "nisanharamati"
 description = "Repeatability is key in testing, and even more so in complex systems tests where many moving pieces come together. Dive into this post for an overview of how we instrument and automate the testing of Wallaroo's autoscale features."
 tags = [
     "testing",
-    "wallaroo"
 ]
 categories = [
-    "Testing",
-    "Autoscaling"
+    "testing",
 ]
 +++
 

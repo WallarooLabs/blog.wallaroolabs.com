@@ -5,16 +5,14 @@ draft = false
 author = "seantallen"
 description = "What's coming over the next few months with Wallaroo? A lot of features that you've asked for!"
 tags = [
-    "Wallaroo",
-    "Resilience",
-    "Python",
-    "Go",
-    "Integration",
-    "Partitioning",
-    "State"
+    "resilience",
+    "python",
+    "golang",
+    "partitioning",
+    "state"
 ]
 categories = [
-    "Hello Wallaroo"
+    "announcement"
 ]
 +++
 Its been over a year since I wrote the first blog post [introducing Wallaroo to the world](/2017/03/hello-wallaroo/). We’ve covered a lot of ground since then; from introducing the [Python API](/2018/02/idiomatic-python-stream-processing-in-wallaroo/) that is our primary product, to [releasing all our code under an open core model](/2017/09/open-sourcing-wallaroo/). I’m not writing to you today to look back, but instead, forward. I want to talk about what’s coming in Wallaroo over the next few months, but first a bit about how we got here.

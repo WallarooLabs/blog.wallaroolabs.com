@@ -5,12 +5,12 @@ draft = false
 author = "dipin"
 description = "Streamlining the Wallaroo installation process with Wallaroo Up."
 tags = [
-	"wallaroo",
-	"Installation",
-        "Feature Announcement"
+	"installation",
+  "announcement"
 ]
 categories = [
-	"Installation"
+	"installation",
+  "announcement"
 ]
 +++
 

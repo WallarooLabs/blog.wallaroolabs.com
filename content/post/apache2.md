@@ -5,13 +5,11 @@ draft = false
 author = "seantallen"
 description = "In which we announce that Wallaroo is now 100% open source"
 tags = [
-    "wallaroo",
     "open source",
     "announcement",
-    "python"
 ]
 categories = [
-    "Hello Wallaroo"
+    "announcement"
 ]
 +++
 I'm writing today to announce that with the [release of Wallaroo 0.5.3](https://github.com/WallarooLabs/wallaroo/releases/tag/0.5.3), we have switched our licensing over to a pure open source model. 

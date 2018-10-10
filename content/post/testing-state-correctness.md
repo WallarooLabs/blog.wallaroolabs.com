@@ -5,22 +5,10 @@ date: 2017-10-05T00:00:00Z
 author: nisanharamati
 draft: false
 categories:
-  - Testing
+  - testing
 tags:
   - testing
-  - chaos engineering
-  - fault injection
-  - error detection
-  - exactly-once
-  - crash recovery
   - resilience
-  - streaming
-  - big data
-  - serverless
-  - distributed systems
-  - clustering
-  - large scale computing
-  - data engineering
 ---
 
 ## Introduction

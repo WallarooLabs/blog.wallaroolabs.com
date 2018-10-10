@@ -6,13 +6,11 @@ author = "vidjain"
 description = "Our open-source framework, Wallaroo, shares many high-level goals as the existing serverless frameworks, but is also different in key areas and thus better suited for many use-cases."
 tags = [
     "open source",
-    "wallaroo",
     "strategy",
     "marketing",
     "business",
     "serverless",
     "scale-independence",
-    "scaling"
 ]
 categories = [
     "Our Startup Experience"

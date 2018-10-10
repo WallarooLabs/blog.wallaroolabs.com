@@ -5,9 +5,7 @@ draft = false
 author = "erikn"
 description = "This week, we continue to look at data processing patterns used to build event driven stream processing applications with Wallaroo. One of our most frequent use-cases is Analysing trends, either from third-party external or your internal data."
 tags = [
-    "wallaroo",
-    "api",
-    "example"
+    "use case"
 ]
 categories = [
     "Wallaroo in Action"

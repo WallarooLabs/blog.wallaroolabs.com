@@ -3,18 +3,13 @@ title = "DDoS Attack Detection with Wallaroo: A Real-time Time Series Analysis E
 draft = false
 date = 2017-11-30T00:00:00Z
 tags = [
-    "wallaroo",
     "windowing",
     "partitioning",
     "python",
     "example",
-    "tutorial",
-    "ddos",
-    "timeseries",
-    "anomaly detection"
 ]
 categories = [
-    "Examples"
+    "Example"
 ]
 description = "Building a DDoS attack detector using timeseries analysis in real time with Wallaroo."
 author = "nisanharamati"

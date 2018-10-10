@@ -4,8 +4,8 @@ title = "Hello Wallaroo!"
 date = "2017-03-19T00:00:00Z"
 author = "seantallen"
 draft = false
-categories = ["Hello Wallaroo"]
-tags = ["exactly-once", "performance", "wallaroo"]
+categories = ["announcement"]
+tags = ["performance", "announcement"]
 +++
 > We handle the hard infrastructure problems so you don’t have to.
 

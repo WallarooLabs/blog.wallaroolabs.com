@@ -1,14 +1,12 @@
 +++
-title = "Streaming with Wallaroo: Fast Algorithmic Trading Checks"
+title = "Real-time Streaming Pattern: Fast Algorithmic Trading Checks"
+slug = "streaming-with-wallaroo-fast-algorithmic-trading-checks"
 date = 2018-05-23T07:30:00-04:00
 draft = false
 author = "cblake"
 description = "In this post, we will be going through the Wallaroo Market Spread example in detail and talk about the use case that inspired it."
 tags = [
-    "Wallaroo",
-    "Use Case",
-    "Python",
-    "Electronic Trading",
+    "use case"
 ]
 categories = [
     "Wallaroo in Action"

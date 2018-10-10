@@ -5,9 +5,7 @@ draft = false
 author = "cblake"
 description = "This week, I will continue to look at data processing patterns used to build event triggered stream processing applications, the use cases that the patterns relate to, and how you would go about implementing within Wallaroo."
 tags = [
-    "wallaroo",
-    "api",
-    "example"
+    "use case"
 ]
 categories = [
     "Wallaroo in Action"

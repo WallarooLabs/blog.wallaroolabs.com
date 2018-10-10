@@ -6,7 +6,6 @@ author = "vidjain"
 description = "Opening up the source of your startup's code isn't easy; here's what we learned."
 tags = [
     "open source",
-    "wallaroo",
     "legal",
     "strategy",
     "marketing",

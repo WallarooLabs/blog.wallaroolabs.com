@@ -6,15 +6,11 @@ author = "slfritchie"
 description = "A detailed look at how several back-pressure mechanisms inside Wallaroo create an end-to-end back-pressure mechanism to protect Wallaroo from overload by high-volume data sources.  Part two of a two-part series."
 tags = [
     "back-pressure",
-    "overload",
     "pony",
     "testing",
-    "wallaroo",
-    "workload management"
 ]
 categories = [
-    "back-pressure",
-    "overload"
+    "Exploring Wallaroo Internals"
 ]
 +++
 

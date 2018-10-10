@@ -7,10 +7,9 @@ description = "Design decisions that allowed us to capture metrics in Wallaroo w
 tags = [
     "metrics",
     "performance",
-    "wallaroo"
 ]
 categories = [
-    "Metrics"
+    "Exploring Wallaroo Internals"
 ]
 +++
 

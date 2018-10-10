@@ -5,11 +5,11 @@ draft = false
 author = "seantallen"
 description = "See how you can chain Wallaroo state computations together for build a Twitter trending hashtags application."
 tags = [
-    "wallaroo",
     "use case",
     "python",
-    "twitter",
-    "state"
+    "state",
+    "example",
+    "twitter"
 ]
 categories = [
     "Wallaroo in Action", 

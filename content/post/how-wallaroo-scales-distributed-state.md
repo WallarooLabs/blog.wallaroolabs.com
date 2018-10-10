@@ -3,14 +3,12 @@ title = "How Wallaroo Scales Distributed State"
 draft = false
 date = 2017-10-19T00:00:00Z
 tags = [
-    "wallaroo",
-    "scaling",
     "scale-independence",
-    "partitioning"
+    "partitioning",
+    "state"
 ]
 categories = [
-    "Autoscaling",
-    "State"
+    "Exploring Wallaroo Internals"
 ]
 description = "How you can develop Wallaroo applications without thinking about scale."
 author = "jmumm"

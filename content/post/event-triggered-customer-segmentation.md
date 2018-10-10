@@ -5,18 +5,13 @@ draft = false
 author = "rblasucci"
 description = "In which we quickly and easily create a full application to use Wallaroo to manage an ad campaign for a Marsupial Fan Club."
 tags = [
-    "Python",
-    "State",
-    "Wallaroo",
+    "python",
+    "state",
     "example",
     "use-case",
-    "tutorial",
-    "adtech"
 ]
 categories = [
-    "Python-Api",
-    "State",
-    "Stream-Processing",
+    "example"
 ]
 +++
 

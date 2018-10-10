@@ -5,12 +5,11 @@ draft = false
 author = "seantallen"
 description = "In which we announce the opening up of our codebase."
 tags = [
-    "wallaroo",
     "open source",
     "announcement"
 ]
 categories = [
-    "Hello Wallaroo"
+    "announcement"
 ]
 +++
 I'm very excited to announce the first open source, public release of our ultrafast and elastic data processing engine, Wallaroo. In this post, I'm going to give you an overview of what Wallaroo is, where we are taking it, where it is now and how you can start using it.

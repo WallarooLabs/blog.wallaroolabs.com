@@ -3,12 +3,10 @@ title = "How We Built Wallaroo to Process Millions of Messages/Sec with Microsec
 draft = false
 date = 2018-02-27T00:00:00Z
 tags = [
-    "wallaroo",
-    "performance",
-    "prototypes"
+    "performance"
 ]
 categories = [
-    "Performance"
+    "Exploring Wallaroo Interals"
 ]
 description = "How we approached designing Wallaroo with performance in mind and some principles that could be useful when building your own performance-sensitive software systems."
 author = "jmumm"

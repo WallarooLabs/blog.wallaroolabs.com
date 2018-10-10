@@ -3,15 +3,13 @@ title = "Non-native event-driven windowing in Wallaroo"
 draft = false
 date = 2017-11-16T00:00:00Z
 tags = [
-    "wallaroo",
     "windowing",
     "partitioning",
     "python",
     "example",
-    "tutorial"
 ]
 categories = [
-    "Windowing"
+    "example"
 ]
 description = "Creating event boundaries and processing cumulative state."
 author = "amosca"

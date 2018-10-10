@@ -6,14 +6,11 @@ author = "jonbrwn"
 description = "Simplifying the installation and setup process for Wallaroo using Docker."
 tags = [
     "docker",
-    "wallaroo",
-    "python",
-    "pony",
+    "announcement",
     "installation",
-    "virtualenv"
 ]
 categories = [
-    "Installation"
+    "installation"
 ]
 +++
 

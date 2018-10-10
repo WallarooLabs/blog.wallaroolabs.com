@@ -5,12 +5,12 @@ draft = false
 author = "aturley"
 description = "Wallaroo’s New Python API makes writing distributed stream processing applications more Pythonic."
 tags = [
-    "wallaroo",
     "python",
-    "api"
+    "api",
+    "announcement"
 ]
 categories = [
-    "Python API"
+    "announcement"
 ]
 +++
 

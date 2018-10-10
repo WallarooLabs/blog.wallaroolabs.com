@@ -9,7 +9,6 @@ tags = [
     "batch processing"
 ]
 categories = [
-    "Stream Processing"
 ]
 +++
 When processing data, we often categorize a job as either a batch or streaming job. However, this is a bit of a false dichotomy. In this post, I’ll explore how we ordinarily define batch and stream processing, and show how some tasks that we think of as batch jobs can be seen as a subset of stream processing.

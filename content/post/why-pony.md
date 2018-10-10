@@ -5,16 +5,11 @@ draft = false
 author = "seantallen"
 description = "A technical dive into why we used Pony to write Wallaroo."
 tags = [
-    "wallaroo",
     "pony",
     "performance",
-    "python",
-    "coordination",
-    "actor-model",
-    "garbage collection"
 ]
 categories = [
-    "Hello Wallaroo"
+    "Exploring Wallaroo Internals"
 ]
 +++
 Hi there! Today, I want to talk to you about why we chose to write [Wallaroo](https://github.com/WallarooLabs/wallaroo), our distributed data processing framework for building high-performance streaming data applications, in [Pony](https://www.ponylang.org/discover/). It's a question that has come up with some regular frequency from our more technically minded audiences. 

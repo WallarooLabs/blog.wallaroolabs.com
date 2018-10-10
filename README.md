@@ -117,6 +117,40 @@ If your PR is for a single logical change (which is should be) but spans multipl
 
 Favor relative links for any content on blog.wallaroolabs.com. Absolute links that point to `https://blog.wallaroolabs.com` don't play well with Netlify deploy previews. Absolute links will redirect you off the preview website and onto the live website. For this reason, relative links are preferred.
 
+## Tags
+
+Please limit your tags to any of the following. If you think your post requires a new tag, please talk to Sean T. Allen about adding one.
+
+- announcement
+- api
+- batch processing
+- data engineering
+- elixir
+- example
+- golang
+- open source
+- partitioning
+- phoenix
+- python
+- resilience
+- scale-independence
+- state
+- testing
+- twitter
+- use case
+- windowing
+
+## Categories
+
+Please limit your categories to any of the following. If you think your post requires a new category, please talk to Sean T. Allen about adding one.
+
+- announcement
+- example
+- exploring wallaroo internals
+- installation
+- testing
+- wallaroo in action
+
 ## More...
 
 If you need to learn more, talk to someone on the team, read the hugo documentation and check out the output from its help command.

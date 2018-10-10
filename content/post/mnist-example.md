@@ -3,14 +3,12 @@ title = "A Scikit-learn pipeline in Wallaroo"
 draft = false
 date = 2018-02-08T00:00:00Z
 tags = [
-    "wallaroo",
-    "machine learning",
     "python",
     "example",
-    "tutorial"
+    "data engineering"
 ]
 categories = [
-    "Examples"
+    "example"
 ]
 description = "Creating an inference pipeline with MNIST"
 author = "amosca"

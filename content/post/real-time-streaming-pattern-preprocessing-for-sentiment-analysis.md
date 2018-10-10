@@ -5,8 +5,7 @@ draft = false
 author = "cblake"
 description = "First in a series of posts looking at a variet of data processing patterns used to build real-time stream processing applications."
 tags = [
-    "wallaroo",
-    "api"
+    "use case"
 ]
 categories = [
     "Wallaroo in Action"

@@ -5,12 +5,11 @@ draft = false
 author = "dipin"
 description = "Why we wrote our Kafka Client in Pony instead of relying on the existing C Kafka Client and creating bindings for it. We talk about the pros/cons of our decision and how far we've come including some preliminary performance numbers."
 tags = [
-    "wallaroo",
     "kafka",
     "pony"
 ]
 categories = [
-    "Kafka Client"
+    "Exploring Wallaroo Internals"
 ]
 +++
 At [Wallaroo Labs](http://www.wallaroolabs.com/) we've been working on our stream processing engine, [Wallaroo](https://github.com/wallaroolabs/wallaroo/tree/release) for just under two years now. We recently introduced our [Go API](https://blog.wallaroolabs.com/2018/01/go-go-go-stream-processing-for-go/) to complement our [Python API](https://blog.wallaroolabs.com/2017/10/go-python-go-stream-processing-for-python/) and to make Wallaroo available to a wider range of programmers. Over the last few months we've been working to allow programmers to easily use Kafka as both a sink and a source for data processing applications regardless of the language they’re working in. This blog post shares the story of why we ended up writing our own Kafka client from scratch in Pony instead of wrapping the existing librdkafka C client in order to achieve this goal.

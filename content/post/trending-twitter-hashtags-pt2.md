@@ -5,15 +5,14 @@ draft = false
 author = "seantallen"
 description = "A closer look at how you can do windowing in Wallaroo to implement applications like Twitter's trending topics."
 tags = [
-    "wallaroo",
     "python",
-    "twitter",
+    "use case",
+    "windowing",
     "example",
-    "windowing"
+    "twitter"
 ]
 categories = [
     "Trending Twitter Hashtags",
-    "Windowing",
 ]
 +++
 Hi there! Welcome to the second and final installment of my trending twitter hashtags example series. In [part 1](https://blog.wallaroolabs.com/2018/06/stream-processing-trending-hashtags-and-wallaroo/), we covered the basic dataflow and logic of the application. In part 2, we are going to take a look at how windowing for the "trending" aspect of our application is implemented. 

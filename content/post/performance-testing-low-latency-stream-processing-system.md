@@ -5,13 +5,11 @@ draft = false
 author = "dipin"
 description = "How we performance test Wallaroo, our high-performance, low-latency stream processing system."
 tags = [
-    "wallaroo",
     "performance",
     "testing"
 ]
 categories = [
-    "Performance",
-    "Testing"
+    "testing",
 ]
 +++
 

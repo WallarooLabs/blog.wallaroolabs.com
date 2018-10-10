@@ -6,14 +6,10 @@ author = "slfritchie"
 description = "A review of overload mitigation techniques for queuing networks and distributed systems.  Part one in a two-part series."
 tags = [
     "back-pressure",
-    "overload",
-    "workload management",
     "pony",
-    "wallaroo"
 ]
 categories = [
-    "back-pressure",
-    "overload"
+    "Exploring Wallaroo Internals"
 ]
 +++
 

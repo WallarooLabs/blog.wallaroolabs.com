@@ -3,14 +3,13 @@ title = "Stateful Multi-Stream Processing in Python with Wallaroo"
 draft = false
 date = 2017-12-07T00:00:00Z
 tags = [
-    "wallaroo",
     "state",
-    "pipeline",
     "partitioning",
-    "python"
+    "python",
+    "example"
 ]
 categories = [
-    "State"
+    "example"
 ]
 description = "Implementing the Market Spread application using two pipelines and one shared state partition."
 author = "jmumm"
