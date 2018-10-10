@@ -1,0 +1,117 @@
+{{/*
+
+Assign the current scope (the current page) to
+a variable named `$currentArticle` so that within
+other scopes we are able to still reference the
+current page.
+
+*/}}
+{{- $currentArticle := . -}}
+
+{{/*
+
+From the list of all pages from the site, only keep
+those whose name is different from the name of the
+current article and whose kind is `page`.
+
+ps.: here we could check something else, like permalink
+or another unique identifier.
+
+ps.: here you'd probably pick a specific section. To do
+so, perform another `where`.
+
+*/}}
+{{- $articles := where (where $.Site.Pages ".Kind" "eq" "page") ".Title" "!=" $currentArticle.Title -}}
+
+{{/*
+
+Instantiate each of them with an empty slice.
+
+*/}}
+{{- $veryRelevantArticles := slice -}}
+{{- $relevantArticles := slice -}}
+
+{{/*
+
+Iterate over each of the articles from the list
+of article pages
+
+*/}}
+{{- range $idx, $article := $articles -}}
+        {{/*
+
+        Compute the number of tag intersactions.
+
+        */}}
+        {{- $numberOfIntersections := len (intersect $article.Params.tags $currentArticle.Params.Tags) -}}
+
+        {{/*
+
+        For those pages with a big number of
+        intersections (>= 2), put in the first
+        slice.
+
+        */}}
+        {{- if (ge $numberOfIntersections 2) }}
+                {{ $veryRelevantArticles = $veryRelevantArticles | append $article -}}
+        {{/*
+
+        For the rest (single intersaction), put in the
+        second slice.
+
+        */}}
+        {{- else if (eq $numberOfIntersections 1) -}}
+                {{- $relevantArticles = $relevantArticles | append $article -}}
+        {{- end -}}
+
+        {{/*
+
+        note.: I'm ignoring those with 0 intersections.
+
+        */}}
+{{- end -}}
+
+{{/*
+
+Create an empty slice to hold the final list
+
+*/}}
+{{- $recommendedArticles := slice -}}
+
+{{/* For each very recommended article, append to the list. */}}
+{{- range $veryRelevantArticles -}}
+        {{- $recommendedArticles = $recommendedArticles | append . -}}
+{{- end -}}
+
+{{/*
+
+For each recommended article, append to the
+list.
+
+This will lead to something like
+[very, very, rec, rec, rec....]
+
+*/}}
+{{- range $relevantArticles -}}
+        {{- $recommendedArticles = $recommendedArticles | append . -}}
+{{- end -}}
+
+<section class="you-might-also-like">
+<h4>Other posts you might also like:</h4>
+<ul>
+{{/*
+
+For every article in the set of the first 3
+recommended articles shuffled, show their
+anchor.
+
+*/}}
+{{- range (shuffle (first 3 $recommendedArticles)) -}}
+<li>
+  <a href="{{ .Permalink }}">
+    {{ .Title }}
+  </a>
+</li>
+{{- end -}}
+</ul>
+</section>

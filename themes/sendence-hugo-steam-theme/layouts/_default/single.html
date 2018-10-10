@@ -44,6 +44,8 @@
         {{ .Content }}
     </section>
 
+    {{ partial "youmightalsolike" . }}
+
     {{ if .Type | eq "post" }}
 
     {{ template "_internal/disqus.html" . }}
