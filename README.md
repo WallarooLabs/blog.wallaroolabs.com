@@ -128,6 +128,7 @@ Please limit your tags to any of the following. If you think your post requires 
 - elixir
 - example
 - golang
+- installation
 - open source
 - partitioning
 - phoenix
@@ -147,7 +148,6 @@ Please limit your categories to any of the following. If you think your post req
 - announcement
 - example
 - exploring wallaroo internals
-- installation
 - testing
 - wallaroo in action
 

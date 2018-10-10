@@ -9,7 +9,6 @@ tags = [
   "announcement"
 ]
 categories = [
-	"installation",
   "announcement"
 ]
 +++
