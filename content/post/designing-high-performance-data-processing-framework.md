@@ -6,7 +6,7 @@ tags = [
     "performance"
 ]
 categories = [
-    "Exploring Wallaroo Interals"
+    "Exploring Wallaroo Internals"
 ]
 description = "How we approached designing Wallaroo with performance in mind and some principles that could be useful when building your own performance-sensitive software systems."
 author = "jmumm"
