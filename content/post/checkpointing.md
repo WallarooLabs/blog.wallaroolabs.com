@@ -12,7 +12,6 @@ categories = [
     "Exploring Wallaroo Internals"
 ]
 +++
-
 When you're working with distributed systems, you need to take seriously the possibility of failure.  Since streaming systems like Wallaroo can be left running for days, weeks, or even years, you're basically guaranteed to encounter failure.  Ideally, whenever something fails, you'd be able to recover your system and pick up from where you left off before things went wrong, all without message loss.
 
 We recently added support for asynchronous checkpointing to Wallaroo as part of the [0.5.3 release](https://github.com/WallarooLabs/wallaroo/releases/tag/0.5.3). A checkpoint is a kind of periodic global snapshot of Wallaroo state. With checkpoints, Wallaroo clusters can respond to failure by rolling the system back to the most recent valid global state, at which point they can continue processing. We use a barrier algorithm based on the [Chandy-Lamport algorithm](https://lamport.azurewebsites.net/pubs/chandy.pdf) and some of the modifications proposed in [this paper](http://kth.diva-portal.org/smash/get/diva2:827567/FULLTEXT01.pdf). The advantage of this algorithm is that it ensures consistent checkpoints while adding relatively little overhead, and without the need to stop processing globally. 
@@ -93,7 +92,7 @@ There is another way things can go wrong here, even if we manage by chance to la
 
 <img src=/images/post/checkpointing/RD07.png width="350">
 
-This is a consistent global state because there is no message receipt behind the recovery line that lacks a corresponding message send. However, in this case, we have a message send behind the line that lacks a corresponding receipt. In practice, this means message loss. When we recover to SB3 on node B, it will not send its message again (assuming we have not devised a way to deal with this kind of scenario).  This means node A will never receive the message, since we rolled it back to SA2, which does not reflect that message receipt. Ensuring a consistent recovery line is part of a successful strategy for handling failure, but we must also address the possibility of message loss.
+This diagram illustrates a consistent global state because there is no message receipt behind the recovery line that lacks a corresponding message send. However, in this case, we have a message send behind the line that lacks a corresponding receipt. In practice, this means message loss. When we recover to SB3 on node B, it will not send its message again (assuming we have not devised a way to deal with this kind of scenario).  This means node A will never receive the message, since we rolled it back to SA2, which does not reflect that message receipt. Ensuring a consistent recovery line is part of a successful strategy for handling failure, but we must also address the possibility of message loss.
 
 So how do we deal with the kind of timing problems described above? Perhaps the most straightforward way is to stop the world before attempting a global snapshot.  If we could stop all activity in the system and only then tell every node to snapshot, we should be able to get a consistent snapshot across nodes. When nothing is happening in the system, the order in which different nodes receive a snapshot command shouldn’t matter (as long as they all receive it before processing restarts). We can illustrate this strategy as follows:
 
@@ -109,7 +108,7 @@ A consistent global snapshot allows us to roll back a distributed system to a co
 
 The naïve approach could not reliably partition events into the correct sides of this boundary, as evidenced by the inconsistent recovery line illustrated in the last section. The stop-the-world approach succeeded by stopping all activity, which is perhaps the most straightforward way to do the partitioning: every event that happened before the stop-the-world pause counts as part of the snapshot, and every event that will happen once we restart the world counts as part of future snapshots.
 
-Assuming that channels between nodes are reliable and FIFO, Chandy-Lamport achieves the correct partitioning by injecting a special barrier marker into the flow of messages through the system.  In our simple two node system, imagine that node A initiates the snapshot after some amount of processing has taken place. B will have received some number of messages from A before A sends along a barrier.  This barrier represents the boundary between the current snapshot and the next one.  Every message B received before the barrier is related to the current snapshot (represented by triangles in the diagram below).  Every message it receives from A after the barrier is related to future snapshots (represented by squares):  
+Assuming that channels between nodes are reliable and FIFO (first in, first out), Chandy-Lamport achieves the correct partitioning by injecting a special barrier marker into the flow of messages through the system.  In our simple two node system, imagine that node A initiates the snapshot after some amount of processing has taken place. B will have received some number of messages from A before A sends along a barrier.  This barrier represents the boundary between the current snapshot and the next one.  Every message B received before the barrier is related to the current snapshot (represented by triangles in the diagram below).  Every message it receives from A after the barrier is related to future snapshots (represented by squares):  
 
 <img src=/images/post/checkpointing/AtoB.png width="350">
 
@@ -121,7 +120,7 @@ Once a node has received barriers over all its inputs, it's free to write its lo
 
 In the diagram above, from the point that A initiates the barrier, it has to queue any messages it receives over the input from B until it receives the barrier over that input. B, on the other hand, never queues messages because it received the barrier over its one and only input (and did not initiate it). If B had a second input, say from a node C, then after receiving the barrier from A, it would have to start queueing messages from C until it receives the barrier from C. 
 
-Notice that on this approach a node never has to stop processing messages, thus avoiding the costs associated with the stop-the-world approach.
+Notice that on this approach a node never has to stop processing messages, thus avoiding the costs associated with the stop-the-world approach. With Chandy-Lamport, the message queue is only for writing those messages to disk with the snapshot. You can actually just keep copies in the queue and process those messages immediately. The important thing is that outputs corresponding to those messages will only be sent after the barrier.
  
 ## Checkpointing in a Stream Processing System
 
@@ -139,7 +138,9 @@ As illustrated by the last example, you must inject barriers at the sources, sin
 
 <img src=/images/post/checkpointing/dag02.png width="350">
 
-Once C receives the barrier from B, it blocks that input, adding messages related to the next snapshot (the squares) to a queue. Meanwhile, it continues processing messages related to the current snapshot that it receives from A (the triangles).
+Once C receives the barrier from B, it blocks that input, adding messages related to the next snapshot (the squares) to a queue. Meanwhile, it continues processing messages related to the current snapshot that it receives from A (the triangles). 
+
+Queueing here is in a sense the opposite of in the unmodified Chandy-Lamport algorithm: a node can't process the queued messages until it's received the barrier over all its inputs, but it also doesn't need to write them to disk with the snapshot.
 
 Once a node has received the barrier over all of its inputs, it's free to snapshot its local state and send the barrier along over all of its outputs.  It can then immediately flush its input queues and begin processing like normal again until it receives a barrier for the next snapshot.  
 
