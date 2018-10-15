@@ -78,8 +78,9 @@ Let's break that down and see what's really going on here.
 1) `make up CLUSTER_SIZE=3` configures the cluster to consist of 3 machines,
 and delegates to `pulumi up` the actual business of spinning up the
 infrastructure. Our physical cluster will contain 3 nodes for processing, and
-one extra 'coordinator' node for coordinating the work, hosting our [Metrics
-UI](https://docs.wallaroolabs.com/book/metrics/metrics-ui.html), and collecting results.
+one extra metrics_host node for hosting our [Metrics
+UI](https://docs.wallaroolabs.com/book/metrics/metrics-ui.html), and collecting
+results.
 
 2) Once provisioning is complete, the next make task: `run-cluster
 INPUT_LINES=1000000` uses our Ansible playbooks to upload application code from
@@ -113,7 +114,7 @@ function instance(name) {
      keyName: keyPair.keyName})
 }
 
-let coordinator = instance("classifier-coordinator");
+let metrics_host = instance("classifier-metrics_host");
 let initializer = instance("classifier-initializer");
 let workers = [];
 for(var i=0; i<clusterSize-1; i++){
@@ -124,7 +125,7 @@ for(var i=0; i<clusterSize-1; i++){
 As you can see from the above, our little `instance()` function encapsulates
 the common settings for every machine that we want to provision.
 
-The `coordinator` and `initializer` are `ec2.Instance` objects with descriptive
+The `metrics_host` and `initializer` are `ec2.Instance` objects with descriptive
 names, while the `workers` are `ec2.Instance`s that are distinguished solely by
 their ordinal number. Pulumi lets us define -- in code -- things like Security
 Groups, SSH keypairs, and practically every other aspect of cloud
@@ -154,9 +155,9 @@ Performing changes:
  +  aws:ec2:Instance classifier-2 created
 
     ---outputs:---
-    coordinator: [
+    metrics_host: [
         [0]: {
-            name      : "classifier-coordinator"
+            name      : "classifier-metrics_host"
             private_ip: "172.31.47.236"
             public_dns: "ec2-54-245-53-87.us-west-2.compute.amazonaws.com"
         }
@@ -295,7 +296,14 @@ provisioned-on-demand infrastructure.
 | 1 000 000     |    11m40s       |  12m30s   | 15m40s        |
 | 10 000 000    |    43m50s      |  36m30s   |  32m30s       |
 
-As you can see from the table above, the fact that we spin up infrastructure on demand plays a big role in the run-time of our batch jobs. It seems that a cluster of 4 machines hits a sweet-spot between price and performance -- we can handle 10x more data and still fit in the hour-long window allotted for our application, and not have to wait for a big cluster to spin up and then back down.
+
+
+As you can see from the table above, the fact that we spin up infrastructure on
+demand plays a big role in the run-time of our batch jobs. It seems that a
+cluster of 4 machines hits a sweet-spot between price and performance -- we can
+handle 10x more data and still fit in the hour-long window allotted for our
+application, and not have to wait for a big cluster to spin up and then back
+down.
 
 ## Conclusion
 
