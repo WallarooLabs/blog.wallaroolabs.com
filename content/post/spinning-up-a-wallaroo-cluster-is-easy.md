@@ -1,6 +1,6 @@
 +++
 title = "Spinning up a Wallaroo cluster is easy"
-date = 2018-10-09T07:00:00-07:00
+date = 2018-10-15T00:00:00-07:00
 draft = false
 author = "simonzelazny"
 description = "In which we scale our app out, using a temporary cloud-based cluster"
@@ -16,8 +16,7 @@ categories = [
 
 ## Oh no, more data!
 
-Last month, we took a [long-running pandas classifier](/2018/09/make-python-pandas-go-fast/) and made it run faster by leveraging Wallaroo's parallelization capabilities. This time around, we'd like to kick it up a notch and see if we can keep scaling out to meet higher demand. We’d
-also like to be as economical as possible, and de-provision infrastructure when we’re done processing.
+Last month, we took a [long-running pandas classifier](/2018/09/make-python-pandas-go-fast/) and made it run faster by leveraging Wallaroo's parallelization capabilities. This time around, we'd like to kick it up a notch and see if we can keep scaling out to meet higher demand. We’d also like to be as economical as possible: provision infrastructure as needed and de-provision it when we’re done processing
 
 __________________________
 If you don’t feel like reading the post linked above, here’s a short summary of the situation: there’s a batch job that you’re running every hour, on the hour. This job receives a CSV file and classifies each row of the file, using a Pandas-based algorithm. The run-time of the job is starting to near the one-hour mark, and there’s concern that the pipeline will break down once the input data grows past a particular point.
@@ -29,7 +28,7 @@ __________________________
 Sure, we can handle a million rows in reasonable time, but what if the data set grows by orders of magnitude? By running our classifier on a local
 Wallaroo cluster, we were able to cut the processing time of a million rows to
 ~16 minutes, thus fitting within our allotted time slot of one hour. But if the
-input data is, say 10x more, we’re going to have a hard time processing it all locally.
+input data is, say, 10x more, we’re going to have a hard time processing it all locally.
 
 Let's see how we can keep up with the data growth by launching a cloud-based
 Wallaroo cluster on-demand, running the job, collecting the data, and shutting down the
@@ -44,9 +43,10 @@ comprising many physical machines. In this sense, there's no extra work
 involved in 'migrating' our classifier application from the previous blog post.
 
 We will need some tools to help us set up and manage our cluster in the
-cloud. Luckily, [our friends at Pulumi](https://pulumi.io/) provide an excellent tool that
-removes the headaches involved in provisioning infrastructure. We'll use Pulumi
-to define, set up, and finally tear down our processing cluster.
+cloud. Wallaroo can work with a lot of different tools. [Our friends at
+Pulumi](https://pulumi.io) provide an excellent tool that removes the headaches
+involved in provisioning infrastructure. We’ll use Pulumi to define, set up,
+and finally tear down our processing cluster in this example.
 
 We'll also need [Ansible](https://www.ansible.com/) to start, stop, and inspect the state of our
 cluster, and, last but not least, we'll need an [AWS](https://aws.amazon.com/) account where our machines will live.
@@ -57,7 +57,7 @@ Let's jump into it!
 ## A sample run
 
 First of all, if you'd like to follow along (and spend some money provisioning
-EC2 servers), please [download and set up pulumi](https://pulumi.io/quickstart/install.html).
+EC2 servers), please [download and set up Pulumi](https://pulumi.io/quickstart/install.html).
 
 Next, [clone the wallaroo blog examples repo](https://github.com/WallarooLabs/wallaroo_blog_examples) and navigate to `provisioned-classifier`. If you followed along with the previous Pandas blog
 post, you'll find our old application nested away here, under`classifier`. What's more interesting are the two new directories: `pulumi` and `ansible`.
@@ -82,11 +82,11 @@ one extra 'coordinator' node for coordinating the work, hosting our [Metrics
 UI](https://docs.wallaroolabs.com/book/metrics/metrics-ui.html), and collecting results.
 
 2) Once provisioning is complete, the next make task: `run-cluster
-INPUT_LINES=1000000` uses our ansible playbooks to upload application code from
+INPUT_LINES=1000000` uses our Ansible playbooks to upload application code from
 `classifier/*` to all 3 machines provisioned above, and then start up a Wallaroo
 cluster with 7 worker processes per machine.
 
-Next, ansible starts sending 1 million lines of our [synthetic csv data](https://github.com/WallarooLabs/wallaroo_blog_examples/blob/master/provisioned-classifier/bin/send.py), and
+Next, Ansible starts sending 1 million lines of our [synthetic CSV data](https://github.com/WallarooLabs/wallaroo_blog_examples/blob/master/provisioned-classifier/bin/send.py), and
 waits for 1 million lines to arrive at the `data_reciever` process. When those lines
 arrive, they are compressed, and the cluster is shut down.
 
@@ -170,7 +170,7 @@ info: 7 changes performed:
 Update duration: 1m59.524017637s
 ```
 
-We can use Pulumi's output to stitch together an ansible inventory, which will
+We can use Pulumi's output to stitch together an Ansible inventory, which will
 let us interact programmatically with our provisioned instances.
 
 If we want to modify our cluster, we can edit `pulumi/index.js`, and then
@@ -193,7 +193,7 @@ take a look at how we use it to run our task. Fundamentally, the components of
 our cluster can be described as follows:
 
 1) The data source -- In our case it's the file [send.py](https://github.com/WallarooLabs/wallaroo_blog_examples/blob/master/provisioned-classifier/bin/send.py), which can generate
-and transmit randomly-generated csv data for our computation to consume.
+and transmit randomly-generated CSV data for our computation to consume.
 
 2) The machida processes: one Initializer and a bunch of Workers. The
 distinction between the two is only relevant at cluster startup.
@@ -205,14 +205,14 @@ installation.
 4) The metrics UI -- Our [Elixir-powered realtime dashboard](/2018/04/choosing-elixirs-phoenix-to-power-a-real-time-web-ui/).
 
 
-Our ansible playbook takes care of coordinating the launch of the various
+Our Ansible playbook takes care of coordinating the launch of the various
 components and making sure that their input, output and control ports match
 up. In particular, that the cluster initializer starts up knowing the total
 number of workers in the cluster, and every other worker connects to the
 cluster's internal IP and control port. [See here](https://docs.wallaroolabs.com/book/running-wallaroo/running-wallaroo.html) if you're
 interested in a detailed discussion of clustering.
 
-This is what ends up running on the servers when we lauch our ansible playbooks:
+This is what ends up running on the servers when we launch our Ansible playbooks:
 
 ![Cluster diagram](/images/post/spinning-up-a-wallaroo-cluster-is-easy/cluster_diagram.png)
 
@@ -222,7 +222,7 @@ is listening for connections, we start up the `sender` and instruct it
 to send a stream of data to the TCP Source. In a realistic batch scenario, this
 sender could be implemented as a [Connector](https://docs.wallaroolabs.com/book/python/using-connectors.html) that reads a
 particular file from a remote filesystem or S3. For our purposes, we'll
-simulate this by generating a set number of csv lines on-demand, and then
+simulate this by generating a set number of CSV lines on-demand, and then
 shutting down.
 
 While the work is being performed, we can take a look at the metrics URL
@@ -273,7 +273,7 @@ we receive our zipped data onto our disk.
 
 ## The numbers!
 
-As a reminder, let's take a look at the numbers we obtained by running ourclassifier on a single `c5.4xlarge` instance in AWS:
+As a reminder, let's take a look at the numbers we obtained by running our classifier on a single `c5.4xlarge` instance in AWS:
 
 
 #### Single-machine running times (no provisioning)
