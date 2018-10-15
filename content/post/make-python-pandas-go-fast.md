@@ -5,13 +5,14 @@ draft = false
 author = "simonzelazny"
 description = "Converting a batch job to a parallel Wallaroo pipeline, and the speed benefits thereof."
 tags = [
-  "python",
   "batch processing",
-	"data engineering",
-	"use case"
+  "data engineering",
+  "use case",
+  "pandas"
 ]
 categories = [
-  "example"
+  "example",
+  "data science at scale"
 ]
 +++
 

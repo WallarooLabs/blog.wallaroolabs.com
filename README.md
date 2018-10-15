@@ -130,6 +130,7 @@ Please limit your tags to any of the following. If you think your post requires 
 - golang
 - installation
 - open source
+- pandas
 - partitioning
 - phoenix
 - python
@@ -146,6 +147,7 @@ Please limit your tags to any of the following. If you think your post requires 
 Please limit your categories to any of the following. If you think your post requires a new category, please talk to Sean T. Allen about adding one.
 
 - announcement
+- data science at scale
 - example
 - exploring wallaroo internals
 - testing
