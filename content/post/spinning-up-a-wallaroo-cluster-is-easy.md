@@ -292,20 +292,20 @@ provisioned-on-demand infrastructure.
 
 #### Multi-machine running times (provisioning + computation)
 
-| CSV rows   | 4 machines/28 workers | 8 machines/56 workers | 16 machines/112 workers |
-|------------|-----------------------|-----------------------|-------------------------|
-| 10 000     | 2m13s                 | 2m36s                 | 2m43s                   |
-| 100 000    | 3m38s                 | 3m42s                 | 3m48s                   |
-| 1 000 000  | 7m38s                 | 6m41s                 | 5m56s                   |
-| 10 000 000 | 40m56s                | 33m10s                | 23m24s                  |
-| 30 000 000 | > 2h                  | 1h45m                 | 1h12m                   |
+| CSV rows   | 4 machines/<br>28 workers | 8 machines/<br>56 workers | 16 machines/<br>112 workers |
+|------------|---------------------------|---------------------------|-----------------------------|
+| 10 000     | 2m13s                     | 2m36s                     | 2m43s                       |
+| 100 000    | 3m38s                     | 3m42s                     | 3m48s                       |
+| 1 000 000  | 7m38s                     | 6m41s                     | 5m56s                       |
+| 10 000 000 | 40m56s                    | 33m10s                    | 23m24s                      |
+| 30 000 000 | > 2h                      | 1h45m                     | 1h12m                       |
 
 
 Even though there is some constant overhead involved in spinning up the
-required infrastructure (clearly too much to justify spinning up clusters for
-less than 1 million rows), we're now able to classify a hefty 10 million rows
-of CSV data in under half an hour, and 30 million in a little over an
-hour. This gives us some perspective on when our application will need extra
+required infrastructure (clearly too much overhead to justify spinning up
+clusters for less than 1 million rows), we're now able to classify a hefty 10
+million rows of CSV data in under half an hour, and 30 million in a little over
+an hour. This gives us some perspective on when our application will need extra
 resources, or perhaps some performance optimizations.
 
 As long as the data fits in the 1 million : 10 million range, it seems that a
