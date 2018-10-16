@@ -1,3 +1,3 @@
 https://engineering.sendence.com/* https://blog.wallaroolabs.com/:splat 301!
 http://engineering.sendence.com/* https://blog.wallaroolabs.com/:splat 301!
-https://blog.wallaroolabs.com/2018/10/spinning-up-a-wallaroo-cluster-is-easy/ https://blog.wallaroolabs.com/pulumi 301!
+https://blog.wallaroolabs.com/pulumi https://blog.wallaroolabs.com/2018/10/spinning-up-a-wallaroo-cluster-is-easy/ 301!
