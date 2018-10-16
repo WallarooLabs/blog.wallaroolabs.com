@@ -91,7 +91,7 @@ Next, Ansible starts sending 1 million lines of our [synthetic CSV data](https:/
 waits for 1 million lines to arrive at the `data_receiver` process. When those lines
 arrive, they are compressed, and the cluster is shut down.
 
-3) `make get-results` Pulls the compressed result file to `output/results.tgz`,
+3) `make get-results` pulls the compressed result file to `output/results.tgz`,
 
 4) And finally, `make down` destroys the cloud infrastructure that was used to
 power our computation.
@@ -268,7 +268,7 @@ classifying! Let's see the breakdown for a different, random worker:
 ![Classifier metrics](/images/post/spinning-up-a-wallaroo-cluster-is-easy/work_on_normal_node.png)
 
 
-Looking good. All that's left for us to do is wait till the job completes and
+Looking good. All that's left for us to do is wait until the job completes and
 we receive our zipped data onto our disk.
 
 
@@ -294,20 +294,19 @@ provisioned-on-demand infrastructure.
 
 | CSV rows   | 4 machines/28 workers | 8 machines/56 workers | 16 machines/112 workers |
 |------------|-----------------------|-----------------------|-------------------------|
+| 10 000     | 2m13s                 | 2m36s                 | 2m43s                   |
+| 100 000    | 3m38s                 | 4m42s                 | 3m48s                   |
 | 1 000 000  | 7m38s                 | 6m41s                 | 5m56s                   |
 | 10 000 000 | 40m56s                | 33m10s                | 23m24s                  |
 | 30 000 000 | > 2h                  | 1h45m                 | 1h12m                   |
 
 
-As you can see from the table above, the speed gains aren't as clear-cut as
-when running the cluster on a local machine -- there is some constant overhead
-involved in spinning up the required infrastructure -- but in general, the
-problem remains amenable to our parallel approach.
-
-We're now able to classify a hefty 10 million rows of CSV data in under half an
-hour, and 30 million in a little over an hour. This gives us some perspective
-on when our application will need extra resources, or perhaps some performance
-optimizations.
+Even though there is some constant overhead involved in spinning up the
+required infrastructure (clearly too much to justify spinning up clusters for
+less than 1 million rows), we're now able to classify a hefty 10 million rows
+of CSV data in under half an hour, and 30 million in a little over an
+hour. This gives us some perspective on when our application will need extra
+resources, or perhaps some performance optimizations.
 
 As long as the data fits in the 1 million : 10 million range, it seems that a
 cluster of 4 machines represents a sweet-spot between price and performance --
@@ -329,7 +328,7 @@ that we run locally as part of our regular development. Wallaroo handles the
 scale-aware layer of our program, so we can focus on the business logic and
 flow of our data.
 
-If you're hitting into limits running your hourly, daily or nightly batch jobs
+If you're hitting limits when running your hourly, daily or nightly batch jobs
 and are looking into scaling out horizontally, don't hesitate to reach out
 to [Sean](mailto:sean@wallaroolabs.com) or drop in to our IRC channel. We'd
 love to chat!
