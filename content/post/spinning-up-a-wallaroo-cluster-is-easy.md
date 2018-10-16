@@ -1,6 +1,6 @@
 +++
 title = "Spinning up a Wallaroo cluster is easy"
-date = 2018-10-15T00:00:00-07:00
+date = 2018-10-16T00:00:00-07:00
 draft = false
 author = "simonzelazny"
 description = "In which we scale our app out, using a temporary cloud-based cluster"
@@ -295,7 +295,7 @@ provisioned-on-demand infrastructure.
 | CSV rows   | 4 machines/28 workers | 8 machines/56 workers | 16 machines/112 workers |
 |------------|-----------------------|-----------------------|-------------------------|
 | 10 000     | 2m13s                 | 2m36s                 | 2m43s                   |
-| 100 000    | 3m38s                 | 4m42s                 | 3m48s                   |
+| 100 000    | 3m38s                 | 3m42s                 | 3m48s                   |
 | 1 000 000  | 7m38s                 | 6m41s                 | 5m56s                   |
 | 10 000 000 | 40m56s                | 33m10s                | 23m24s                  |
 | 30 000 000 | > 2h                  | 1h45m                 | 1h12m                   |
