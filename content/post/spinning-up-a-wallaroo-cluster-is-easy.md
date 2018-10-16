@@ -16,7 +16,7 @@ categories = [
 
 ## Oh no, more data!
 
-Last month, we took a [long-running pandas classifier](/2018/09/make-python-pandas-go-fast/) and made it run faster by leveraging Wallaroo's parallelization capabilities. This time around, we'd like to kick it up a notch and see if we can keep scaling out to meet higher demand. We’d also like to be as economical as possible: provision infrastructure as needed and de-provision it when we’re done processing
+Last month, we took a [long-running pandas classifier](/2018/09/make-python-pandas-go-fast/) and made it run faster by leveraging Wallaroo's parallelization capabilities. This time around, we'd like to kick it up a notch and see if we can keep scaling out to meet higher demand. We’d also like to be as economical as possible: provision infrastructure as needed and de-provision it when we’re done processing.
 
 __________________________
 If you don’t feel like reading the post linked above, here’s a short summary of the situation: there’s a batch job that you’re running every hour, on the hour. This job receives a CSV file and classifies each row of the file, using a Pandas-based algorithm. The run-time of the job is starting to near the one-hour mark, and there’s concern that the pipeline will break down once the input data grows past a particular point.
@@ -88,7 +88,7 @@ INPUT_LINES=1000000` uses our Ansible playbooks to upload application code from
 cluster with 7 worker processes per machine.
 
 Next, Ansible starts sending 1 million lines of our [synthetic CSV data](https://github.com/WallarooLabs/wallaroo_blog_examples/blob/master/provisioned-classifier/bin/send.py), and
-waits for 1 million lines to arrive at the `data_reciever` process. When those lines
+waits for 1 million lines to arrive at the `data_receiver` process. When those lines
 arrive, they are compressed, and the cluster is shut down.
 
 3) `make get-results` Pulls the compressed result file to `output/results.tgz`,
@@ -210,7 +210,7 @@ Our Ansible playbook takes care of coordinating the launch of the various
 components and making sure that their input, output and control ports match
 up. In particular, that the cluster initializer starts up knowing the total
 number of workers in the cluster, and every other worker connects to the
-cluster's internal IP and control port. [See here](https://docs.wallaroolabs.com/book/running-wallaroo/running-wallaroo.html) if you're
+initializer's internal IP and control port. [See here](https://docs.wallaroolabs.com/book/running-wallaroo/running-wallaroo.html) if you're
 interested in a detailed discussion of clustering.
 
 This is what ends up running on the servers when we launch our Ansible playbooks:
@@ -274,7 +274,8 @@ we receive our zipped data onto our disk.
 
 ## The numbers!
 
-As a reminder, let's take a look at the numbers we obtained by running our classifier on a single `c5.4xlarge` instance in AWS:
+As a reminder, let's take a look at the numbers we obtained by running our
+classifier on a single `c5.4xlarge` instance in AWS:
 
 
 #### Single-machine running times (no provisioning)
@@ -289,21 +290,31 @@ Now, let's see how much speedup we can achieve from scaling out with our
 provisioned-on-demand infrastructure.
 
 
-#### Multi-machine running times (setup & teardown included)
+#### Multi-machine running times (provisioning + computation)
 
-| CSV rows      | 4x7 = 28 workers | 8x7 = 56 workers | 16x7 = 112 workers |
-|---------------|------------------|------------------|--------------------|
-| 1 000 000     |    11m40s       |  12m30s   | 15m40s        |
-| 10 000 000    |    43m50s      |  36m30s   |  32m30s       |
+| CSV rows   | 4 machines/28 workers | 8 machines/56 workers | 16 machines/112 workers |
+|------------|-----------------------|-----------------------|-------------------------|
+| 1 000 000  | 7m38s                 | 6m41s                 | 5m56s                   |
+| 10 000 000 | 40m56s                | 33m10s                | 23m24s                  |
+| 30 000 000 | > 2h                  | 1h45m                 | 1h12m                   |
 
 
+As you can see from the table above, the speed gains aren't as clear-cut as
+when running the cluster on a local machine -- there is some constant overhead
+involved in spinning up the required infrastructure -- but in general, the
+problem remains amenable to our parallel approach.
 
-As you can see from the table above, the fact that we spin up infrastructure on
-demand plays a big role in the run-time of our batch jobs. It seems that a
-cluster of 4 machines hits a sweet-spot between price and performance -- we can
-handle 10x more data and still fit in the hour-long window allotted for our
-application, and not have to wait for a big cluster to spin up and then back
-down.
+We're now able to classify a hefty 10 million rows of CSV data in under half an
+hour, and 30 million in a little over an hour. This gives us some perspective
+on when our application will need extra resources, or perhaps some performance
+optimizations.
+
+As long as the data fits in the 1 million : 10 million range, it seems that a
+cluster of 4 machines represents a sweet-spot between price and performance --
+we can process the data and still fit in the hour-long window allotted for our
+batch process, but not have to incur unnecessary infrastructure costs if we
+don't need the extra speed.
+
 
 ## Conclusion
 
@@ -314,7 +325,7 @@ down the infrastructure once the results are in.
 In the case or our batch job, we can leverage this pattern to scale
 horizontally on-demand, even when the incoming workloads exceed the capacity of
 one physical machine -- all while running the exact same Wallaroo application
-that we run locally as part of our regular development! Wallaroo handles the
+that we run locally as part of our regular development. Wallaroo handles the
 scale-aware layer of our program, so we can focus on the business logic and
 flow of our data.
 
