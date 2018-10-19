@@ -52,7 +52,7 @@ The Connector APIs and Wallaroo don't make any assumptions on how you are commun
 
 Along with these new APIs, we've written some example Connectors. These are designed to be copied and pasted as Python applications and started like scripts. You can use these starting points either from the Wallaroo repository or bring them into your own repository and modify them to fit your needs. Take a look at our [Connector documentation](https://docs.wallaroolabs.com/book/python/using-connectors.html) to learn more.
 
-```Python
+```python
 connector = wallaroo.experimental.SinkConnector(
     required_params=[], optional_params=[])
 ```
@@ -72,7 +72,7 @@ To Summarize:
   - Connectors are separate OS processes to your Wallaroo application
 
   - The new APIs provide an easier abstraction around the original TCP Connector
-  
+
   - How your data sources and the Connectors communicate is up to you. This could be something like JSON or a custom protocol.
 
 We're continuing to develop these APIs, so look for developments in the next few releases.
