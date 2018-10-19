@@ -66,9 +66,13 @@ Additionally we have a PostgreSQL template that demonstrates how to use the post
 ## Conclusion
 
 To Summarize:
+
   - Connectors can use any other additional Python libraries
+
   - Connectors are separate OS processes to your Wallaroo application
+
   - The new APIs provide an easier abstraction around the original TCP Connector
+  
   - How your data sources and the Connectors communicate is up to you. This could be something like JSON or a custom protocol.
 
 We're continuing to develop these APIs, so look for developments in the next few releases.
