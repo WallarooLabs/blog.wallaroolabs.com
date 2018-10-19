@@ -1,5 +1,5 @@
 +++
-title= "Announcing our new connector APIs"
+title= "Introducing Connectors: Wallaroo’s Window to the World"
 date = 2018-10-16T19:42:35+00:00
 draft = false
 author = "erikn"
