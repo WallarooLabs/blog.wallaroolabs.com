@@ -61,7 +61,7 @@ The new APIs include an easy way to pass additional arguments to your Connector 
 
 The examples we have provided are [Kafka](https://github.com/WallarooLabs/wallaroo/blob/0.5.3/connectors/kafka_source), [Redis](https://github.com/WallarooLabs/wallaroo/blob/0.5.3/connectors/redis_subscriber_source), [RabbitMQ](https://github.com/WallarooLabs/wallaroo/blob/0.5.3/connectors/rabbitmq_source), [UDP](https://github.com/WallarooLabs/wallaroo/blob/0.5.3/connectors/udp_source), [S3](https://github.com/WallarooLabs/wallaroo/blob/0.5.3/connectors/s3_bucket_sink), and [Kinesis](https://github.com/WallarooLabs/wallaroo/blob/0.5.3/connectors/kinesis_source). Use these as starting points for your Sources and Sinks. We really appreciate any feedback you provide and your feedback will help shape our APIs as we look to release these. When writing a Connector feel free to use other Python libraries as well.
 
-Additionally we have a PostgreSQL template that demonstrates how to use the postgreSQL `LISTEN/NOTIFY` API to pass change events to Wallaroo. This template requires a little more specific logic to get working but should be a great example on how to get started.
+Additionally we have a PostgreSQL template that demonstrates how to use the PostgreSQL `LISTEN/NOTIFY` API to pass change events to Wallaroo. This template requires a little more specific logic to get working but should be a great example on how to get started.
 
 ## Conclusion
 
