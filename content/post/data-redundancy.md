@@ -1,7 +1,7 @@
 +++
 title= "The Treacherous Tangle of Redundant Data: Resilience for Wallaroo"
-date = 2018-11-01T09:00:05+00:00
-draft = true
+date = 2018-10-30T09:00:05+00:00
+draft = false
 author = "slfritchie"
 description = ""
 tags = [
