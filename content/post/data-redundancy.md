@@ -226,7 +226,7 @@ the cloud storage market.
 Similarly, for traditional or on-premise data centers, we didn't
 want to require the use of a NAS, SAN, or similar storage device.  
 
-## Almost good enough: FTP, the File Transfer Protocol from the 1980's
+## Almost good enough: FTP, the File Transfer Protocol from the 1980s
 
 [RFC 959](https://tools.ietf.org/html/rfc959.html) defines the File
 Transfer Protocol, FTP.  FTP services are old, well-tested, and are
@@ -267,7 +267,7 @@ binary protocol, we specify these FTP-like commands:
   single DOS server to store data for multiple DOS clients: each DOS
   client writes its data files into a separate directory.
 
-* APPEND is more similar HTTP's PUT command than to the FTP command
+* APPEND is more similar to HTTP's PUT command than to the FTP command
   combination of PASV and STOR.  It is used to append data to a file.
 
   The APPEND command includes an argument for the DOS server's file
