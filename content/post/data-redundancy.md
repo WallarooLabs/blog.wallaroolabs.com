@@ -26,7 +26,7 @@ the entire machine cannot reboot, due to a power failure or
 administrator error that destroys an entire virtual machine?
 
 Today, the application is writing all of its critical data to the
-files in local file system of each machine.  Tomorrow, that data needs
+files in the local file system of each machine.  Tomorrow, that data needs
 to be redundant.  The scenarios above, hardware failing or an
 administrator doing something wrong: at least one will happen.
 
@@ -52,8 +52,6 @@ the needs of our product, Wallaroo.
 
 ## What is Wallaroo?
 
-[Credit: Erik!]
-
 Wallaroo is a framework designed to make it easier for developers to
 build and operate high-performance applications written in Python. It
 handles the complexity of building distributed data processing
@@ -61,8 +59,10 @@ applications so all that you need to worry about is the domain logic.
 
 Wallaroo is a streaming data processing framework.  One
 property of "streaming data" is that the total size of the input
-is unknown.  How many events will arrive in the next minute?  Zero?
-One thousand?  Ninety million?  You aren't certain when or how much
+is unknown.  The last item to process may never arrive.
+Streaming platforms also don’t know how much data will
+arrive in any given timeframe.  How many events will arrive in the next minute?  Zero?
+One thousand?  Ninety million?  Every minute, you aren't certain when or how much
 data will arrive for processing.
 
 ## Options for partial failure in distributed stream processing
@@ -70,7 +70,7 @@ data will arrive for processing.
 When a machine in a distributed stream processor fails, there are two
 basic options for recovery:
 
-1. Start over. That is, process all of stream data again, starting from the beginning.
+1. Start over. That is, process all stream data again, starting from the beginning.
 2. Restore system state from some snapshot or backup that was made in
    the recent past, then resume processing.
 
@@ -95,8 +95,8 @@ container).
 *Figure 1: Six worker Wallaroo cluster, state storage via local disk*
 
 [Figure 1](#figure1) has no data redundancy in it.  If any local disk
-dies, then recovery is impossible.  If an entire machine or VM or
-container fails or is accidentally destroyed, recovery is impossible.
+fails, then recovery is impossible.  If an entire machine or VM or
+container fails by itself or is accidentally destroyed by an administrator, then recovery is impossible.
 
 What if the same cluster were deployed in an Amazon Web Services (AWS)
 cluster using Elastic Block Store (EBS) volumes to create data
@@ -109,9 +109,8 @@ in the introduction, including NAS, SAN, iSCSI, and so on.
 *Figure 2: Six worker Wallaroo cluster, state storage via EBS*
 
 Let's assume that worker5's machine caught fire; its data is lost.
-See [Figure 3](#figure3).  Also, some inaccuracies of
-[Figure 2's](#figure2) placement of the EBS service are corrected in
-[Figure 3](#figure3).
+See [Figure 3](#figure3).  Also, let’s make the diagram a bit more accurate than
+[Figure 2's](#figure2) placement of the EBS service relative to the rest of the cluster.
 
 <a name="figure3">
 ![Wallaroo worker5 process restarts on a replacement machine/VM/container, accessing an EBS volume](/images/post/data-redundancy/dos-clients-ebs-failover.png)
@@ -128,12 +127,12 @@ finish the recovery process.
 At some point, your boss or perhaps you, yourself, will start adding
 some annoying restrictions to your app.
 
-- No, we can't use Amazon AWS exclusively for this app.
-- No, we can't use our on-premises data center for this app.
-- No, the EMC SAN is being phased out soon, so this app cannot use it.
+- We can't use Amazon AWS exclusively for this app.
+- We can't use our on-premise data center for this app.
+- The EMC SAN is being phased out soon, so this app cannot use it.
 
 This is just a small sample of the deployment restrictions you might
-have to work with.  Now is probably a good time to look at the
+have to work with.  Let’s look at the
 properties, restrictions, and priorities that Wallaroo Labs considered
 when creating a data redundancy strategy for Wallaroo.
 
@@ -146,8 +145,9 @@ streaming data system are:
 the input data may be very, very large.  Many network data protocols
 assume that the amount of data to transfer is known in advance.  An
 ideal data replication system would not require Wallaroo to specify
-exact data sizes in advance, for example, like Amazon's S3 object
-store requires.
+exact data sizes in advance, for example, as Amazon's S3 object
+store requires.  (The multi-part upload API is more complicated and
+moves the problem to a different place.)
 
 2. The input data's arrival time is unknown.  For every data streaming
 system that receives at least one byte per second, there is a system
@@ -155,7 +155,7 @@ that may receive only one byte every day or every week.  With large
 gaps between data input events, Wallaroo could run into data
 replication problems related to timeouts.  When writing data to an FTP
 server or Amazon's S3 service or to an SQL server, when does the
-server disconnect or stop processing due to an idle timeout?
+server disconnect due to an idle/timeout event?
 
 ### Append-only files by single producer, single consumer
 
@@ -171,7 +171,7 @@ In contrast, every Wallaroo worker's recovery data is not shared with
 other workers: it is private state, for use by a single worker only.
 A single worker process only runs on one machine at any given time.
 The worker's recovery data is accessed in a single producer and single
-consumer manner.  Again, industry and open source communities have
+consumer manner.  Industry and open source communities have
 many solutions for this kind of problem, including:
 
 * Storage Area Networks (SANs) such as Fibre Channel shared disks,
@@ -180,10 +180,11 @@ many solutions for this kind of problem, including:
 * Exclusive use shared block devices such as AWS's EBS (Elastic Block
   Store) and Linux's NBD (Network Block Device).
 
-However, most of these techniques make assumptions about hardware and
-networking that are not available in all public cloud computing
-service providers or in private data centers.  We do not want vendor
-lock-in for Wallaroo's data redundancy management.
+However, most of these techniques make assumptions about hardware and/or
+network services that are not available in all public cloud computing
+service providers or in private data centers.  We do not want
+Wallaroo's data redundancy management to steer us into a
+vendor lock-in problem.
 
 Furthermore, most of Wallaroo worker's data files are append-only.  We
 very intentionally made this choice to make file replication easier.
@@ -198,21 +199,21 @@ article with the punny name,
 
 There are many open source systems today that can support Wallaroo's
 recovery data storage requirements.  Apache Kafka and Bookkeeper are
-two of the best-known ones: Wallaroo's use case fits Kafka's &
+two of the best-known ones. Wallaroo's use case fits Kafka's &
 Bookkeeper's feature sets almost exactly.  Why not use Kafka? Or
 Bookkeeper? Hadoop is another excellent fit for Wallaroo's needs.  Why
 not use Hadoop?
 
-Alas, Kafka, Bookkeeper, and Hadoop are fairly complex pieces of
+Alas, Kafka, Bookkeeper, and Hadoop are complex pieces of
 software in their own right.  Wallaroo does not need much of that
 complexity.  It would be nice to avoid requiring Wallaroo
 administrators to be familiar with details of running those services
 in development, testing, and production environments.
 
 Kafka, Bookkeeper, and Hadoop have another complex dependency: the
-ZooKeeper consensus system.  Nobody in Wallaroo Lab's staff wishes to
-make the use of ZooKeeper mandatory for development work or production
-systems.  It would be fantastic if we didn't require our customers to
+ZooKeeper consensus system.  Nobody at Wallaroo Labs wishes to
+make ZooKeeper mandatory for development work or for production
+systems.  It would be fantastic if we didn't require that our customers
 use and maintain ZooKeeper.
 
 ### Avoid vendor lock-in
@@ -220,30 +221,31 @@ use and maintain ZooKeeper.
 We don't want to restrict Wallaroo deployments to a single cloud
 provider like Azure, Google Compute Engine, or Amazon Web Services.
 Wallaroo Labs could avoid lock-in by supporting many or all such cloud
-services, but a company of our size doesn't have the resources to
+services. However, a company of our size doesn't have the resources to
 quickly develop the code needed for supporting all major players in
 the cloud storage market.
 
-Similarly, for traditional or "on premise" data centers, we didn't
+Similarly, for traditional or on-premise data centers, we didn't
 want to require the use of a NAS, SAN, or similar storage device.  
 
 ## Almost good enough: FTP, the File Transfer Protocol from the 1980's
 
 [RFC 959](https://tools.ietf.org/html/rfc959.html) defines the File
-Transfer Protocol, FTP.  FTP services are old, well-tested, and has
-abundant implementations.  The problems are:
+Transfer Protocol, FTP.  FTP services are old, well-tested, and are
+widely available.  FTP is not a perfect fit for Wallaroo’s
+use case.  The problems are:
 
-1. Data arrives at unpredictable times.  We could tweak an
+1. Wallaroo’s data arrives at unpredictable times.  We could tweak an
 FTP server to use infinite timeouts, if we wished.
  
-2. Enforce a single writer restrictions.  Again, we could
+2. Enforce a single writer restriction.  Again, we could
 tweak an FTP server to enforce this restriction, if we wished.
 
-3. Adding feedback for received & fsync'ed data is not a "simple
-tweak" to the FTP protocol.  This would require new additions to the
-protocol: FTP provides no status acknowledgement until the end of file
+3. Adding feedback for received & fsync'ed data (e.g., once per second)
+is not a "simple tweak" to the FTP protocol.
+FTP provides no status acknowledgment until the end of file
 is received.
-Also, FTP's [RFC 959](https://tools.ietf.org/html/rfc959.html)
+Also, [RFC 959](https://tools.ietf.org/html/rfc959.html)
 does not explicitly require durable or stable storage of a file's
 contents.
 
@@ -305,7 +307,7 @@ Wallaroo workers.
 *Figure 4: Six worker Wallaroo cluster plus two DOS servers*
 
 When a Wallaroo worker fails catastrophically, its local recovery
-files are lost.  We must retrieve a copy from a remote DOS server
+files are lost.  We must retrieve copies from a remote DOS server
 before we can restart the worker.  The procedure for figuring out
 which DOS server is most "up to date" is described later in this
 article.
@@ -313,17 +315,17 @@ article.
 [Figure 4](#figure4) suggests that 8 different machines (or virtual
 machines or containers) are required: six for Wallaroo worker
 processes and two for the DOS servers. [Figure 5](#figure5) shows what
-happens when we colocate the DOS servers with the boxes that also run
+happens when we collocate the DOS servers with the boxes that also run
 two of the Wallaroo workers.
 
 <a name="figure5">
 ![Six worker Wallaroo cluster plus two DOS servers sharing hardware](/images/post/data-redundancy/dos-clients-doubleduty.png)
 *Figure 5: Six worker Wallaroo cluster plus two DOS servers sharing hardware*
 
-Our last example is another option, using EBS to provide redundant
+Our last example is another option: it uses EBS to provide redundant
 storage for a single DOS server instead of each of the six worker
-servers.  The system in [Figure 6](#figure6) may be a more
-cost-effective option when "provisioned IOPS" costs for each EBS
+servers in [Figure 2's](#figure2).  The system in [Figure 6](#figure6) may be a more
+cost-effective option if "provisioned IOPS" costs for each EBS
 volume are added to the system.  When the DOS server fails, the
 replacement procedure is similar to the failover scenario shown in
 [Figure 3](#figure3).
@@ -350,13 +352,12 @@ file listing of that directory looks like this:
 ```
 
 The Wallaroo application has been intentionally restricted to only
-three file-mutating file I/O operations: append file data, file
-truncate, and file delete.  For each of these file I/O operations, the
-I/O call + arguments are written to a journal file.  All I/O to a
+three file-mutating I/O operations: append file data, file
+truncate, and file delete.  For each file I/O operation, the
+I/O call and its arguments are written to a journal file.  All I/O to a
 journal file is strictly append-only.  All journal file data is
-written via the DOS protocol to one or more DOS servers.  The
-serialization of these I/O operations is described in the next
-section.
+written via the DOS protocol to one or more DOS servers.  I describe the
+serialization of these I/O operations in the next section.
 
 ### Serialized I/O operations in the `my_app.journal` file
 
@@ -370,8 +371,8 @@ encode_request(optag: USize, op: U8,
     (Array[ByteSeq] iso^, USize)
 ```
 
-A request has an operation tag, an operation specifying byte, and two
-arrays of arguments: one of type `USize` for integers and one of type
+A request has an operation tag number, an operation specifying byte, and two
+arrays of arguments: one of the Pony language’s type `USize` for integers and one of Pony’s type
 `ByteSeq` for strings/byte arrays.  Depending on the operation byte
 `op`, the caller includes the appropriate number of elements in each
 respective array.
@@ -401,18 +402,18 @@ If the binary contents of the `my_app.journal` file were translated
 into a human-readable form, they look something like this:
 
 ```
-version=0 op=1 tag=1 ints=[0] strings=['/tmp/my_app-worker3.tcp-control', 'localhost\n']
-version=0 op=1 tag=2 ints=[10] strings=['/tmp/my_app-worker3.tcp-control', '0\n']
-version=0 op=0 tag=3 ints=[0] strings=['/tmp/my_app-worker3.connection-addresses']
+version=0 op=1 tag=1 ints=[0] strings=['/w/my_app-worker3.tcp-control', 'localhost\n']
+version=0 op=1 tag=2 ints=[10] strings=['/w/my_app-worker3.tcp-control', '0\n']
+version=0 op=0 tag=3 ints=[0] strings=['/w/my_app-worker3.connection-addresses']
 ```
 
 * Where `op=1` is a file write operation:
-    - The 1st integer in the `ints` list is the file offset
-    - The 1st string in the `strings` list is the path of the file to write to.
-    - The 2nd string in the `strings` list is the data written at this offset.
+    - The first integer in the `ints` list is the file offset
+    - The first string in the `strings` list is the path of the file to write to.
+    - The second string in the `strings` list is the data written at this offset.
 * Where `op=0` is a file truncate operation:
-    - The 1st integer in the `ints` list is the file size to truncate to
-    - The 1st string in the `strings` list is the path of the file to truncate.
+    - The first integer in the `ints` list is the file size to truncate to.
+    - The first string in the `strings` list is the path of the file to truncate.
 
 ### I/O Journal + Append-Only Journal I/O -> Logical Time as Journal File Size
 
@@ -423,14 +424,14 @@ or more remote DOS servers for redundancy.
 
 We can consider the file size of the I/O journal files as "logical
 time".  Given the set *F* of all files whose I/O ops are written in
-an I/O journal, then for any single file *f* in the set *F* can be
+an I/O journal, then any single file *f* in the set *F* can be
 reconstructed at some logical time *t* by extracting all of *f*'s
 I/O events from the journal where the file offset of the I/O event is
 less than *t*.
 
-For example, if we want to reconstruct the contents of the
-`/tmp/my_app-worker3.connection-addresses` (sometimes called a "roll
-back") as it existed at the wall clock time of midnight on New Year's
+For example, if we want to reconstruct (or “roll back”) the contents of the
+`/w/my_app-worker3.connection-addresses` file
+as it existed at the wall clock time of midnight on New Year's
 Day 2018, the procedure is:
 
 1. Determine the size of the I/O journal file at midnight on New
@@ -440,19 +441,20 @@ Day 2018, the procedure is:
 3. Read each serialized I/O operation in the file until we reach the
    offset *max_offset*.
 4. If a serialized operation involves the file path
-   `/tmp/my_app-worker3.connection-addresses`, then apply the op
+   `/w/my_app-worker3.connection-addresses`, then apply the op
    (i.e., write/file truncate/file delete) to the file path.
 
 #### Chandy-Lamport snapshot consistency across Wallaroo workers
 
-Any logical time construct mentioned in this doc is applicable only to
+Any logical time construct mentioned in this article is applicable only to
 a single Wallaroo worker and is not valid for comparison with other
 Wallaroo workers.
 
-The snapshot algorithm introduced by Wallaroo release 0.5.3 is
+Wallaroo release 0.5.3 introduced a snapshot algorithm
 responsible for managing logical time consistency across all Wallaroo
 workers.  That algorithm, a variation of the Chandy-Lamport snapshot
-algorithm, uses a different notion of logical time.
+algorithm, uses a separate notion of logical time than the logical time
+discussed here.
 Please see the article
 [Checkpointing and Consistent Recovery Lines: How We Handle Failure in Wallaroo](https://blog.wallaroolabs.com/2018/10/checkpointing-and-consistent-recovery-lines-how-we-handle-failure-in-wallaroo/)
 for an overview of how the Wallaroo's adaptation of Chandy-Lamport
@@ -460,13 +462,12 @@ works.
 
 ### Assume no Byzantine failures or data corruption inside I/O journal files
 
-We definitely assume that there are no Byzantine failures, including
+The DOS protocol and larger Wallaroo system cannot operate
+correctly with Byzantine failures.
+We assume that there are no Byzantine failures, including
 software bugs that would do Bad Things(tm) such as reorder records
 within a journal.  And we assume that there's no data corruption
 (for any reason) inside of a journal file.
-
-The DOS protocol and wider Wallaroo implementation cannot operate
-correctly with Byzantine failures.
 
 In the case of data corruption inside of the log, we do have remedies
 available.  The best remedy is to add robust checksums to all data
@@ -474,33 +475,33 @@ written to a journal.  Today, Wallaroo does not yet use checksums.
 
 ## What's next for data redundancy and Wallaroo?
 
-The soon-to-be-released Wallaroo version 0.5.4 will have all of the
+Wallaroo version 0.5.4 (released on October 31, 2018) now has all of the
 raw components for data redundancy.  To date, those components are
 only lightly tested for performance.  The DOS client, written purely
 in Pony inside of Wallaroo, has not had any performance analysis
 performed yet.
 
 The DOS server is written in Python.  That seems an odd choice for a
-high-performance server, but early tests have shown that that DOS
+high-performance server, but early tests have shown that that the DOS
 server can write over 100 Mbytes/second of recovery data without
 significant latency.  A later Wallaroo release may reimplement the DOS
 server in Pony for higher efficiency.
 
 The long-term goal is to have a hands-free, turnkey system that will
-react to failure of any Wallaroo component and restart it gracefully.
+react to the failure of any Wallaroo component and restart it gracefully.
 We need to choose the environment for such a system: Kubernetes or
-Mesos?  GCE or Azure or AWS?  "On prem" data centers?  All of the
-above?  While we wrestle with those choices, we're confident that the
-data redundancy components provide a good foundation to build on.
+Mesos?  GCE or Azure or AWS?  "On-prem" data centers?  All of the
+above?  While we wrestle with these choices, we're confident that we
+are building on a solid foundation of data redundancy components.
 
 ## Give it a try!
 
 Hopefully, I’ve gotten you excited about Wallaroo and our data
 redundancy story.  We’d love for you to give it a try and give us your
 feedback. Your feedback helps us drive the product forward. Thank you
-to everyone who has contributed feedback so far and thank you to
-everyone who does after reading this blog post. Y’all rock!
+to everyone who has contributed feedback so far, and thank you to
+everyone who does after reading this blog post.
 
-(Get started with Wallaroo now!)[https://docs.wallaroolabs.com/book/getting-started/choosing-an-installation-option.html]
+[Get started with Wallaroo now!](https://docs.wallaroolabs.com/book/getting-started/choosing-an-installation-option.html)
 
 
