@@ -88,9 +88,9 @@ Let's look at a concrete example: a Wallaroo cluster with six worker
 processes, each on a different computer (or virtual machine (VM) or
 container).
 
-<a name="figure1">
+<a name="figure1"></a>
 ![Six worker Wallaroo cluster, state storage via local disk](/images/post/data-redundancy/dos-clients-all-local.png)
-Figure 1: Six worker Wallaroo cluster, state storage via local disk
+*Figure 1: Six worker Wallaroo cluster, state storage via local disk*
 
 [Figure 1](#figure1) has no data redundancy in it.  If any local disk
 fails, then recovery is impossible.  If an entire machine or VM or
@@ -102,17 +102,17 @@ redundancy?  That's what [Figure 2](#figure2) does.  The same general
 principle applies to most file- block-device-centric schemes mentioned
 in the introduction, including NAS, SAN, iSCSI, and so on.
 
-<a name="figure2">
+<a name="figure2"></a>
 ![Six worker Wallaroo cluster, state storage via EBS](/images/post/data-redundancy/dos-clients-ebs.png)
-Figure 2: Six worker Wallaroo cluster, state storage via EBS
+*Figure 2: Six worker Wallaroo cluster, state storage via EBS*
 
 Let's assume that worker5's machine caught fire; its data is lost.
 See [Figure 3](#figure3).  Also, let’s make the diagram a bit more accurate than
 [Figure 2's](#figure2) placement of the EBS service relative to the rest of the cluster.
 
-<a name="figure3">
+<a name="figure3"></a>
 ![Wallaroo worker5 process restarts on a replacement machine/VM/container, accessing an EBS volume](/images/post/data-redundancy/dos-clients-ebs-failover.png)
-Figure 3: Wallaroo worker5 process restarts on a replacement machine/VM/container, accessing an EBS volume
+*Figure 3: Wallaroo worker5 process restarts on a replacement machine/VM/container, accessing an EBS volume*
 
 When the original machine/VM fails, the EBS volume is
 disconnected from the dead VM and attached to a replacement
@@ -300,9 +300,9 @@ journal files to both DOS servers.  Each DOS server uses its local
 file system and local disk(s) to store the I/O journals for all six
 Wallaroo workers.
 
-<a name="figure4">
+<a name="figure4"></a>
 ![Six worker Wallaroo cluster plus two DOS servers](/images/post/data-redundancy/dos-clients-2servers.png)
-Figure 4: Six worker Wallaroo cluster plus two DOS servers
+*Figure 4: Six worker Wallaroo cluster plus two DOS servers*
 
 When a Wallaroo worker fails catastrophically, its local recovery
 files are lost.  We must retrieve copies from a remote DOS server
@@ -316,9 +316,9 @@ processes and two for the DOS servers. [Figure 5](#figure5) shows what
 happens when we collocate the DOS servers with the boxes that also run
 two of the Wallaroo workers.
 
-<a name="figure5">
+<a name="figure5"></a>
 ![Six worker Wallaroo cluster plus two DOS servers sharing hardware](/images/post/data-redundancy/dos-clients-doubleduty.png)
-Figure 5: Six worker Wallaroo cluster plus two DOS servers sharing hardware
+*Figure 5: Six worker Wallaroo cluster plus two DOS servers sharing hardware*
 
 Our last example is another option: it uses EBS to provide redundant
 storage for a single DOS server instead of each of the six worker
@@ -328,9 +328,9 @@ volume are added to the system.  When the DOS server fails, the
 replacement procedure is similar to the failover scenario shown in
 [Figure 3](#figure3).
 
-<a name="figure6">
+<a name="figure6"></a>
 ![Six worker Wallaroo cluster plus one DOS server plus EBS](/images/post/data-redundancy/dos-clients-ebs-hybrid.png)
-Figure 6: Six worker Wallaroo cluster plus one DOS server plus EBS
+*Figure 6: Six worker Wallaroo cluster plus one DOS server plus EBS*
 
 ## Implementation overview: client side (inside Wallaroo)
 
