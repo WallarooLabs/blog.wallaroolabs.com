@@ -1,17 +1,17 @@
-++++
-+title= "The Treacherous Tangle of Redundant Data: Resilience for Wallaroo"
-+date = 2018-11-01T09:00:05+00:00
-+draft = true
-+author = "slfritchie"
-+description = ""
-+tags = [
-+    "resilience",
-+    "state"
-+]
-+categories = [
-+    "Exploring Wallaroo Internals"
-+]
-++++
++++
+title= "The Treacherous Tangle of Redundant Data: Resilience for Wallaroo"
+date = 2018-11-01T09:00:05+00:00
+draft = true
+author = "slfritchie"
+description = ""
+tags = [
+    "resilience",
+    "state"
+]
+categories = [
+    "Exploring Wallaroo Internals"
+]
++++
 
 # The Treacherous Tangle of Redundant Data: Resilience for Wallaroo
 
