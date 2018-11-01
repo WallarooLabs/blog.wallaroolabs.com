@@ -16,32 +16,35 @@ categories = [
 ## Introduction: we need data redundancy, but how, exactly?
 
 You now have your distributed system in production, congratulations!
-The cluster is starting at six machines, but it is expected to grow
+Your cluster is starting at six machines, but it is expected to grow
 quickly as it is assigned more work.  The cluster's main application
-is stateful, and that's a problem.  What if we lose a local disk
+is stateful, and that's a problem.  What if you lose a local disk
 drive?  Or a sysadmin runs `rm -rf` on the wrong directory?  Or else
 the entire machine cannot reboot, due to a power failure or
 administrator error that destroys an entire virtual machine?
 
-Today, the application is writing all of its critical data to the
+Today, your application is writing all of its critical data to the
 files in the local file system of each machine.  Tomorrow, that data needs
-to be redundant.  The scenarios above, hardware failing or an
-administrator doing something wrong: at least one will happen.
+to be redundant.  Sooner or later, your hardware will fail or an
+administrator will do something wrong.
 
-How should we add the data redundancy that we know that we need?
+How should you add the data redundancy that we know that you need?
 You ask for advice, and the answers you get are scattered all over the
 map of tech.
 
 - Store the files with an NFS NAS or perhaps SAN or iSCSI service or
-  an AWS Elastic Block Store (EBS) volume?
+  an AWS Elastic Block Store (EBS) volume
 
 - Store the files in non-traditional shared file service like Hadoop
-  or Ceph?
+  or Ceph
 
-- Switch to a relational database like replicated MySQL or PostgreSQL
-  or Azure's CosmosDB?
+- Switch from files to a relational database like replicated MySQL
+  or PostgreSQL or Azure's CosmosDB
 
-- Use a non-relational database like Cassandra or Amazon's DynamoDB?
+- Switch from files to a non-relational database like Cassandra or
+  Amazon's DynamoDB
+
+- None of the above
 
 Each of those answers could make sense, depending on the application
 and your company and the company's broader goals.  This article
@@ -76,16 +79,18 @@ Option 1 is what streaming systems based on Apache Spark and Kafka do:
 they store all the input event data, so they can resend the events
 after a component has rebooted.
 
-Option 2 is what Wallaroo does.  My colleague, John Mumm, wrote a blog
+Option 2 is what Wallaroo does.  My colleague, John Mumm, recently wrote a blog
 article about
-[Wallaroo's checkpointing algorithm a few weeks ago](https://blog.wallaroolabs.com/2018/10/checkpointing-and-consistent-recovery-lines-how-we-handle-failure-in-wallaroo/).
-However, that blog post doesn't answer an important question: what
+[Wallaroo's checkpointing algorithm](https://blog.wallaroolabs.com/2018/10/checkpointing-and-consistent-recovery-lines-how-we-handle-failure-in-wallaroo/).
+That article explains Wallaroo's recovery process when a worker can be
+restarted.
+However, that blog post doesn't cover a different scenario: what
 happens if a Wallaroo worker's data is *lost*?
 
 ## When data is lost forever, by example
 
 Let's look at a concrete example: a Wallaroo cluster with six worker
-processes, each on a different computer (or virtual machine (VM) or
+processes, each on a different computer (or virtual machine or
 container).
 
 <a name="figure1"></a>
@@ -94,11 +99,12 @@ container).
 
 [Figure 1](#figure1) has no data redundancy in it.  If any local disk
 fails, then recovery is impossible.  If an entire machine or VM or
-container fails by itself or is accidentally destroyed by an administrator, then recovery is impossible.
+container fails by itself or by administrator error, then recovery is impossible.
 
-What if the same cluster were deployed in an Amazon Web Services (AWS)
+As an alternative,
+what if the same cluster were deployed in an Amazon Web Services (AWS)
 cluster using Elastic Block Store (EBS) volumes to create data
-redundancy?  That's what [Figure 2](#figure2) does.  The same general
+redundancy?  That's what [Figure 2](#figure2) depicts.  The same general
 principle applies to most file- block-device-centric schemes mentioned
 in the introduction, including NAS, SAN, iSCSI, and so on.
 
@@ -106,8 +112,8 @@ in the introduction, including NAS, SAN, iSCSI, and so on.
 ![Six worker Wallaroo cluster, state storage via EBS](/images/post/data-redundancy/dos-clients-ebs.png)
 *Figure 2: Six worker Wallaroo cluster, state storage via EBS*
 
-Let's assume that worker5's machine caught fire; its data is lost.
-See [Figure 3](#figure3).  Also, let’s make the diagram a bit more accurate than
+Let's assume that worker5's machine caught fire and its data is lost; see
+[Figure 3](#figure3).  Also, let’s make the diagram a bit more accurate than
 [Figure 2's](#figure2) placement of the EBS service relative to the rest of the cluster.
 
 <a name="figure3"></a>
