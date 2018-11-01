@@ -442,7 +442,7 @@ Day 2018, the procedure is:
    `/w/my_app-worker3.connection-addresses`, then apply the op
    (i.e., write/file truncate/file delete) to the file path.
 
-#### Chandy-Lamport snapshot consistency across Wallaroo workers
+### Chandy-Lamport snapshot consistency across Wallaroo workers
 
 Any logical time construct mentioned in this article is applicable only to
 a single Wallaroo worker and is not valid for comparison with other
