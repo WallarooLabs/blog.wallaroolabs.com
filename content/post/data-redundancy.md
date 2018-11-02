@@ -128,7 +128,7 @@ finish the recovery process.
 
 ## Your Boss Says, “Sorry, What About ...?”
 
-At some point, your boss or perhaps you, yourself, will start adding
+At some point, your boss or perhaps you, will start adding
 some annoying restrictions to your app.
 
 - We can't use Amazon AWS exclusively for this app.
@@ -143,7 +143,7 @@ when creating a data redundancy strategy for Wallaroo.
 ### Recovery data is infinitely sized and arrives at unpredictable times
 
 Wallaroo is a streaming data system.  Two fundamental properties of a
-streaming data system are:
+streaming data system are the following:
 
 1. The input data is infinite.  Truly infinite data is impossible, but
 the input data may be very, very large.  Many network data protocols
@@ -167,7 +167,7 @@ Wallaroo has some properties that simplify choosing a redundant data
 storage scheme: a single producer and a single consumer.
 
 General purpose databases and file systems usually support all kinds
-of shared read & write access to their data.  If 700 clients want to
+of shared read and write access to their data.  If 700 clients want to
 read and write to the same database row or key or file, they will
 support it.
 
@@ -176,7 +176,7 @@ other workers: it is private state, for use by a single worker only.
 A single worker process only runs on one machine at any given time.
 The worker's recovery data is accessed in a single producer and single
 consumer manner.  Industry and open source communities have
-many solutions for this kind of problem, including:
+many solutions for this kind of problem, including these types:
 
 * Storage Area Networks (SANs) such as Fibre Channel shared disks,
   FCoE (Fibre Channel over Ethernet), and AoE (ATA over Ethernet)
@@ -203,28 +203,28 @@ article with the punny name,
 
 There are many open source systems today that can support Wallaroo's
 recovery data storage requirements.  Apache Kafka and Bookkeeper are
-two of the best-known ones. Wallaroo's use case fits Kafka's &
+two of the best-known ones. Wallaroo's use case fits Kafka's and
 Bookkeeper's feature sets almost exactly.  Why not use Kafka? Or
 Bookkeeper? Hadoop is another excellent fit for Wallaroo's needs.  Why
 not use Hadoop?
 
 Alas, Kafka, Bookkeeper, and Hadoop are complex pieces of
-software in their own right.  Wallaroo does not need much of that
-complexity.  It would be nice to avoid requiring Wallaroo
-administrators to be familiar with details of running those services
+software in their own right.  Wallaroo does not need most of their features.
+Let's try to avoid requiring that Wallaroo
+administrators be familiar with details of running those services
 in development, testing, and production environments.
 
 Kafka, Bookkeeper, and Hadoop have another complex dependency: the
 ZooKeeper consensus system.  Nobody at Wallaroo Labs wishes to
 make ZooKeeper mandatory for development work or for production
-systems.  It would be fantastic if we didn't require that our customers
+systems.  Let's try to avoid requiring that our customers
 use and maintain ZooKeeper.
 
 ### Avoid vendor lock-in
 
-We don't want to restrict Wallaroo deployments to a single cloud
+Wallaroo Labs does not want to restrict Wallaroo deployments to a single cloud
 provider like Azure, Google Compute Engine, or Amazon Web Services.
-Wallaroo Labs could avoid lock-in by supporting many or all such cloud
+We could avoid lock-in by supporting many or all such cloud
 services. However, a company of our size doesn't have the resources to
 quickly develop the code needed for supporting all major players in
 the cloud storage market.
@@ -235,18 +235,19 @@ want to require the use of a NAS, SAN, or similar storage device.
 ## Almost good enough: FTP, the File Transfer Protocol from the 1980s
 
 [RFC 959](https://tools.ietf.org/html/rfc959.html) defines the File
-Transfer Protocol, FTP.  FTP services are old, well-tested, and are
-widely available.  FTP is not a perfect fit for Wallaroo’s
-use case.  The problems are:
+Transfer Protocol (FTP).  FTP services are old, well-tested, and are
+widely available.  FTP, however, is not a perfect fit for Wallaroo’s
+use case because of the following conditions:
 
 1. Wallaroo’s data arrives at unpredictable times.  We could tweak an
 FTP server to use infinite timeouts, if we wished.
  
-2. Enforce a single writer restriction.  Again, we could
+2. A single writer restriction is not available.  Again, we could
 tweak an FTP server to enforce this restriction, if we wished.
 
-3. Adding feedback for received & fsync'ed data (e.g., once per second)
-is not a "simple tweak" to the FTP protocol.
+3. Periodic feedback about recevied data is not available.
+Adding feedback for received and fsync'ed data (e.g., once per second)
+would be a significant protocol change, not a simple tweak.
 FTP provides no status acknowledgment until the end of file
 is received.
 Also, [RFC 959](https://tools.ietf.org/html/rfc959.html)
@@ -256,28 +257,30 @@ contents.
 ## Wallaroo's choice: DOS, the Dumb Object Service, that is almost FTP
 
 The last section listed three problems with
-the FTP protocol as defined by RFC 959.  It also mentioned "simple
-tweak" three times.  That was not an accident.  If the FTP protocol
+the FTP protocol as defined by RFC 959.
+For each problem, a possible “tweak” was mentioned.
+That was not an accident.  If the FTP protocol
 were tweaked in those three ways, then the result would fit Wallaroo's
 needs exactly.
 
-Rather than "simply tweak" the FTP protocol, we chose to create and
-implement a new file transfer protocol very similar to FTP but not
-quite FTP. Its name is DOS: the Dumb Object Service.
+Rather than adapt the FTP protocol, we chose to create and
+implement a new file transfer protocol that is very similar to FTP but not
+quite FTP. Its name is DOS, the Dumb Object Service.
 
 The DOS protocol is inspired by a small subset of FTP's commands but
 without the ASCII-only nature of the FTP commands.  In a very small
 binary protocol, we specify these FTP-like commands:
 
-* CWD, change the working directory.  This feature is used to allow a
+* CWD: change the working directory.  This feature is used to allow a
   single DOS server to store data for multiple DOS clients: each DOS
   client writes its data files into a separate directory.
 
-* APPEND is more similar to HTTP's PUT command than to the FTP command
-  combination of PASV and STOR.  It is used to append data to a file.
+* APPEND: append data to a file.
+  It is more similar to HTTP's PUT command than to the FTP command
+  combination of PASV and STOR.
 
   The APPEND command includes an argument for the DOS server's file
-  size (or size $0$ if the file does not yet exist).  The DOS server
+  size (or size *0* if the file does not yet exist).  The DOS server
   will allow the APPEND operation to proceed only if the server's file
   size is exactly equal to the `size` argument provided by the DOS
   client.
@@ -285,18 +288,18 @@ binary protocol, we specify these FTP-like commands:
   Also, the server prohibits multiple clients writing to the same file
   simultaneously.
 
-* GET is more similar to HTTP's GET command than to the FTP command
-  combination of PASV and RETR.  It is used to
-  retrieve a file's contents.  The DOS server's GET command permits
+* GET: retrieve a file's contents.
+  It is more similar to HTTP's GET command than to the FTP command
+  combination of PASV and RETR.  The DOS server's GET command permits
   partial reads of the file by specifying a starting offset and
   maximum number of bytes to send to the client.
 
-* LIST, list files in the current directory.  This feature isn't
+* LIST: list files in the current directory.  This feature isn't
   mentioned in the requirements list above, but it is useful for a
-  Wallaroo worker client to discover the names & sizes of files stored
+  Wallaroo worker client to discover the names and sizes of files stored
   in its own private directory.
 
-* QUIT, which terminates a DOS client session.
+* QUIT: terminates a DOS client session.
 
 ## Examples of Wallaroo clusters with DOS servers providing data redundancy
 
