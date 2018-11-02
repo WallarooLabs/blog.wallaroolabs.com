@@ -1,6 +1,6 @@
 +++
 title= "The Treacherous Tangle of Redundant Data: Resilience for Wallaroo"
-date = 2018-10-30T09:00:05+00:00
+date = 2018-11-02T09:00:05+00:00
 draft = false
 author = "slfritchie"
 description = ""
@@ -331,7 +331,7 @@ two of the Wallaroo workers.
 
 Our last example is another option: it uses EBS to provide redundant
 storage for a single DOS server instead of each of the six worker
-servers in [Figure 2's](#figure2).  The system in [Figure 6](#figure6) may be a more
+servers in [Figure 2](#figure2).  The system in [Figure 6](#figure6) may be a more
 cost-effective option if "provisioned IOPS" costs for each EBS
 volume are added to the system.  When the DOS server fails, the
 replacement procedure is similar to the failover scenario shown in
