@@ -347,7 +347,7 @@ Each Wallaroo worker creates a number of recovery data files inside
 the `--resilience-dir` directory specified on the command line.  A
 file listing of that directory looks like this:
 
-```
+```Text
 -rw-r--r-- 1 ubuntu ubuntu   48 Oct  3 19:34 my_app-worker3.checkpoint_ids
 -rw-r--r-- 1 ubuntu ubuntu  803 Oct  3 19:34 my_app-worker3.connection-addresses
 -rw-r--r-- 1 ubuntu ubuntu  447 Oct  3 19:34 my_app-worker3.evlog
@@ -372,7 +372,7 @@ In the `my_app-worker3.journal` file, each file write/append event
 to a non-journal file (e.g., the `my_app-worker3.checkpoint_ids` file)
 is serialized as if a single generic function had the Pony type:
 
-```
+```Pony
 encode_request(optag: USize, op: U8,
     ints: Array[USize], bss: Array[ByteSeq]):
     (Array[ByteSeq] iso^, USize)
