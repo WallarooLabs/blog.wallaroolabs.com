@@ -422,7 +422,7 @@ version=0 op=0 tag=3 ints=[0] strings=['/w/my_app-worker3.connection-addresses']
     - The first integer in the `ints` list is the file size to truncate to.
     - The first string in the `strings` list is the path of the file to truncate.
 
-### I/O Journal + Append-Only Journal I/O -> Logical Time as Journal File Size
+### I/O Journal + Append-Only Journal I/O -> Journal File Size as Logical Time
 
 All file-mutating I/O operations to `--resilience-dir` files are
 serialized and appended to a local I/O journal file.  Asynchronously,
