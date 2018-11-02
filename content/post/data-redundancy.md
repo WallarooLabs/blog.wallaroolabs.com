@@ -4,7 +4,7 @@ date = 2018-11-02T09:00:05+00:00
 draft = false
 author = "slfritchie"
 description = ""
-tags = [
+tags = [ 
     "resilience",
     "state"
 ]
