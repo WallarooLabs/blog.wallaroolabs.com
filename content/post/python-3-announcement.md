@@ -1,6 +1,6 @@
 +++
 title= "Python Python Python! Python 3 Comes to Wallaroo"
-date = 2018-11-08T14:50:00-05:00
+date = 2018-11-08T14:50:00-04:00
 draft = false
 author = "aturley"
 description = "Wallaroo is a great solution for building scalable streaming data application in Python. We’ve added Python 3 support to bring it into the future."
