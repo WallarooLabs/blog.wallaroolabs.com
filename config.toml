@@ -81,6 +81,12 @@ paginate = 5
       url = "/"
       weight = -50
 
+    [[menu.main]]
+      name = "Subscribe"
+      # pre = "<i class='fa fa-road'></i>"
+      url = "/subscribe/"
+      weight = -40
+
   [[menu.main]]
     name = "" # Save for later, if client wants to implement search
     pre = "<i class='fa fa-github' style='margin-left:5px;'></i>"
