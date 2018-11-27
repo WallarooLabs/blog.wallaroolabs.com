@@ -1,11 +1,11 @@
 +++
-  title= "Using Wallaroo with Postgres"
+  title= "Using Wallaroo with PostgreSQL"
   date = 2018-11-27T12:00:35+00:00
   draft = false
   author = "erikn"
-  description = ""
+  description = "Connectors make working with external systems easy. In this post we show how to use Wallaroo and PostgreSQL together."
   tags = [
-    "connectors",
+    "python",
     "example"
   ]
   categories = [
