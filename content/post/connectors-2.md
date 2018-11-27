@@ -16,7 +16,7 @@
 
 ## Introduction
 
-In the [last blog post](https://blog.wallaroolabs.com/2018/10/introducing-connectors-wallaroos-window-to-the-world/), I gave an overview of our new Connectors APIs, discussing how they work under the hood and some of the examples we provide. In this post, we are going to take a deeper dive into how to build a connector to pull data from PostgreSQL. We'll also talk a bit about some of the different approaches for building both external source and sink connectors.
+In the [last blog post](https://blog.wallaroolabs.com/2018/10/introducing-connectors-wallaroos-window-to-the-world/), I gave an overview of our new Connectors APIs, discussing how they work under the hood and going over some of the examples we provide. In this post, we are going to take a deeper dive into how to build a connector to pull data from PostgreSQL. We'll also talk a bit about some of the different approaches for building both external source and sink connectors.
 
 ## What is Wallaroo
 
@@ -26,7 +26,7 @@ Our goal is to make sure—regardless of where your data is coming from—that y
 
 ## What are we building
 
-To demonstrate how easy swapping connectors is we are going to use the `alert_stateless` application. In this application, transactions are randomly generated and then if a deposit or a withdrawal is greater than 1000 we trigger an alert. For the Source Connector, instead of generating our data inside of our Wallaroo application, we'll read data from a PostgreSQL table. The Sink Connector will take the alert strings sent by Wallaroo and save them in a table.
+To demonstrate how easy it is to swap connectors, we are going to use the `alerts_stateless` application. This application processes a stream of bank transactions. If the amount of a deposit or a withdrawal is greater than 1000, we trigger an alert. For the Source Connector, instead of generating our data inside of our Wallaroo application, we'll read data from a PostgreSQL table. The Sink Connector will take the alert strings sent by Wallaroo and save them in a table.
 
 One way to get the new data from a PostgreSQL table is to use the `LISTEN/NOTIFY` that PostgreSQL provides. Each time a change is made to a table that you are monitoring `NOTIFY` sends the the data to all the connected clients that have issued a `LISTEN` command.
 
@@ -44,7 +44,7 @@ replacing it with this:
 import wallaroo.experimental
 
 # inside of the application_setup function
-gen_source = wallaroo.experimental.SourceConnectorConfig(
+transactions_source = wallaroo.experimental.SourceConnectorConfig(
     "transaction_feed",
     encoder=encode_feed,
     decoder=decode_feed,
