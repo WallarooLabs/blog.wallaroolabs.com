@@ -128,6 +128,7 @@ Please limit your tags to any of the following. If you think your post requires 
 - elixir
 - example
 - golang
+- horizontal scaling
 - installation
 - open source
 - pandas
@@ -150,6 +151,7 @@ Please limit your categories to any of the following. If you think your post req
 - data science at scale
 - example
 - exploring wallaroo internals
+- horizontal scaling
 - testing
 - wallaroo in action
 

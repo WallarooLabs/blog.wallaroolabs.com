@@ -1,15 +1,15 @@
 +++
-title = "Reasons to scale horizontally"
+title = "Reasons to Scale Horizontally"
 slug = "horizontal-scaling-reasons"
-date = 2018-11-20T11:00:00-04:00
+date = 2018-11-29T11:00:00-04:00
 draft = false
 author = "seantallen"
 description = "An introduction to horizontal scaling: what is it and why you might want to do it."
 tags = [
-  "foo"
+  "horizontal scaling"
 ]
 categories = [
-    "foo"
+    "horizontal scaling"
 ]
 +++
 
@@ -29,7 +29,7 @@ We further distinguish scaling into two broad categories: vertical scaling and h
 
 Eventually, vertically scaling is going to hit limits. We have a limit to the amount of memory and CPUs our computers can support. It varies from computer to computer, but the limit is there. Eventually, if we need to scale further, we need to scale by adding more computers. This process of adding more computers is horizontal scaling. 
 
-![Picture of computers](/post/horizontal-scaling/types-of-scaling.png "Scaling!")
+![Picture of computers](/images/post/horizontal-scaling/types-of-scaling.png "Scaling!")
 
 Scaling vertically is also known as "scaling up", whereas horizontal scaling is known as "scaling out." So vertical scaling is adding more resources to a single node in a system, and horizontal scaling is the process of adding more nodes to a system.
 

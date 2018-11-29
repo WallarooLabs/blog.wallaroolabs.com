@@ -5,7 +5,8 @@ date = 2017-10-19T00:00:00Z
 tags = [
     "scale-independence",
     "partitioning",
-    "state"
+    "state",
+    "horizontal scaling"
 ]
 categories = [
     "Exploring Wallaroo Internals"
