@@ -1,7 +1,7 @@
 +++
 title = "Reasons to Scale Horizontally"
 slug = "horizontal-scaling-reasons"
-date = 2018-11-29T11:00:00-04:00
+date = 2018-11-30T11:00:00-04:00
 draft = false
 author = "seantallen"
 description = "An introduction to horizontal scaling: what is it and why you might want to do it. The alternate title was going to be 'Would you rather fight 1 big cow or 15 small cows?'"
