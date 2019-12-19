@@ -50,8 +50,8 @@ paginate = 5
 	useSummaryIfNoDescription = true
 
   # Splash segment prompt and button label
-  splashprompt = "Wallaroo 0.6.o has been released! Check out the beautiful new API to go along with our Python 3 support."
-  splashurl = "https://github.com/WallarooLabs/wallaroo/releases/tag/0.6.0"
+  splashprompt = "Learn how Wallaroo helped Pubmatic with infrastructure costs and time-to-market."
+  splashurl = "https://adexchanger.com/platforms/pubmatic-slashes-infrastructure-costs-with-wallaroo-labs/"
   splashbutton = "Learn more"
 
 [menu]
