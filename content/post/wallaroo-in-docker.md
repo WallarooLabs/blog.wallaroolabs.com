@@ -1,7 +1,7 @@
 +++
 title = "Simplify Stream Processing in Python and Wallaroo using Docker"
 date = 2017-12-20T07:45:00-05:00
-draft = false
+draft = true
 author = "jonbrwn"
 description = "Simplifying the installation and setup process for Wallaroo using Docker."
 tags = [

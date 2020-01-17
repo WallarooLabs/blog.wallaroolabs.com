@@ -1,7 +1,7 @@
 +++
 title= "Converting a Batch Job to Real-time"
 date = 2018-09-11T00:00:00-00:00
-draft = false
+draft = true
 author = "erikn"
 description = "In this post, we'll provide an overview of what stream processing is, some of the advantages it has over batch jobs and then take a brief look at an example."
 tags = [

@@ -1,6 +1,6 @@
 +++
 title = "DDoS Attack Detection with Wallaroo: A Real-time Time Series Analysis Example"
-draft = false
+draft = true
 date = 2017-11-30T00:00:00Z
 tags = [
     "windowing",
@@ -50,11 +50,11 @@ To do this, we will compute a weighted mean and a weighted standard deviation fo
 The basic logic is described below:
 
 1. Each web request produces a log entry containing a timestamp, a client IP address, the server IP address, and the resource requested.
-2. While the server is healthy, we compute a weighted mean and weighted standard deviation over the last 60 seconds of data (for each of requests/second and unique-clients/second).  
+2. While the server is healthy, we compute a weighted mean and weighted standard deviation over the last 60 seconds of data (for each of requests/second and unique-clients/second).
     We update these values whenever a full second rolls over and the window moves forward by one second.
 3. For the current fragment of a second, we compute the _predicted_ metrics, using the current number of requests and unique clients measured so far, divided by the fraction of the second.
 4. We subtract the mean values from the predicted ones, and compare the difference to their respective standard deviations. If either of the differences is greater than 2 multiples of the standard deviation (e.g. > 2 sigma), we call this prediction anomalous.
-5. Since early data can be misleading, we also apply a minimum threshold to prevent flapping: in order to change from "healthy" to "under attack", there must be at least 20 requests the current prediction's sample.  
+5. Since early data can be misleading, we also apply a minimum threshold to prevent flapping: in order to change from "healthy" to "under attack", there must be at least 20 requests the current prediction's sample.
     And likewise, in order to change from "under attack" to "healthy", there must be at least 10 requests in the current prediction's sample.
 6. Whenever a server's status changes from either "healthy" to "under attack" and vice versa, we notify a consumer via a message over TCP, noting the server's address, the new status, and the time at which it changed.
 

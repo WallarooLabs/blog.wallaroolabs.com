@@ -1,6 +1,6 @@
 +++
 title = "Stateful Multi-Stream Processing in Python with Wallaroo"
-draft = false
+draft = true
 date = 2017-12-07T00:00:00Z
 tags = [
     "state",
@@ -19,34 +19,34 @@ author = "jmumm"
 
 Wallaroo allows you to represent data processing tasks as distinct pipelines from the ingestion of data to the emission of outputs.  A Wallaroo application is composed of one or more of these pipelines.  An application is then distributed over one or more workers, which correspond to Wallaroo processes.  One of the core goals for Wallaroo is that the application developer can focus on the domain logic instead of thinking about scale (see this [post](https://blog.wallaroolabs.com/2017/10/how-wallaroo-scales-distributed-state/) for more details).
 
-In this post, I’m going to explain how to define Market Spread as a two-pipeline Wallaroo application that involves a single state partition shared by both pipelines. The principles described here can easily be extended to more complex applications.  
+In this post, I’m going to explain how to define Market Spread as a two-pipeline Wallaroo application that involves a single state partition shared by both pipelines. The principles described here can easily be extended to more complex applications.
 
-First, we’re going to look at what a “pipeline” means in Wallaroo.  Next, we’ll look at how Wallaroo state partitions work.  And then, with these two sets of concepts in mind, we’ll implement “Market Spread” with two pipelines, each interacting with the same state partition.  
+First, we’re going to look at what a “pipeline” means in Wallaroo.  Next, we’ll look at how Wallaroo state partitions work.  And then, with these two sets of concepts in mind, we’ll implement “Market Spread” with two pipelines, each interacting with the same state partition.
 
 The Market Spread application will ingest two incoming streams of data, one representing current information about stock prices (we’ll be calling this “market data”) and the other representing a sequence of stock orders.  The application will use the stock pricing information to update its market state partition.  Meanwhile, it will check the stream of market orders against that same market state partition to determine if it should emit alerts to an external system.  We’ll look at some of the code for this application in the body of the post, but you can go [here](https://github.com/WallarooLabs/wallaroo/tree/master/examples/python/market_spread) to see the entire example.
 
 ## Wallaroo Pipelines
 
-Wallaroo applications are composed of one or more __pipelines__. A pipeline starts from a __source__, a point where data is ingested into the application. It is then composed of zero or more computations or state computations. Finally, it can optionally terminate in a __sink__, a point where data is emitted to an external system. 
+Wallaroo applications are composed of one or more __pipelines__. A pipeline starts from a __source__, a point where data is ingested into the application. It is then composed of zero or more computations or state computations. Finally, it can optionally terminate in a __sink__, a point where data is emitted to an external system.
 
 The simplest possible pipeline would consist of just a source. However, this wouldn’t do anything useful. In practice, a pipeline will either terminate at a sink or at a state computation that updates some Wallaroo state. Here’s an example of a pipeline definition taken from an earlier [post](https://blog.wallaroolabs.com/2017/10/go-python-go-stream-processing-for-python/) describing a word count application:
 
 ```
    ab.new_pipeline("Split and Count",
-                    wallaroo.TCPSourceConfig(in_host, in_port, 
+                    wallaroo.TCPSourceConfig(in_host, in_port,
                                              Decoder()))
     ab.to_parallel(Split)
-    ab.to_state_partition(CountWord(), WordTotalsBuilder(), 
+    ab.to_state_partition(CountWord(), WordTotalsBuilder(),
         "word totals", WordPartitionFunction(), word_partitions)
-    ab.to_sink(wallaroo.TCPSinkConfig(out_host, out_port, Encoder()))    
+    ab.to_sink(wallaroo.TCPSinkConfig(out_host, out_port, Encoder()))
     return ab.build()
 ```
 
-We set up a new pipeline with the `new_pipeline()` API call, where we specify the pipeline source. Here, the source receives lines of text over TCP. We send these lines to a parallelized split computation that breaks them into individual words.  These words are then sent to a state computation that counts the words and updates running totals in a state partition.  Finally, we send our running totals to a sink that writes the outputs over TCP to an external system. 
+We set up a new pipeline with the `new_pipeline()` API call, where we specify the pipeline source. Here, the source receives lines of text over TCP. We send these lines to a parallelized split computation that breaks them into individual words.  These words are then sent to a state computation that counts the words and updates running totals in a state partition.  Finally, we send our running totals to a sink that writes the outputs over TCP to an external system.
 
 There are two ways to signal the termination of a pipeline. First, as in the above example, we can use a `to_sink()` call to indicate the pipeline terminates at a sink.  Second, we can use a `done()` call to indicate that the pipeline terminates then and there, for example, after a state computation that updates some state.
 
-In addition to computation metrics, Wallaroo records pipeline-specific metrics which are sent over TCP to either the Wallaroo Metrics UI or a user-defined system that understands our protocol. Via the Metrics UI, you can see the latency from the point of ingestion into the pipeline to the end point of that pipeline, whether that is a sink or some state computation.  You can also see the pipeline throughput. 
+In addition to computation metrics, Wallaroo records pipeline-specific metrics which are sent over TCP to either the Wallaroo Metrics UI or a user-defined system that understands our protocol. Via the Metrics UI, you can see the latency from the point of ingestion into the pipeline to the end point of that pipeline, whether that is a sink or some state computation.  You can also see the pipeline throughput.
 
 A Wallaroo application is not limited to only one pipeline.  To add another, you call `new_pipeline()` again after either a `to_sink()` call or a `done()` call.  We will look at an example below when we define the Market Spread application.  But in order to understand how pipelines can share state in a Wallaroo application, we first need to understand something about how Wallaroo handles state.
 
@@ -56,7 +56,7 @@ We explored how Wallaroo handles distributed state in some detail in an earlier 
 
 When you define a stateful Wallaroo application, you define a state partition by providing a set of partition keys and a partition function that maps inputs to keys.  Wallaroo divides its state into distinct state entities in a one-to-one correspondence with the partition keys.  These state entities act as boundaries for atomic transactions (an idea inspired by this [paper](http://queue.acm.org/detail.cfm?id=3025012) by Pat Helland). They also act as units of parallelization, both within and between workers.
 
-In the case of a word count application, we might partition our state by the letters of the alphabet.  In this case, Wallaroo creates a state entity corresponding to each letter. In a two-worker Wallaroo cluster, the state entities corresponding to “a”-”m” might live on Worker 1, while the entities corresponding to “n”-”z” might live on Worker 2. 
+In the case of a word count application, we might partition our state by the letters of the alphabet.  In this case, Wallaroo creates a state entity corresponding to each letter. In a two-worker Wallaroo cluster, the state entities corresponding to “a”-”m” might live on Worker 1, while the entities corresponding to “n”-”z” might live on Worker 2.
 
 ![Word Count State Partition](/images/post/name-pending/word-count-letter-state-partition.png)
 
@@ -74,7 +74,7 @@ As mentioned above, each pipeline has a data source. In the case of the Market S
 
 I mentioned above that, in practice, a pipeline will either terminate at a sink or at a state update computation. Our first pipeline ingests recent market data and uses that data to make updates to our market state. At that point, there is nothing left to do, so the pipeline terminates. Our second pipeline ingests orders, checks those orders against the market state, and then, under certain conditions, sends out an alert to an external system indicating that an order should be rejected. This means that the second pipeline terminates at a sink, since we will sometimes be emitting outputs.
 
-You’ve probably already noticed that we’re going to be sharing state across these two pipelines. We want to check our orders against the same market state that we’re updating in our first pipeline.  So how do we do this?  The short answer is that we give the state partition a name (represented as a String) and use this in the definition of both pipelines.  We’ll see how this works in the context of defining the entire application. 
+You’ve probably already noticed that we’re going to be sharing state across these two pipelines. We want to check our orders against the same market state that we’re updating in our first pipeline.  So how do we do this?  The short answer is that we give the state partition a name (represented as a String) and use this in the definition of both pipelines.  We’ll see how this works in the context of defining the entire application.
 
 In order to define a Wallaroo application using the Python API, we must first define a function called `application_setup()` where our application definition will go.  We begin by setting up our TCP addresses and our state partition keys:
 
@@ -186,7 +186,7 @@ class UpdateMarketData(object):
         return (None, True)
 ```
 
-The details of the logic are not important for the purposes of this post, but the short version is that we use the current bid-ask spread for a given stock symbol to determine if we should reject orders for that symbol.  
+The details of the logic are not important for the purposes of this post, but the short version is that we use the current bid-ask spread for a given stock symbol to determine if we should reject orders for that symbol.
 
 A state computation returns a tuple representing the output of the computation and a boolean signifying whether we changed state.  In this case, we return `None` for our output since we are only updating state.  And we return `True` because we updated state.
 
@@ -203,7 +203,7 @@ Our call to `done()` indicates that we are finished defining this pipeline. But 
                                         OrderResultEncoder())
 ```
 
-This time, we name the pipeline “Orders” and we use the `OrderDecoder`, which takes incoming binary data and derives an `Order` object (it’s similar to the `MarketDataDecoder` we saw above).  We then define the state partition again.  You’ll notice that the definition is the same as with the first pipeline with the exception of `CheckOrder`, which is the class responsible for checking the order against market state and potentially emitting an `OrderResult` if an alert is called for.  
+This time, we name the pipeline “Orders” and we use the `OrderDecoder`, which takes incoming binary data and derives an `Order` object (it’s similar to the `MarketDataDecoder` we saw above).  We then define the state partition again.  You’ll notice that the definition is the same as with the first pipeline with the exception of `CheckOrder`, which is the class responsible for checking the order against market state and potentially emitting an `OrderResult` if an alert is called for.
 
 Currently, Wallaroo requires some redundant information when specifying that a state partition defined earlier is used in a later pipeline.  We will eventually simplify this aspect of the API, but for now, when sharing the same state partition across pipelines, you will copy the same call with the exception of the state computation class (in this case `CheckOrder`).  In particular, make sure you are using the same string identifier for the state partition.
 

@@ -1,7 +1,7 @@
 +++
 title= "Go Go, Go! Stream Processing for Go"
 date = 2018-01-18T12:00:00-04:00
-draft = false
+draft = true
 author = "aturley"
 description = "Wallaroo’s Go API opens the door to writing scale-independent applications in Go."
 tags = [

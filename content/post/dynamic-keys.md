@@ -1,7 +1,7 @@
 +++
 title = "Dynamic Keys"
 date = 2018-08-02T7:00:00-04:00
-draft = false
+draft = true
 author = "aturley"
 description = "A look at how Wallaroo applications can now support new keys"
 tags = [

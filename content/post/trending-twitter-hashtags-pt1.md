@@ -1,7 +1,7 @@
 +++
 title = "Stream processing, trending hashtags, and Wallaroo"
 date = 2018-06-06T18:00:00-04:00
-draft = false
+draft = true
 author = "seantallen"
 description = "See how you can chain Wallaroo state computations together for build a Twitter trending hashtags application."
 tags = [
@@ -12,7 +12,7 @@ tags = [
     "twitter"
 ]
 categories = [
-    "Wallaroo in Action", 
+    "Wallaroo in Action",
     "Trending Twitter Hashtags"
 ]
 +++
@@ -22,7 +22,7 @@ A prospective Wallaroo user contacted us and asked for an example of chaining st
 
 Doing chained state computations is a general problem with many applications and is straightforward in Wallaroo. To illustrate the concepts using a realistic yet relatively easy to understand use-case I decided to go with an updated version of a previous blog post. Back in November of 2017, we published an example Wallaroo app that [identified top twitter hashtags in real-time](https://blog.wallaroolabs.com/2017/11/identifying-trending-twitter-hashtags-in-real-time-with-wallaroo/).
 
-My example is a rewrite of the Wallaroo code that powers that example while keeping the supporting twitter client and flask-based web application intact. 
+My example is a rewrite of the Wallaroo code that powers that example while keeping the supporting twitter client and flask-based web application intact.
 
 The original ["Trending Hashtags"](https://github.com/WallarooLabs/wallaroo_blog_examples/tree/master/twitter-trending-hashtags) application differs in a few fundamental ways from our updated example.
 
@@ -37,12 +37,12 @@ Here's the definition of the data pipeline from our original application:
 ```python
     ab = wallaroo.ApplicationBuilder("Trending Hashtags")
 
-    ab.new_pipeline("Tweets_new", 
+    ab.new_pipeline("Tweets_new",
       wallaroo.TCPSourceConfig(in_host, in_port, Decoder() ))
 
     ab.to(HashtagFinder)
 
-    ab.to_stateful(ComputeHashtags(), 
+    ab.to_stateful(ComputeHashtags(),
       HashtagsStateBuilder(), "hashtags state")
 
     ab.to_sink(wallaroo.TCPSinkConfig(out_host, out_port, Encoder()))
@@ -62,21 +62,21 @@ In Wallaroo this would look like:
 ```python
     ab = wallaroo.ApplicationBuilder("Trending Hashtags")
 
-    ab.new_pipeline("Tweets", 
+    ab.new_pipeline("Tweets",
       wallaroo.TCPSourceConfig(in_host, in_port, decoder))
 
     ab.to_parallel(find_hashtags)
 
-    ab.to_state_partition(count_hashtags, HashtagCounts, 
+    ab.to_state_partition(count_hashtags, HashtagCounts,
       "raw hashtag counts", extract_hashtag_key, raw_hashtag_partitions)
 
     ab.to_stateful(top_hashtags, TopTags, "top hashtags")
 
     ab.to_sink(wallaroo.TCPSinkConfig(out_host, out_port, encoder))
- ``` 
- 
+ ```
+
  Let's break that apart for folks who aren't familiar with how Wallaroo's [Application Builder API](https://docs.wallaroolabs.com/book/python/api.html#applicationbuilder) works.
- 
+
 We declare a new application called "Trending Hashtags":
 
 ```python
@@ -86,12 +86,12 @@ ab = wallaroo.ApplicationBuilder("Trending Hashtags")
 That consists of a single data pipeline, "Tweets." This data pipeline will receive data from the Twitter firehose over TCP:
 
 ```python
-ab.new_pipeline("Tweets", 
+ab.new_pipeline("Tweets",
   wallaroo.TCPSourceConfig(in_host, in_port, decoder))
 ```
 
 The incoming data will be routed to an instance of a parallelized stateless computation `find_hashtags`. `find_hashtags` will parse each tweet looking for hashtags:
- 
+
 ```python
 ab.to_parallel(find_hashtags)
 ```
@@ -99,11 +99,11 @@ ab.to_parallel(find_hashtags)
 Any hashtags found in the previous step are sent to a partitioned state computation called `count_hashtags`. Each partition has its own `HashtagCounts` object that we use to maintain a listing of hashtags seen and their count. Data partitioning in Wallaroo is controlled by the developer so we supply a list of valid partition keys (`raw_hashtag_partitions`) and a function that examines incoming hashtags and extracts a key from them `extract_hashtag_key`:
 
 ```python
-ab.to_state_partition(count_hashtags, HashtagCounts, 
+ab.to_state_partition(count_hashtags, HashtagCounts,
   "raw hashtag counts", extract_hashtag_key, raw_hashtag_partitions)
 ```
 
-Whenever the "top K" for a given `raw hashtag counts` changes, a new message will be sent to our final step, a non-parallelized state computation (`top_hashtags`) that keeps a listing of the current top K hashtags in a state object `TopTags`. 
+Whenever the "top K" for a given `raw hashtag counts` changes, a new message will be sent to our final step, a non-parallelized state computation (`top_hashtags`) that keeps a listing of the current top K hashtags in a state object `TopTags`.
 
 ```python
 ab.to_stateful(top_hashtags, TopTags, "top hashtags")
@@ -117,7 +117,7 @@ ab.to_sink(wallaroo.TCPSinkConfig(out_host, out_port, encoder))
 
 ## Conclusion
 
-All the code for our [Parallel Twitter Trending Hashtags](https://github.com/WallarooLabs/wallaroo_blog_examples/tree/master/parallel-twitter-trending-hashtags) example is available on GitHub. You can clone the code, [install your Python and Wallaroo dependencies](https://github.com/WallarooLabs/wallaroo_blog_examples/tree/master/parallel-twitter-trending-hashtags#installation), [supply your Twitter credentials](https://github.com/WallarooLabs/wallaroo_blog_examples/tree/master/parallel-twitter-trending-hashtags#configuration) and [run it](https://github.com/WallarooLabs/wallaroo_blog_examples/tree/master/parallel-twitter-trending-hashtags#running-instructions) to see it in action. 
+All the code for our [Parallel Twitter Trending Hashtags](https://github.com/WallarooLabs/wallaroo_blog_examples/tree/master/parallel-twitter-trending-hashtags) example is available on GitHub. You can clone the code, [install your Python and Wallaroo dependencies](https://github.com/WallarooLabs/wallaroo_blog_examples/tree/master/parallel-twitter-trending-hashtags#installation), [supply your Twitter credentials](https://github.com/WallarooLabs/wallaroo_blog_examples/tree/master/parallel-twitter-trending-hashtags#configuration) and [run it](https://github.com/WallarooLabs/wallaroo_blog_examples/tree/master/parallel-twitter-trending-hashtags#running-instructions) to see it in action.
 
 The Wallaroo specific logic is all in a single file [twitter_wallaroo_app.py](https://github.com/WallarooLabs/wallaroo_blog_examples/blob/master/parallel-twitter-trending-hashtags/twitter_wallaroo_app.py). Feel free to dive in and check it out. In a couple of weeks, I'm going to publish a post about that looks at how the windowing used to determine trending works in this application.
 

@@ -1,7 +1,7 @@
 +++
 title = "Open Sourcing Wallaroo"
 date = 2017-09-27T12:00:00-04:00
-draft = false
+draft = true
 author = "seantallen"
 description = "In which we announce the opening up of our codebase."
 tags = [
