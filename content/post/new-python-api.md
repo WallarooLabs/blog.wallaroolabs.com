@@ -1,7 +1,7 @@
 +++
 title= "Idiomatic Python Stream Processing in Wallaroo"
 date = 2018-02-01T12:00:00-04:00
-draft = false
+draft = true
 author = "aturley"
 description = "Wallaroo’s New Python API makes writing distributed stream processing applications more Pythonic."
 tags = [

@@ -1,7 +1,7 @@
 +++
 title = "Detecting Spam as it happens: Getting Erlang and Python working together with Wallaroo"
 date = 2018-07-12T08:15:00-07:00
-draft = false
+draft = true
 author = "simonzelazny"
 description = "An example Wallaroo application that plugs into a live XMPP traffic stream to detect spambots. Built with Erlang and Python. Spambots included."
 tags = [

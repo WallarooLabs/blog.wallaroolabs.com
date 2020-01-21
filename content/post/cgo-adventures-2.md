@@ -1,7 +1,7 @@
 +++
 title = "Adventures with cgo: Part 2- Locks and other things that go bump in the night"
 date = 2018-04-26T16:42:42-04:00
-draft = false
+draft = true
 author = "seantallen"
 description = "We've learned quite a lot while working on the Go API for Wallaroo. Come along for the journey with us as we teach you about the fun and foibles that await when you go adventuring with cgo. In part 2, we follow up on some lessons learned in part 1."
 tags = [

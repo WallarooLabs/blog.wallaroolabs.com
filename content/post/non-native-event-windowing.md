@@ -1,6 +1,6 @@
 +++
 title = "Non-native event-driven windowing in Wallaroo"
-draft = false
+draft = true
 date = 2017-11-16T00:00:00Z
 tags = [
     "windowing",

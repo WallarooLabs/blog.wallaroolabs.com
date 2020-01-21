@@ -1,6 +1,6 @@
 +++
 title = "How to update your Wallaroo Python applications to the new API"
-draft = false
+draft = true
 date = 2018-01-12T00:00:00Z
 tags = [
     "python",
@@ -119,7 +119,7 @@ This is the biggest of the changes. First of all, a computation is no longer a c
 * `state_computation`: a computation that uses state
 * `state_computation_multi`: a state computation that outputs multiple messages at once
 
-You will have to pick the right one to match your type of computation. However, the changes you will have to make after that are all similar to each other. 
+You will have to pick the right one to match your type of computation. However, the changes you will have to make after that are all similar to each other.
 
 ```python
 class CountWord(object):

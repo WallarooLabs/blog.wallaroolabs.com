@@ -1,7 +1,7 @@
 +++
 title = "Dynamic tracing a Pony + Python program with DTrace"
 date = 2017-12-14T06:30:12-06:00
-draft = false
+draft = true
 author = "slfritchie"
 description = "Use the dynamic tracing tool DTrace to observe the internals of a Wallaroo application, observing events in both Pony code and Python code and also inside the OS kernel itself."
 tags = [
@@ -23,7 +23,7 @@ such as:
 
 * Requiring access to the application's source code.
 * Require changes to how the application is built.
-* Require changes to how the application is run.  
+* Require changes to how the application is run.
 
 The dynamic tracing technique can avoid most of these limitations.
 Dynamic tracing tools such as DTrace, SystemTap, uprobes, and perf are
@@ -162,7 +162,7 @@ development environment and production systems.
   alternative to DTrace.  More recently, a system built around
   [Linux uprobes][linux-uprobes] and [Linux kprobes][linux-kprobes] and
   [the linux `perf` utility][linux-perf] and [eBPF][ebpf] combine to make a useful
-  dynamic tracing system.  The best summaries I know of are 
+  dynamic tracing system.  The best summaries I know of are
   [Julia Evans's overview][julia-evans-tracing] and
   [Brendan Gregg's various articles][brendan-gregg-tracing].
   Unfortunately, the feature set and stability of this system varies
@@ -298,9 +298,9 @@ dtrace: description 'pony$target:::rt-*' matched 3 probes
 Hello, world.
 dtrace: pid 25497 has exited
 CPU     ID                    FUNCTION:NAME
-  6 517061                pony_init:rt-init 
-  6 517062     ponyint_sched_start:rt-start 
-  7 517060    ponyint_sched_shutdown:rt-end 
+  6 517061                pony_init:rt-init
+  6 517062     ponyint_sched_start:rt-start
+  7 517060    ponyint_sched_shutdown:rt-end
 ```
 
 That's new, isn't it?  We've learned a lot of things, including:
@@ -389,13 +389,13 @@ python$target:::function-entry
     self->count = 1;
     self->line = arg2;
 }
-    
+
 python$target:::function-entry
 / self->count > 0 /
 {
     self->count = self->count + 1;
 }
-    
+
 python$target:::function-return
 / self->ts != 0 && self->count > 1 /
 {
@@ -453,67 +453,67 @@ Values in the @pony array (units = none)
 
 Values in the @heap array (units = bytes)
 
-  heap-alloc                                        
-           value  ------------- Distribution ------------- count    
-               4 |                                         0        
-               8 |@@@@@                                    40128    
-              16 |@                                        9492     
-              32 |@@@@@@@@@@@@@@@@@                        129100   
-              64 |@@@@@@@@@@@@                             85796    
-             128 |@                                        10286    
-             256 |@                                        5540     
-             512 |@                                        6334     
-            1024 |@                                        10280    
-            2048 |                                         0        
+  heap-alloc
+           value  ------------- Distribution ------------- count
+               4 |                                         0
+               8 |@@@@@                                    40128
+              16 |@                                        9492
+              32 |@@@@@@@@@@@@@@@@@                        129100
+              64 |@@@@@@@@@@@@                             85796
+             128 |@                                        10286
+             256 |@                                        5540
+             512 |@                                        6334
+            1024 |@                                        10280
+            2048 |                                         0
 
 
 Values in the @python array (units = nanoseconds/call)
 
-  payload_length,market_spread.py:141               
-           value  ------------- Distribution ------------- count    
-            1024 |                                         0        
-            2048 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@     971      
-            4096 |@@@                                      78       
-            8192 |@                                        28       
-           16384 |                                         3        
-           32768 |                                         0        
+  payload_length,market_spread.py:141
+           value  ------------- Distribution ------------- count
+            1024 |                                         0
+            2048 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@     971
+            4096 |@@@                                      78
+            8192 |@                                        28
+           16384 |                                         3
+           32768 |                                         0
 
-  payload_length,market_spread.py:209               
-           value  ------------- Distribution ------------- count    
-            1024 |                                         0        
-            2048 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@         854      
-            4096 |@@@@@@@                                  186      
-            8192 |@                                        36       
-           16384 |                                         4        
-           32768 |                                         0        
+  payload_length,market_spread.py:209
+           value  ------------- Distribution ------------- count
+            1024 |                                         0
+            2048 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@         854
+            4096 |@@@@@@@                                  186
+            8192 |@                                        36
+           16384 |                                         4
+           32768 |                                         0
 
-  decode,market_spread.py:212                       
-           value  ------------- Distribution ------------- count    
-            1024 |                                         0        
-            2048 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@      5699     
-            4096 |@@@@                                     723      
-            8192 |                                         54       
-           16384 |                                         3        
-           32768 |                                         1        
-           65536 |                                         0        
+  decode,market_spread.py:212
+           value  ------------- Distribution ------------- count
+            1024 |                                         0
+            2048 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@      5699
+            4096 |@@@@                                     723
+            8192 |                                         54
+           16384 |                                         3
+           32768 |                                         1
+           65536 |                                         0
 
-  decode,market_spread.py:144                       
-           value  ------------- Distribution ------------- count    
-            1024 |                                         0        
-            2048 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@    9031     
-            4096 |@@                                       596      
-            8192 |                                         86       
-           16384 |                                         6        
-           32768 |                                         1        
-           65536 |                                         0        
+  decode,market_spread.py:144
+           value  ------------- Distribution ------------- count
+            1024 |                                         0
+            2048 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@    9031
+            4096 |@@                                       596
+            8192 |                                         86
+           16384 |                                         6
+           32768 |                                         1
+           65536 |                                         0
 
-  partition,market_spread.py:106                    
-           value  ------------- Distribution ------------- count    
-            8192 |                                         0        
-           16384 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  2103     
-           32768 |@                                        50       
-           65536 |                                         7        
-          131072 |                                         0        
+  partition,market_spread.py:106
+           value  ------------- Distribution ------------- count
+            8192 |                                         0
+           16384 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  2103
+           32768 |@                                        50
+           65536 |                                         7
+          131072 |                                         0
 
 
 Values in the @os array (units = IO ops)
@@ -545,7 +545,7 @@ We've learned many things here also.
   * Very odd, indeed.
 * Inside of the kernel, we counted `3` disk I/O operations started.
   This workload is not expected to generate any significant disk
-  activity; the average rate disk I/O rate of approximately 1 op/second 
+  activity; the average rate disk I/O rate of approximately 1 op/second
   falls within our expected range.
 
 <a id="lunch"></a>
@@ -685,7 +685,7 @@ For more about dynamic tracing tools for Linux:
   * Includes a treasure trove of 75 utilities for measuring kernel
     activity!  (Scroll down to the middle of the README.)
 * Presentation slides by Hiroyuki ISHII, "Dynamic Tracing Tools on
-  ARM/AArch64 platform Updates and Challenges": 
+  ARM/AArch64 platform Updates and Challenges":
   https://elinux.org/images/3/32/ELC_2017_NA_dynamic_tracing_tools_on_arm_aarch64_platform.pdf
 * Article by Michael Paquier, "Dynamic tracing with Postgres":
   http://paquier.xyz/postgresql-2/postgres-dynamic-tracing/

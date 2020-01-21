@@ -15,11 +15,11 @@ When processing data, we often categorize a job as either a batch or streaming j
 
 ## Batch processing
 
-The definition of batch processing has changed over time. The current conventional usage is some data transformation over a finite set of data. The finite nature of the data means that the job has a beginning and an end. 
+The definition of batch processing has changed over time. The current conventional usage is some data transformation over a finite set of data. The finite nature of the data means that the job has a beginning and an end.
 
-An example would be, "I want to process all the logs that my web servers generated yesterday." 
+An example would be, "I want to process all the logs that my web servers generated yesterday."
 
-Here we have a finite set of data: "all the logs my web servers generated yesterday." I can start processing those logs and eventually that task will finish. 
+Here we have a finite set of data: "all the logs my web servers generated yesterday." I can start processing those logs and eventually that task will finish.
 
 ## Stream processing
 
@@ -27,9 +27,9 @@ In contrast to batch processing, stream processing commonly refers to data trans
 
 ## The missing "How"
 
-While helpful for grounding conversations, these definitions overlook an essential aspect of batch and stream processing: how the data is processed. 
+While helpful for grounding conversations, these definitions overlook an essential aspect of batch and stream processing: how the data is processed.
 
-One of the characteristics of stream processing that is implicit in our definition is that we engage in "item-at-a-time" processing. What is item-at-a-time processing? It means that we process each piece of data, each item, as it arrives. An auction site that takes action for each bid as it arrives is practicing item-a-time processing. It's handling each bid placed event as it arrives, one bid a time. 
+One of the characteristics of stream processing that is implicit in our definition is that we engage in "item-at-a-time" processing. What is item-at-a-time processing? It means that we process each piece of data, each item, as it arrives. An auction site that takes action for each bid as it arrives is practicing item-a-time processing. It's handling each bid placed event as it arrives, one bid a time.
 
 What's interesting is that many "batch processing" jobs are also "item-at-a-time" and are good candidates for processing by an "item-at-a-time engine." That is, a lot of batch jobs, with their finite set of data with a start and an end, make good stream processing jobs.
 
@@ -37,7 +37,7 @@ Let's take a look at a ubiquitous batch processing example, log file analysis.
 
 ## Log file analysis
 
-Log file analysis is commonly thought of as a batch processing job because we have a finite, fixed set of data. We have some log files, covering a specific period of time, that we want to process. 
+Log file analysis is commonly thought of as a batch processing job because we have a finite, fixed set of data. We have some log files, covering a specific period of time, that we want to process.
 
 Log file analysis often involves taking each line of the log, examining it for different features, and updating aggregations of those features. For example, getting the geographic distribution of visitors over a given time frame. Or ranking the most popular pages on a website.
 
@@ -45,13 +45,13 @@ Note that I said our log analysis involves "taking **each** line of the log." Al
 
 ## Recommendation engine
 
-Recommendation engines are often item-at-a-time systems as well. A company wants to recommend a product to its customers. The goal is to get them interested in products they might not be aware of. 
+Recommendation engines are often item-at-a-time systems as well. A company wants to recommend a product to its customers. The goal is to get them interested in products they might not be aware of.
 
 Once again, there's a finite data set, in this case a list of customers that we want to generate recommendations for.
 
 Every so often, perhaps daily or weekly, the company needs to generate new product recommendations that will be mailed to their customers. This fits under our earlier definition of batch processing: processing over a finite data set with a beginning and an end.
 
-However, recommendations are done “per customer.” That’s “item-at-a-time.” Recommendations are generated for each customer independent of the suggestions for any other customer. That’s a streaming problem. 
+However, recommendations are done “per customer.” That’s “item-at-a-time.” Recommendations are generated for each customer independent of the suggestions for any other customer. That’s a streaming problem.
 
 Ok, so there are batch problems that are also streaming problems. Why would we want to use a stream processing engine instead of a batch processing engine? There are many reasons to consider a steam processing engine, but I want to focus on one: extracting value from your data sooner than you could with a batch engine.
 

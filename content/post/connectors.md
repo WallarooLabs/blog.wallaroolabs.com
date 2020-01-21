@@ -1,7 +1,7 @@
 +++
 title= "Introducing Connectors: Wallaroo’s Window to the World"
 date = 2018-10-23T15:00:35+00:00
-draft = false
+draft = true
 author = "erikn"
 description = "We're excited today to introduce you to a preview release of a new Wallaroo feature: Connectors. Connectors make inputting and receiving data from Wallaroo even easier than before."
 tags = [

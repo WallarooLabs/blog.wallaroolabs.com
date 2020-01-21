@@ -1,7 +1,7 @@
 +++
 title = "Open-source your startup’s code in 60 days"
 date = 2017-11-02T07:45:00-04:00
-draft = false
+draft = true
 author = "vidjain"
 description = "Opening up the source of your startup's code isn't easy; here's what we learned."
 tags = [

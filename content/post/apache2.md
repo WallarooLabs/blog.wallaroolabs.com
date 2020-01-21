@@ -1,7 +1,7 @@
 +++
 title = "Wallaroo goes full Apache 2.0"
 date = 2018-10-03T12:00:00-04:00
-draft = false
+draft = true
 author = "seantallen"
 description = "In which we announce that Wallaroo is now 100% open source"
 tags = [
@@ -12,11 +12,11 @@ categories = [
     "announcement"
 ]
 +++
-I'm writing today to announce that with the [release of Wallaroo 0.5.3](https://github.com/WallarooLabs/wallaroo/releases/tag/0.5.3), we have switched our licensing over to a pure open source model. 
+I'm writing today to announce that with the [release of Wallaroo 0.5.3](https://github.com/WallarooLabs/wallaroo/releases/tag/0.5.3), we have switched our licensing over to a pure open source model.
 
-What does all this mean for you? Well, if you are a current Wallaroo user, you get all the features you've been using plus no limit on the numbers of CPUs your application can use. Previously, you had to get a license from us if you were using more than 24 cores to run Wallaroo. That is no longer the case. There are no limits. 
+What does all this mean for you? Well, if you are a current Wallaroo user, you get all the features you've been using plus no limit on the numbers of CPUs your application can use. Previously, you had to get a license from us if you were using more than 24 cores to run Wallaroo. That is no longer the case. There are no limits.
 
-If you are a new Wallaroo user, you don't need to get lawyers involved to understand the licensing. It's just the familiar Apache 2 license you already know and love.  
+If you are a new Wallaroo user, you don't need to get lawyers involved to understand the licensing. It's just the familiar Apache 2 license you already know and love.
 
 This is an exciting moment for us, and I want to share with you a bit about what it means and where Wallaroo is headed. In the rest of this post, I'll...
 
@@ -51,7 +51,7 @@ Last August, when we prepared to open source Wallaroo, we were more concerned wi
 
 We adopted an open core model for Wallaroo and made most of Wallaroo open source under the Apache 2 license, but held some back as "source available" under a commercial license where the source code was freely available.
 
-The features we kept under our enterprise license were scaling related features. If you wanted to use Wallaroo on more than 24 CPUs, you needed to pay us money. Upon reflection, that was a mistake. Wallaroo is about making scaling easy. We locked the core value proposition of the product behind a commercial license and tried to build an open source community. It feels silly and foolish when I write it now; I wish it had felt silly and foolish back then. 
+The features we kept under our enterprise license were scaling related features. If you wanted to use Wallaroo on more than 24 CPUs, you needed to pay us money. Upon reflection, that was a mistake. Wallaroo is about making scaling easy. We locked the core value proposition of the product behind a commercial license and tried to build an open source community. It feels silly and foolish when I write it now; I wish it had felt silly and foolish back then.
 
 Today, we are rectifying that mistake and redrawing the line so that everything in [our Wallaroo monorepo](https://github.com/wallaroolabs/wallaroo) is now available under the [Apache 2.0 license](https://github.com/WallarooLabs/wallaroo/blob/f99792dc5072a4606207dbd2de2bcdb18e9ba546/LICENSE).
 
@@ -59,9 +59,9 @@ We hope that with clearer, better licensing that we can grow the community aroun
 
 ## What we are releasing under the Apache 2.0 license
 
-All of it. Everything that we had previously held back? It's all under the Apache 2.0 license now. 
+All of it. Everything that we had previously held back? It's all under the Apache 2.0 license now.
 
-All of Wallaroo is yours to use without limitation. 
+All of Wallaroo is yours to use without limitation.
 
 The Python framework API? Apache 2.0.
 Testing tools? Apache 2.0.
@@ -73,19 +73,19 @@ You get the idea.
 
 In the end, you aren't just getting the "old" features. We released everything in [our latest release](https://github.com/WallarooLabs/wallaroo/releases/tag/0.5.3) under Apache 2.0 as well. There's some awesome stuff in that release. You should check out [the release notes](https://github.com/WallarooLabs/wallaroo/releases/tag/0.5.3).
 
-I'm particularly excited by the preview release of the [Connectors API](https://docs.wallaroolabs.com/book/python/using-connectors.html) that allows you to write [sources and sinks](https://docs.wallaroolabs.com/book/core-concepts/core-concepts.html) in Python (or any other language). 
+I'm particularly excited by the preview release of the [Connectors API](https://docs.wallaroolabs.com/book/python/using-connectors.html) that allows you to write [sources and sinks](https://docs.wallaroolabs.com/book/core-concepts/core-concepts.html) in Python (or any other language).
 
 ## What's coming
 
 ### Python 3
 
-Need we say more? Python 3 has been our number one requested feature for a while. 
+Need we say more? Python 3 has been our number one requested feature for a while.
 
-Big shout out to [Caj Larsson](https://github.com/caj-larsson) who [started the Python 3 work](https://github.com/WallarooLabs/wallaroo/pull/2354) that engineers at Wallaroo Labs picked up this week and plan on getting into preview release availability over the next few weeks. 
+Big shout out to [Caj Larsson](https://github.com/caj-larsson) who [started the Python 3 work](https://github.com/WallarooLabs/wallaroo/pull/2354) that engineers at Wallaroo Labs picked up this week and plan on getting into preview release availability over the next few weeks.
 
 ### General Availability release for Connectors
 
-With the release of Wallaroo 0.5.3, we added a preview release of our [Connectors API](https://docs.wallaroolabs.com/book/python/using-connectors.html). Connectors allow you to write Wallaroo sources and sinks in any language. Our primary focus will be on supporting folks writing them in Python, but the underlying protocol allows for any language to be used. 
+With the release of Wallaroo 0.5.3, we added a preview release of our [Connectors API](https://docs.wallaroolabs.com/book/python/using-connectors.html). Connectors allow you to write Wallaroo sources and sinks in any language. Our primary focus will be on supporting folks writing them in Python, but the underlying protocol allows for any language to be used.
 
 Over the next few months, we look forward to getting your feedback on the Connectors API and pushing it towards general availability and API stability.
 
