@@ -12,11 +12,13 @@ categories = [
     "Exploring Wallaroo Internals"
 ]
 +++
+<<<<<<< HEAD
 Hi there! Today, I want to talk to you about why we chose to write [Wallaroo](https://github.com/WallarooLabs/wallaroo), our distributed data processing framework for building high-performance streaming data applications, in [Pony](https://www.ponylang.org/discover/). It's a question that has come up with some regular frequency from our more technically minded audiences.
+=======
+Hi there! Today, I want to talk to you about why we chose to write [Wallaroo](https://github.com/WallarooLabs/wallaroo), our distributed data processing framework for building high-performance streaming data applications, in [Pony](https://www.ponylang.io/discover/). It's a question that has come up with some regular frequency from our more technically minded audiences.
+>>>>>>> Pass 1 of removing dead references
 
 I've previously touched this topic in my Wallaroo performance post [What's the secret sauce?](https://blog.wallaroolabs.com/2017/06/whats-the-secret-sauce/). In this post, I'm going to dive into the topic in more detail. I promised some folks on HackerNews that I would write this post and I want to keep my promise.
-
-In this post, I'm going to give quick overviews of both Wallaroo and Pony. While our recent [open sourcing](https://blog.wallaroolabs.com/2017/09/open-sourcing-wallaroo/) and [intro to our Python API](https://blog.wallaroolabs.com/2017/10/go-python-go-stream-processing-for-python/) posts got good amount of traffic, I expect a large number of you aren't familiar with Wallaroo or Pony. If you are, feel free to skip the next two sections.
 
 ## What is Wallaroo?
 
@@ -35,11 +37,15 @@ Wallaroo has evolved a good deal from the early vision, and we are no longer foc
 
 ## What is Pony?
 
+<<<<<<< HEAD
 [Pony](https://www.ponylang.org/discover/) is an open source, object-oriented, actor-model, capabilities-secure, high-performance programming language. Pony’s defining characteristics are a runtime designed for high-performance actor-model programs and a novel type-system designed to support the same use-case. Pony’s two primary areas of emphasis are performance and correctness.
+=======
+[Pony](https://www.ponylang.io/discover/) is an open source, object-oriented, actor-model, capabilities-secure, high-performance programming language. Pony’s defining characteristics are a runtime designed for high-performance actor-model programs and a novel type-system designed to support the same use-case. Pony’s two primary areas of emphasis are performance and correctness.
+>>>>>>> Pass 1 of removing dead references
 
 Pony is open-source and features a small but vibrant community of developers. Several members of our team are active contributors to Pony. The Wallaroo Labs team has made a number of improvements to the Pony runtime and standard library. We consider the runtime to be part of Wallaroo and actively contribute back improvements that benefit both Wallaroo and the open-source Pony community at large.
 
-If you are interested in learning more about Pony’s history, I’d suggest checking out [“An Early History of Pony”](https://www.ponylang.org/blog/2017/05/an-early-history-of-pony/) by its designer Sylvan Clebsch.
+If you are interested in learning more about Pony’s history, I’d suggest checking out [“An Early History of Pony”](https://www.ponylang.io/blog/2017/05/an-early-history-of-pony/) by its designer Sylvan Clebsch.
 
 ## The right tool for the job
 
@@ -117,8 +123,6 @@ To meet our goals, we knew we were going to need to write most of Wallaroo from 
 ### Interacting with other languages
 
 There were a lot of reasons to use Pony, but we needed still one more. A good story for interacting with other languages. We didn't and still don't, expect everyone to start writing Wallaroo applications in Pony. We needed to support other languages.
-
-We've built [Python](https://blog.wallaroolabs.com/2017/10/go-python-go-stream-processing-for-python/), Go, and C++ APIs via Pony's C foreign function interface. My colleague, Andrew Turley, is going to have a post coming soon that details how we have used Pony's C FFI together with Python's C API to embed a Python interpreter inside of Wallaroo. He'll be discussing how we went about doing it as well as the efficiency and resilience wins we get from that.
 
 ## Results
 

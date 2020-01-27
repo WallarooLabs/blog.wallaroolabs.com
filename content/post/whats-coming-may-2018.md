@@ -75,7 +75,7 @@ To address these concerns, we are adding the replication of state within a Walla
 
 ## Bring your own integrations
 
-Data enters Wallaroo from external systems via an abstraction we call a “source.” Data exits Wallaroo and is sent to other systems via “sinks.” Currently, Wallaroo ships with sources and sinks for TCP and Kafka. You can add your own sources and sinks but, you have to code it in [Pony](https://www.ponylang.org/).
+Data enters Wallaroo from external systems via an abstraction we call a “source.” Data exits Wallaroo and is sent to other systems via “sinks.” Currently, Wallaroo ships with sources and sinks for TCP and Kafka. You can add your own sources and sinks but, you have to code it in [Pony](https://www.ponylang.io/).
 
 Not being able to implement sources or sinks in Python or Go, the language you are implementing your Wallaroo application in, is a drawback.
 

@@ -120,11 +120,3 @@ ab.to_sink(wallaroo.TCPSinkConfig(out_host, out_port, encoder))
 All the code for our [Parallel Twitter Trending Hashtags](https://github.com/WallarooLabs/wallaroo_blog_examples/tree/master/parallel-twitter-trending-hashtags) example is available on GitHub. You can clone the code, [install your Python and Wallaroo dependencies](https://github.com/WallarooLabs/wallaroo_blog_examples/tree/master/parallel-twitter-trending-hashtags#installation), [supply your Twitter credentials](https://github.com/WallarooLabs/wallaroo_blog_examples/tree/master/parallel-twitter-trending-hashtags#configuration) and [run it](https://github.com/WallarooLabs/wallaroo_blog_examples/tree/master/parallel-twitter-trending-hashtags#running-instructions) to see it in action.
 
 The Wallaroo specific logic is all in a single file [twitter_wallaroo_app.py](https://github.com/WallarooLabs/wallaroo_blog_examples/blob/master/parallel-twitter-trending-hashtags/twitter_wallaroo_app.py). Feel free to dive in and check it out. In a couple of weeks, I'm going to publish a post about that looks at how the windowing used to determine trending works in this application.
-
-## Give Wallaroo a try
-
-We hope that this post has piqued your interest in Wallaroo!
-
-If you are just getting started, we recommend you try our [Docker image](https://docs.wallaroolabs.com/book/getting-started/docker-setup.html), which allows you to get Wallaroo up and running in only a few minutes.
-
-Wallaroo provides a robust platform that enables developers to implement business logic within a streaming data pipeline quickly. Wondering if Wallaroo is right for your use case? Please reach out to us at [hello@wallaroolabs.com](mailto:hello@wallaroolabs.com), we’d love to chat.

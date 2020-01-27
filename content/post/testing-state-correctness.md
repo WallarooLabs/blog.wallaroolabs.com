@@ -28,15 +28,15 @@ In this blog we wanted to share with you what we've learnt and approaches we hav
 
 ## Testing Wallaroo
 
-To find out more about Wallaroo, our ultrafast and elastic data processing engine for distributed applications, please check out our previous posts [Open Sourcing Wallaroo](/2017/09/open-sourcing-wallaroo/), [Hello Wallaroo](/2017/03/hello-wallaroo/) and [What's the Secret Sauce](/2017/06/whats-the-secret-sauce/), or follow us on our [mailing list](https://groups.io/g/wallaroo).
+To find out more about Wallaroo, our ultrafast and elastic data processing engine for distributed applications, please check out our previous posts [Hello Wallaroo](/2017/03/hello-wallaroo/) and [What's the Secret Sauce](/2017/06/whats-the-secret-sauce/), or follow us on our [mailing list](https://groups.io/g/wallaroo).
 The rest of this post will focus on a specific scenario, crash-recovery, to work through some of the approaches we tried when testing Wallaroo's in-memory state, and the pattern that we settled on for ensuring that Wallaroo's state remains correct in the face of failure events.
 
 When we set out to build Wallaroo, we wanted to use a [Test-Driven-Development](https://en.wikipedia.org/wiki/Test-driven_development) approach. However, as we already noted, distributed systems testing can be really hard.
 
-> What sets distributed systems engineering apart is the probability of failure and, worse, the probability of partial failure.  
+> What sets distributed systems engineering apart is the probability of failure and, worse, the probability of partial failure.
 >[Notes on Distributed Systems for Young Bloods (Jeff Hodges)](https://www.somethingsimilar.com/2013/01/14/notes-on-distributed-systems-for-young-bloods)
 
-> Distributed systems can be especially difficult to program, for a variety of reasons. They can be difficult to design, difficult to manage, and, above all, difficult to test.  
+> Distributed systems can be especially difficult to program, for a variety of reasons. They can be difficult to design, difficult to manage, and, above all, difficult to test.
 > [Testing a Distributed System (Philip Maddox)](http://queue.acm.org/detail.cfm?id=2800697)
 
 In the first few months, as we were building prototypes of the system and the testing apparatus, it was already apparent that in addition to unit tests and integration tests, we would need some sort of black box correctness testing that can cover both prototypes and the final product. This meant that such testing would have to rely on real input data, real output data, along with a history of the events that the system experienced in order to determine whether the system is behaving correctly or not. This is similar to the approach [Jepsen](https://github.com/jepsen-io/jepsen#design-overview) uses for distributed databases.
@@ -50,14 +50,14 @@ testing](https://people.eecs.berkeley.edu/~palvaro/molly.pdf).
 
 One of the difficult problems in running such a test is failure detection: we want to _prove_ that such faults _definitely did not occur_.
 
-> The power of a binary hypothesis test is the probability that the test correctly rejects the null hypothesis  
+> The power of a binary hypothesis test is the probability that the test correctly rejects the null hypothesis
 > [Statistical Power (Wikipedia)](https://en.wikipedia.org/wiki/Statistical_power)
 
 So if we run a test, one of the most important questions to ask is how plausible is it that a fault did occur, but went undetected? In other words, it's not enough to inject failures, we also need to ensure that _we can detect errors when they occur!_
 
 ## State Invariant
 
-> In computer science, an invariant is a condition that can be relied upon to be true during [the] execution of a program.  
+> In computer science, an invariant is a condition that can be relied upon to be true during [the] execution of a program.
 > [Invariant (Wikipedia)](https://en.wikipedia.org/wiki/Invariant_(computer_science))
 
 One of the great things about Wallaroo is that it [handles state management for you](https://docs.wallaroolabs.com/book/core-concepts/working-with-state.html). This includes state persistence and, consequently, state recovery after failure. Updates to any particular state in Wallaroo are [sequentially consistent](https://en.wikipedia.org/wiki/Sequential_consistency), so that processing of state updates is guaranteed to be _repeatable_. i.e. whether during the first execution, or
@@ -197,7 +197,7 @@ The same test will detect all three of these errors: _is the output a monotonica
 Specifically, we can test this by applying the following rules to the _i-th_ output message, _K<sub>i</sub>_:
 
 1. _K<sub>1</sub>_ = _1_
-2. _K<sub>i</sub>_ = _i_. That is, the _i_-th value in the output sequence is equal to _i_.  
+2. _K<sub>i</sub>_ = _i_. That is, the _i_-th value in the output sequence is equal to _i_.
     <sub>Note that we use 1-based indexing.</sub>
 3. There are _n_ total values in the output.
 
@@ -209,11 +209,11 @@ Since the identity application's output doesn't rely on any internal state, this
 
 For example, if our application maintained the sum of all the numbers it has processed as its state, but only output the identity of its input, a failed recovery could go like so:
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_before failure_  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;input: _K<sub>5</sub>_ = _5_ &rarr; _State{ sum: 15 }; Output { 5 }_  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<< _failure_ >>  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<< _recovery_ >> &rarr; _State{ sum: 0 }_  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;input: _K<sub>6</sub>_ = _6_ &rarr; _State{ sum: 6 }; Output { 6 }_  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_before failure_
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;input: _K<sub>5</sub>_ = _5_ &rarr; _State{ sum: 15 }; Output { 5 }_
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<< _failure_ >>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<< _recovery_ >> &rarr; _State{ sum: 0 }_
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;input: _K<sub>6</sub>_ = _6_ &rarr; _State{ sum: 6 }; Output { 6 }_
 
 In this case, even though recovery resulted in the application being able to resume processing, its state was incorrect (initialized back to _0_, instead of the last state before failure, _{ sum: 15 }_), but the output doesn't show it, and the test above would pass, despite the failure to correctly recover the state.
 
@@ -228,7 +228,7 @@ This can be visualized as a fixed-size window that moves from left to right acro
 We can apply a similar test as before to the _i_-th value in the output set:
 
 1. _W<sub>1</sub>_ = [0, 0, 0, 1]
-2. The _i_-th window is  
+2. The _i_-th window is
 	  [max(0, _i_-3), max(0, _i_-2), max(0, _i_-1), _i_]
 3. There are _n_ total windows.
 
@@ -254,7 +254,7 @@ The logical test is adjusted for partitioned windows:
 2. Each partition sends its data to a separate sink.
 3. At a sink<sub>i</sub>, where _i_ is the _i_-th partition based on the modulo operation (_v_ % _M_ = _i_),
     1. The first window is [0, 0, 0, _i_]
-    2. The _j_-th window is  
+    2. The _j_-th window is
       [max(0, (_j_-3)*_M_+_i_), max(0, (_j_-2)*_M_+_i_), max(0, (_j_-1)*_M_+_i_), max(0, _j_*_M_+_i_)]
 
 
@@ -266,30 +266,30 @@ Across all sinks, at the end of the run:
 
 For example, if we use two partitions, so that _M_ = 2, and send in the values {1, 2, 3, 4, 5, 6}, the following output would be valid:
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[0, 0, 0, 2]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sink<sub>0</sub>  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[0, 0, 2, 4]  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[0, 2, 4, 6]  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[0, 0, 0, 2]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sink<sub>0</sub>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[0, 0, 2, 4]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[0, 2, 4, 6]
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[0, 0, 0, 1]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sink<sub>1</sub>  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[0, 0, 1, 3]  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[0, 1, 3, 5]  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[0, 0, 0, 1]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sink<sub>1</sub>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[0, 0, 1, 3]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[0, 1, 3, 5]
 
 The following output, however, would fail the test:
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[0, 0, 0, 2]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sink<sub>0</sub>  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[0, 0, 2, 4]  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[0, 2, 4, 6]  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[0, 0, 0, 2]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sink<sub>0</sub>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[0, 0, 2, 4]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[0, 2, 4, 6]
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[0, 0, 0, 1]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sink<sub>1</sub>  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[0, 0, 0, 3]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:red">_loss_</span>  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[0, 0, 3, 5]  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[0, 0, 0, 1]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sink<sub>1</sub>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[0, 0, 0, 3]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:red">_loss_</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[0, 0, 3, 5]
 
 since the output [0, 0, 0, 3] fails condition (2). In this case, we can infer that something happened to the state of the Odds partition after our application processed the value _k<sub>1</sub>_ = _1_ and before it processed the value _k<sub>3</sub>_ = _3_.
 
 ## And Does it Work?
 
-You might be wondering whether this is all there is to a crash-recovery test. The setup seems really simple. Surely this can't be all there is to it, can it?  
-In a way, this really is all there is to it. Simple is good.  
+You might be wondering whether this is all there is to a crash-recovery test. The setup seems really simple. Surely this can't be all there is to it, can it?
+In a way, this really is all there is to it. Simple is good.
 The sequence window application itself isn't the test, it is the error detector. And its simplicity means that tests that use it can also be simple in most cases.
 
 For example, one of our simplest tests, where we test the failure of one worker in a two-worker cluster, using a modulo 2 partitioning, can be summarised as
@@ -299,10 +299,10 @@ For example, one of our simplest tests, where we test the failure of one worker 
 3. start worker<sub>2</sub>
 4. start sending data (ongoing for the duration of the test)
 5. crash worker<sub>2</sub>
-6. restart worker<sub>2</sub>  
-   << worker<sub>2</sub> recovers from log >>  
-   << worker<sub>2</sub> receives replay from worker<sub>1</sub> >>  
-   << worker<sub>2</sub> resumes processing new data >>  
+6. restart worker<sub>2</sub>
+   << worker<sub>2</sub> recovers from log >>
+   << worker<sub>2</sub> receives replay from worker<sub>1</sub> >>
+   << worker<sub>2</sub> resumes processing new data >>
 10. wait until data sender sends all of the data
 11. validate final output values
 
@@ -310,17 +310,17 @@ We still need to _execute_ the test. We need to orchestrate running the applicat
 
 Here are some of the bugs that were detected with the sequence window detector so far:
 
-1. Recovery failed and the worker crashed when a connection was reconnected during the replay phase of the recovery process.  
+1. Recovery failed and the worker crashed when a connection was reconnected during the replay phase of the recovery process.
     While this wasn't explicitly detected by the detector, it was encountered when running stress tests against both recovery and reconnection at the same time, using the sequence window detector application to detect any data corruption errors.
-2. Deduplication code erroneously identified the outputs from a OneToMany computation (which produces multiple outputs as a result of one input) as duplicates during replay.  
+2. Deduplication code erroneously identified the outputs from a OneToMany computation (which produces multiple outputs as a result of one input) as duplicates during replay.
     This bug resulted in certain messages being skipped during recovery from log, but not others. The data corruption errors that resulted were detected by the sequence window detector.
-3. Event ID watermarks were erroneously reset to 0 after a worker recovery, instead of resuming from the previous watermark in the recovery log. If a subsequent failure event occurred before the watermark value increased above the previous highest level, then data re-sent from upstream workers would not be correctly deduplicated.  
+3. Event ID watermarks were erroneously reset to 0 after a worker recovery, instead of resuming from the previous watermark in the recovery log. If a subsequent failure event occurred before the watermark value increased above the previous highest level, then data re-sent from upstream workers would not be correctly deduplicated.
     These data corruption errors were detected by the sequence window detector.
-4. A pointer bug in a buffered writer's low-level implementation resulted in the first record written getting corrupted (but subsequent ones were fine).  
-    This bug was detected by online validation during replay, since the transition from the state  
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[0, 0, 0, 0]  
-  to  
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[0, 0, 0, \<random large number\>]  
+4. A pointer bug in a buffered writer's low-level implementation resulted in the first record written getting corrupted (but subsequent ones were fine).
+    This bug was detected by online validation during replay, since the transition from the state
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[0, 0, 0, 0]
+  to
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[0, 0, 0, \<random large number\>]
   would always be invalid! We then verified that the error was being introduced by a bug in the buffered writer after manually decoding the resilience log file to ensure the value is already corrupt when it is saved to the log. Stepping through the program in a debugger revealed this to be the result of reading uninitialized data from a pointer in the buffered writer's implementation.
 
 ## Conclusion
@@ -330,7 +330,3 @@ As you may have guessed by now, this post isn't about the many tests we run, or 
 Error detection can be difficult, especially in complex systems—and distributed systems certainly are complex. So we wanted to make sure that we start this series with the basics.
 
 Look forward to our future testing posts, where we discuss additional test scenarios, the limits of the sequence window detector and its generalization to non-linear topologies, and many more fun and obscure bugs!
-
-In the meantime, why not check out the [recently open-sourced Wallaroo](/2017/09/open-sourcing-wallaroo) and its [documentation](https://docs.wallaroolabs.com/).
-
-If you have any questions or feedback, you can find us on [our mailing list](https://groups.io/g/wallaroo) or on IRC in #wallaroo on [Freenode.net](https://webchat.freenode.net/).

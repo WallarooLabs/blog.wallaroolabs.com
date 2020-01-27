@@ -4,7 +4,7 @@ date = 2018-11-02T09:00:05+00:00
 draft = false
 author = "slfritchie"
 description = ""
-tags = [ 
+tags = [
     "resilience",
     "state"
 ]
@@ -54,7 +54,7 @@ the needs of our product, Wallaroo.
 ## What is Wallaroo?
 
 Wallaroo is a framework designed to make it easier for developers to
-build and operate high-performance applications written in Python. It
+build and operate high-performance applications. It
 handles the complexity of building distributed data processing
 applications so all that you need to worry about is the domain logic.
 
@@ -230,7 +230,7 @@ quickly develop the code needed for supporting all major players in
 the cloud storage market.
 
 Similarly, for traditional or on-premise data centers, we didn't
-want to require the use of a NAS, SAN, or similar storage device.  
+want to require the use of a NAS, SAN, or similar storage device.
 
 ## Almost good enough: FTP, the File Transfer Protocol from the 1980s
 
@@ -241,7 +241,7 @@ use case because of the following conditions:
 
 1. Wallaroo’s data arrives at unpredictable times.  We could tweak an
 FTP server to use infinite timeouts, if we wished.
- 
+
 2. A single writer restriction is not available.  Again, we could
 tweak an FTP server to enforce this restriction, if we wished.
 

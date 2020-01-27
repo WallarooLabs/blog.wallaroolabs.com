@@ -57,8 +57,6 @@ Wallaroo Up allows you to preview the actions it will take (including adding rep
 
 ## Future
 
-We're very excited with Wallaroo Up and opening up Wallaroo to more of you. We're planning to add support to Wallaroo Up for more Linux distributions (let us know which ones you use via [twitter](https://twitter.com/wallaroolabs), [IRC](https://webchat.freenode.net/?channels=#wallaroo), [email](hello@wallaroolabs.com), [our mailing list](https://groups.io/g/wallaroo), or [a github issue](https://github.com/WallarooLabs/wallaroo/issues/new)). We're also looking to enhance Wallaroo Up to be able to handle errors more gracefully and automagically retry when possible.
-
 We would like to encourage you to give Wallaroo Up a try, just run the following to get up and running:
 
 ```
@@ -68,4 +66,4 @@ curl -o /tmp/wallaroo-up.sh -J -L \
 bash /tmp/wallaroo-up.sh -t python
 ```
 
-Wallaroo provides a robust platform that enables developers to implement business logic within a streaming data pipeline quickly. Wondering if Wallaroo is right for your use case? Please reach out to us at [hello@wallaroolabs.com](hello@wallaroolabs.com), and we’d love to chat.
+Wallaroo provides a robust platform that enables developers to implement business logic within a streaming data pipeline quickly. Wondering if Wallaroo is right for your use case? Please reach out to us at [hello@wallaroolabs.com](mailto:hello@wallaroolabs.com), and we’d love to chat.

@@ -19,7 +19,7 @@ A lot of materials have been created to help Go programmers implement Go "best p
 
 Wallaroo is a distributed stream processor. The first public release was of our [Python API](https://blog.wallaroolabs.com/2018/02/idiomatic-python-stream-processing-in-wallaroo/) in September 2017. Earlier this year, we did a preview release of our new [Go API](https://blog.wallaroolabs.com/2018/01/go-go-go-stream-processing-for-go/).
 
-Wallaroo is not a pure Go system. The core of Wallaroo is written in [Pony](https://www.ponylang.org/). Developers writing Go applications using the Wallaroo Go API implement their logic in Go. Our [blog post introducing the Go API](https://blog.wallaroolabs.com/2018/01/go-go-go-stream-processing-for-go/) has an excellent overview of what a developer is responsible for writing.
+Wallaroo is not a pure Go system. The core of Wallaroo is written in [Pony](https://www.ponylang.io/). Developers writing Go applications using the Wallaroo Go API implement their logic in Go. Our [blog post introducing the Go API](https://blog.wallaroolabs.com/2018/01/go-go-go-stream-processing-for-go/) has an excellent overview of what a developer is responsible for writing.
 
 "Go applications" that are a hybrid of Go and code written in another language (like Pony or C) aren't actually "Go applications". They are "cgo applications."
 
