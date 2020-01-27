@@ -90,19 +90,3 @@ In the end, it was a combination of several design choices that allowed us to ca
 As we saw above, we ultimately ended up developing a Metrics UI to assist developers using Wallaroo. Feel free to spin up a Wallaroo application and our Metrics UI to get a feel of how we handle metrics for all of the components that compose a Wallaroo application.
 
 In a future post, I’ll dive into how we use the metrics we receive from Wallaroo to come up with the information displayed above.
-
-## Give Wallaroo a try
-
-We hope that this post has piqued your interest in Wallaroo!
-
-If you are just getting started, we recommend you try our [Docker image](https://docs.wallaroolabs.com/book/getting-started/docker-setup.html), which allows you to get Wallaroo up and running in only a few minutes.
-
-Some other great ways to learn about Wallaroo:
-
-* [Follow us on Twitter](https://twitter.com/wallaroolabs)
-* [Join our Developer Mailing List](https://groups.io/g/wallaroo)
-* [Chat with us on IRC](https://webchat.freenode.net/?channels=#wallaroo)
-* [Wallaroo Community](https://www.wallaroolabs.com/community)
-
-Thank you! We always appreciate your candid feedback (and a [GitHub star](https://github.com/WallarooLabs/wallaroo))!
-

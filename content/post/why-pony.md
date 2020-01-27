@@ -12,7 +12,7 @@ categories = [
     "Exploring Wallaroo Internals"
 ]
 +++
-Hi there! Today, I want to talk to you about why we chose to write [Wallaroo](https://github.com/WallarooLabs/wallaroo), our distributed data processing framework for building high-performance streaming data applications, in [Pony](https://www.ponylang.org/discover/). It's a question that has come up with some regular frequency from our more technically minded audiences. 
+Hi there! Today, I want to talk to you about why we chose to write [Wallaroo](https://github.com/WallarooLabs/wallaroo), our distributed data processing framework for building high-performance streaming data applications, in [Pony](https://www.ponylang.org/discover/). It's a question that has come up with some regular frequency from our more technically minded audiences.
 
 I've previously touched this topic in my Wallaroo performance post [What's the secret sauce?](https://blog.wallaroolabs.com/2017/06/whats-the-secret-sauce/). In this post, I'm going to dive into the topic in more detail. I promised some folks on HackerNews that I would write this post and I want to keep my promise.
 
@@ -25,7 +25,7 @@ Wallaroo is a distributed data processing framework for building high-performanc
 Some things that we set out to achieve when building Wallaroo:
 
 - "Effortless" scaling to handling millions of messages a second
-- Low Wallaroo overhead 
+- Low Wallaroo overhead
 - Consistent performance
 - Resource efficiency
 
@@ -35,7 +35,7 @@ Wallaroo has evolved a good deal from the early vision, and we are no longer foc
 
 ## What is Pony?
 
-[Pony](https://www.ponylang.org/discover/) is an open source, object-oriented, actor-model, capabilities-secure, high-performance programming language. Pony’s defining characteristics are a runtime designed for high-performance actor-model programs and a novel type-system designed to support the same use-case. Pony’s two primary areas of emphasis are performance and correctness. 
+[Pony](https://www.ponylang.org/discover/) is an open source, object-oriented, actor-model, capabilities-secure, high-performance programming language. Pony’s defining characteristics are a runtime designed for high-performance actor-model programs and a novel type-system designed to support the same use-case. Pony’s two primary areas of emphasis are performance and correctness.
 
 Pony is open-source and features a small but vibrant community of developers. Several members of our team are active contributors to Pony. The Wallaroo Labs team has made a number of improvements to the Pony runtime and standard library. We consider the runtime to be part of Wallaroo and actively contribute back improvements that benefit both Wallaroo and the open-source Pony community at large.
 
@@ -69,7 +69,7 @@ When looking at Pony's implementation of the actor-model, we were impressed with
 
 The Pony scheduler is quite simple with very little overhead. The scheduler features work stealing and attempts to work with modern CPU architectures to process work as efficiently as possible.
 
-You might have heard the term "mechanical sympathy." [Mechanical sympathy](https://www.youtube.com/watch?v=MC1EKLQ2Wmg) is a term used by [Martin Thompson](https://twitter.com/mjpt777) to describe "hardware and software working together in harmony." We appreciate that Pony's runtime is written with mechanical sympathy in mind. 
+You might have heard the term "mechanical sympathy." [Mechanical sympathy](https://www.youtube.com/watch?v=MC1EKLQ2Wmg) is a term used by [Martin Thompson](https://twitter.com/mjpt777) to describe "hardware and software working together in harmony." We appreciate that Pony's runtime is written with mechanical sympathy in mind.
 
 ### Predictable latencies
 
@@ -79,19 +79,19 @@ The standard JVM garbage collection strategy is "stop the world." That is, when 
 
 We wanted consistent, flat tail latencies. We wanted Wallaroo to be a framework where you could write applications that measured their tail latencies in single digit milliseconds or even better, microseconds. To do that, we were going to need a memory management strategy that didn't feature a stop the world garbage collection phase.
 
-Pony, while garbage collected, features per-actor heaps. That is, each actor within a Pony application has its own heap. What this means is that rather than pausing to garbage collect one large heap, Pony programs are constantly garbage collecting but, they do it in a concurrent, per-actor basis. Garbage collection gets mixed into normal processing. This might not seem like a big deal, but it is. Concurrent garbage collection leads to lower tail latencies which in turn lead to better performance for clustered applications like Wallaroo. 
+Pony, while garbage collected, features per-actor heaps. That is, each actor within a Pony application has its own heap. What this means is that rather than pausing to garbage collect one large heap, Pony programs are constantly garbage collecting but, they do it in a concurrent, per-actor basis. Garbage collection gets mixed into normal processing. This might not seem like a big deal, but it is. Concurrent garbage collection leads to lower tail latencies which in turn lead to better performance for clustered applications like Wallaroo.
 
 One of my favorite papers is ["Trash Day: Coordinating Garbage Collection in Distributed Systems"](https://www.usenix.org/node/189882). The abstract for Trash Day has an excellent summary:
 
 > Cloud systems such as Hadoop, Spark and Zookeeper are frequently written in Java or other garbage-collected languages. However, GC-induced pauses can have a significant impact on these workloads. Specifically, GC pauses can reduce throughput for batch workloads, and cause high tail-latencies for interactive applications.
 
-> In this paper, we show that distributed applications suffer from each node’s language runtime system making GC-related decisions independently. We first demonstrate this problem on two widely-used systems (Apache Spark and Apache Cassandra). 
+> In this paper, we show that distributed applications suffer from each node’s language runtime system making GC-related decisions independently. We first demonstrate this problem on two widely-used systems (Apache Spark and Apache Cassandra).
 
 What the authors of Trash Day showed was that by having all nodes in a clustered JVM application coordinate their garbage collection pauses, they ended up with better overall performance? Why? Well, there's a bit of queueing theory in that.
 
 Imagine a two node application. `Node 1` does work and sends it on to `Node 2`. When `Node 1` experiences a garbage collection pause, it stops producing work for `Node 2`. This often results in `Node 2` having no work to do. And the reverse is true as well when `Node 2` pauses to collect garbage, `Node 1` will experience backpressure and need to pause work. This is problematic with a small two node cluster. It gets worse and worse as we add more members to a cluster.
 
-Pony, and by extension, Wallaroo avoids this problem by collecting garbage concurrently with normal processing. There are no garbage collection pauses. Each member of the cluster can keep its compatriots supplied with a steady stream of work. And, no member of the cluster needs to exert garbage collection related backpressure. That's pretty sweet: predictable tail latencies and improved throughput. 
+Pony, and by extension, Wallaroo avoids this problem by collecting garbage concurrently with normal processing. There are no garbage collection pauses. Each member of the cluster can keep its compatriots supplied with a steady stream of work. And, no member of the cluster needs to exert garbage collection related backpressure. That's pretty sweet: predictable tail latencies and improved throughput.
 
 ### Data safety
 
@@ -112,7 +112,7 @@ We feel way more confident in our code with the compiler supporting us. Personal
 
 ### Batteries not required
 
-To meet our goals, we knew we were going to need to write most of Wallaroo from the ground up, so we weren't worried about Pony’s small standard library and lack of 3rd party libraries. Writing high-performance code means understanding and controlling as much of it as possible. 
+To meet our goals, we knew we were going to need to write most of Wallaroo from the ground up, so we weren't worried about Pony’s small standard library and lack of 3rd party libraries. Writing high-performance code means understanding and controlling as much of it as possible.
 
 ### Interacting with other languages
 
@@ -122,18 +122,10 @@ We've built [Python](https://blog.wallaroolabs.com/2017/10/go-python-go-stream-p
 
 ## Results
 
-Would we make the same decision again? Yes. We would. 
+Would we make the same decision again? Yes. We would.
 
 Let's talk time to market for a moment, leveraging the Pony runtime has been a huge win for us. If we had written our own runtime that had similar performance characteristics, I'm not sure we'd be done yet. The Pony runtime fit our use case very well. There weren’t any other runtime options available that were so well suited to what we needed for Wallaroo. If we hadn’t used the Pony runtime and had written our own from scratch, we wouldn’t be as far along as we are now. If you forced me to put a number on it, my hand wave estimation would be that using the Pony runtime saved us a good 18 months of work.
 
 On top of that, we have gotten the excellent performance we set out to achieve, and with the support of the Pony’s type system, we are far more confident when we write and refactor code.
 
-Sure, there's been some pain along the way, but we'd do it again. 
-
-## What's up with Wallaroo?
-
-We released open source and source available versions of Wallaroo a month ago. If you are a Python programmer who needs to do event-by-event data processing, you should give it a spin. Everything is [available on GitHub](https://github.com/wallaroolabs/wallaroo). 
-
-We are releasing a Go API soon as well as support for batch and micro-batch workloads, sign up for our announcement mailing list to be informed when that happens. And if you have questions, we are available to chat in our IRC channel and on our user mailing list. You can find all that and more in the [community section](http://www.wallaroolabs.com/community) of our website.
-
-See you next time and thanks for reading!
+Sure, there's been some pain along the way, but we'd do it again.

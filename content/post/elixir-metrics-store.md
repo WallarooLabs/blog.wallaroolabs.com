@@ -120,18 +120,3 @@ Wallaroo's metric messages arrive via a Metrics Channel. The messages are then d
 Now that you have background on how we used Elixir to store, aggregate, and broadcast Wallaroo's metric messages, feel free to spin up a Wallaroo application and our Metrics UI to see it all in action!
 
 ![metrics ui dashboard](/images/post/metrics-ui.gif)
-
-## Give Wallaroo a try
-
-We hope that this post has piqued your interest in Wallaroo!
-
-If you are just getting started, we recommend you try our [Docker image](https://docs.wallaroolabs.com/book/getting-started/docker-setup.html), which allows you to get Wallaroo up and running in only a few minutes.
-
-Some other great ways to learn about Wallaroo:
-
-* [Follow us on Twitter](https://twitter.com/wallaroolabs)
-* [Join our Developer Mailing List](https://groups.io/g/wallaroo)
-* [Chat with us on IRC](https://webchat.freenode.net/?channels=#wallaroo)
-* [Wallaroo Community](https://www.wallaroolabs.com/community)
-
-Thank you! We always appreciate your candid feedback (and a [GitHub star](https://github.com/WallarooLabs/wallaroo))!

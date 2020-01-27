@@ -25,44 +25,44 @@ We describe two methods for computing a percentile distribution: a sorted value 
 It is shown that while a histogram approach loses resolution (i.e., it may not be able to provide the latency value at an arbitrary percentile point), it is far more efficient, and that the cost of only being able to provide the fractions of the population with values _below a predetermined set of values_ is a sensible choice in the context of addressing the question of meeting a performance SLA target.
 ## Terms and Definitions
 
-__**Latency**__  
+__**Latency**__
 The time elapsed between the start_time and end_time of some event.
 
-__**Histogram**__  
-A division of a dimension of values into bins defined over continuous ranges, and the associated size of the population whose values fall in each bin.  
-For example, for a dimension of numbers with values between 1 and 100, a histogram with the bins 1-50 and 51-100, and the population {1,2,3,95}, the histogram would show  
-&nbsp;&nbsp;&nbsp;&nbsp;bin 1-50:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3 members  
+__**Histogram**__
+A division of a dimension of values into bins defined over continuous ranges, and the associated size of the population whose values fall in each bin.
+For example, for a dimension of numbers with values between 1 and 100, a histogram with the bins 1-50 and 51-100, and the population {1,2,3,95}, the histogram would show
+&nbsp;&nbsp;&nbsp;&nbsp;bin 1-50:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3 members
 &nbsp;&nbsp;&nbsp;&nbsp;bin 51-100:&nbsp;&nbsp;&nbsp;&nbsp;1 members
 
-__**Percentile**__  
-The value below which a given percentage of observations in a group of observations fall.  
-For example, the 75th percentile of {1,2,3,4} is 3.  
-Likewise, the 75th percentile of {1,4,3,1} is 3.  
+__**Percentile**__
+The value below which a given percentage of observations in a group of observations fall.
+For example, the 75th percentile of {1,2,3,4} is 3.
+Likewise, the 75th percentile of {1,4,3,1} is 3.
 That is, percentiles are applied to _value-ordered populations_.
 
-__**SLA**__  
-Service Level Agreement.  
+__**SLA**__
+Service Level Agreement.
 e.g. "99% of events will be processed in less than 1ms."
 
-__**Worker**__  
+__**Worker**__
 A Wallaroo worker process. Part of a Wallaroo application cluster.
 
-__**Pipeline**__  
+__**Pipeline**__
 A Wallaroo application pipeline. Part of a Wallaroo application topology. A pipeline consists of computations (stateless or stateful), partitions, sources, and (optionally) sinks.
 
-__**Step**__  
+__**Step**__
 A step is a logical unit in a Wallaroo pipeline which is a part of a larger topology. Any individual component of a pipeline is a step for the purposes of monitoring.
 
-__**Boundary**__  
+__**Boundary**__
 A part Wallaroo's internal topology representation that is responsible for networking between separate workers. Ingress and egress boundaries make natural points on which to measure worker throughput.
 
-__**Source**__  
+__**Source**__
 The first step in any Wallaroo pipeline, which is responsible for receiving incoming data from an external system such as a TCP sender, Kafka, etc.
 
-__**Sink**__  
+__**Sink**__
 The last step in a Wallaroo pipeline which emits output, which is responsible for sending outgoing data from Wallaroo to an external system, such as a TCP receiver, Kafka, etc.
 
-__**Metrics Receiver**__  
+__**Metrics Receiver**__
 A instance on each Wallaroo worker that is responsible for collecting and processing metrics produced on the worker. The same instance is also responsible for emitting the aggregate collection to an external monitoring system.
 
 ## Problem Statement
@@ -87,34 +87,34 @@ In each Wallaroo worker:
 In the external monitoring system:
 
 1. We store all data as a list of events, L. L is sorted by time.
-2. We then select a window, W, from L, such that W contains all events whose time is within the last 5 minutes  
+2. We then select a window, W, from L, such that W contains all events whose time is within the last 5 minutes
     `W = {∀ e | e ∊ L and (e.time > now()-'5 minutes')}`
 3. To select the values in the 99% and 99.9% positions, we need to sort W. We call the sorted list W'.
-4. We then select the 99% and 99.9% positions in the sorted list W', by taking its length and multiplying it by 0.99 and 0.999 respectively, then rounding the fraction up to the nearest integer. We use those integers as the indexes for the events whose latencies are the 99%- and 99.9%-percentiles. 
+4. We then select the 99% and 99.9% positions in the sorted list W', by taking its length and multiplying it by 0.99 and 0.999 respectively, then rounding the fraction up to the nearest integer. We use those integers as the indexes for the events whose latencies are the 99%- and 99.9%-percentiles.
 
 ### Cost Analysis
 
 - We have to store every single event in L.
-    - We have to send every single event to the monitoring hub so it can store it in L.  
+    - We have to send every single event to the monitoring hub so it can store it in L.
         __**Space cost: O(|L|)**__
-- We have to index L by time. 
-    - We can assume events arrive in order of completion, so L is naturally sorted.  
+- We have to index L by time.
+    - We can assume events arrive in order of completion, so L is naturally sorted.
       __**Time cost: 0**__
-- We have to select the window W from L.  
-    __**Space cost: O(|W|)**__  
-    __**Time cost: O(log(|W|))**__  
+- We have to select the window W from L.
+    __**Space cost: O(|W|)**__
+    __**Time cost: O(log(|W|))**__
 - We have to sort W in order of latency values.
-    - Assuming best case performance of quicksort of O(nlogn)  
-        __**Time cost: O(|W|log(|W|))**__  
+    - Assuming best case performance of quicksort of O(nlogn)
+        __**Time cost: O(|W|log(|W|))**__
 
-__**Total space cost: O(|L|) + O(|W|)**__  
+__**Total space cost: O(|L|) + O(|W|)**__
 __**Total time cost: O(|W|log(|W|)) + O(log|W|)**__
 
 An additional issue with this approach is that percentiles cannot be added or averaged. So if we wanted to reduce the work done in the monitoring system by computing percentiles locally on each worker, we would not be able to generate system-wide metrics from these percentiles. This forces us to collect and eventually send out a metric for each lifecycle phase of each event that is processed by Wallaroo. The amount of traffic this generates is proproptional to the amount of data Wallaroo is processing.
 
 ## Using a Histogram
 
-Using a histogram, the following method is used: 
+Using a histogram, the following method is used:
 
 In each Wallaroo worker:
 
@@ -130,7 +130,7 @@ In the external monitoring system:
 3. To get the latency histogram of a metric category in a time window W, we choose all the histograms for the category and perform a bin-wise addition (since the bin ranges are identical across the histograms, this is safe). The result is the bin-wise sum of the histograms in the window, which is another histogram of the same type. We call this histogram S.
     ![fig 1: performance metrics histogram](/images/post/performance-metrics-histogram/fig01_performance_metrics_histogram.png)
 
-6. We transform the histogram S into a cumulative histogram S', where each bin now includes the weight of all of the bins to the left of it (in addition to its own weight). 
+6. We transform the histogram S into a cumulative histogram S', where each bin now includes the weight of all of the bins to the left of it (in addition to its own weight).
     ![fig 2: performance metrics cumulative histogram](/images/post/performance-metrics-histogram/fig02_performance_metrics_cumulative_histogram.png)
 
 7. We normalize the cumulative histogram to create a cumulative distribution D.
@@ -142,25 +142,25 @@ In the external monitoring system:
 
 - Events are binned in a histogram with pre-determined bin value ranges
     - e.g. 0-1us, 1us-10us, 10us-100us, 100us-1ms, 1ms-10ms, 10ms-100ms, 100ms-1s, 1s-10s, >10s
-    - Such a histogram is constructed for each period.  
-        __**Space cost: O(|H|) for |H| bins**__  
-        __**Time cost: O(|E|) for |E| events**__ (but this is essentially "free" because it's streaming data.)  
-- The histograms for each period are stored in a list, L.  
-    __**Space cost: O(|L|*|H|)**__  
+    - Such a histogram is constructed for each period.
+        __**Space cost: O(|H|) for |H| bins**__
+        __**Time cost: O(|E|) for |E| events**__ (but this is essentially "free" because it's streaming data.)
+- The histograms for each period are stored in a list, L.
+    __**Space cost: O(|L|*|H|)**__
 - L is sorted by the time. The histograms arrive in order, so this is free.
-- We select the window w from L.  
-    __**Space cost: O(|w|*|H|)**__  
+- We select the window w from L.
+    __**Space cost: O(|w|*|H|)**__
     __**Time cost: O(|w|)**__ (Note that here |w| is the _number of histograms_, whereas for percentiles |W| is the _number of events_, which is much larger.)
-- We perform a bin-wise addition of the histograms. This means that we take the number of events in a bin and add them across all of the histograms in W, and do the same for each bin. This produces an aggregate histogram (which is just another histogram!).  
-    __**Space cost: O(|H|)**__  
-    __**Time cost: O(|w|*|H|)**__  
-- We then normalize the histogram to obtain population percentage instead of size, by taking the population size associated with each bin and dividing it by the sum of the sizes of all bins to achieve the fraction of the population represented in this bin. Since we care about the fraction of the population whose value _is below a certain value_, we use the sum of the fractions of all bins whose value range is smaller than the current bin, plus the current bin's fraction.  
-    __**Space cost: O(|H|)**__  
-    __**Time cost: O(|H|)**__  
-- We then select the bin whose maximum value is the value we wish a certain percentage of the population to be below and check whether the fraction in that bin is larger than the desired value. If it is, we're good.  
-    __**Time cost: O(1)**__  
+- We perform a bin-wise addition of the histograms. This means that we take the number of events in a bin and add them across all of the histograms in W, and do the same for each bin. This produces an aggregate histogram (which is just another histogram!).
+    __**Space cost: O(|H|)**__
+    __**Time cost: O(|w|*|H|)**__
+- We then normalize the histogram to obtain population percentage instead of size, by taking the population size associated with each bin and dividing it by the sum of the sizes of all bins to achieve the fraction of the population represented in this bin. Since we care about the fraction of the population whose value _is below a certain value_, we use the sum of the fractions of all bins whose value range is smaller than the current bin, plus the current bin's fraction.
+    __**Space cost: O(|H|)**__
+    __**Time cost: O(|H|)**__
+- We then select the bin whose maximum value is the value we wish a certain percentage of the population to be below and check whether the fraction in that bin is larger than the desired value. If it is, we're good.
+    __**Time cost: O(1)**__
 
-__**Total space cost: O(|L|&#x2a;|H|) + O(|w|&#x2a;|H|) + O(|H|) &#x2a; O(|H|)**__  
+__**Total space cost: O(|L|&#x2a;|H|) + O(|w|&#x2a;|H|) + O(|H|) &#x2a; O(|H|)**__
 __**Total time cost: O(|w|) + O(|w|*|H|) + O(|H|)**__
 
 ## Comparing the Two Approaches
@@ -168,7 +168,7 @@ __**Total time cost: O(|w|) + O(|w|*|H|) + O(|H|)**__
 The histogram approach is significantly more efficient in both space and time, and it achieves this by use of compression (a histogram is a form of compression since it loses the original data of individual events).
 The efficiency difference becomes important as the total number of values grows; this is true for both network traffic and time as well as storage requirements and query times in the monitoring system.
 
-That is, if we process 100k events per second, and show performance for 5-minute windows (e.g. 300-second windows), this would require storing data for at least 300*100,000=30,000,000 values, sorting it whenever we add data for a new second (and figuring out how to remove data from the outgoing second), and then picking two values by index, the 99th, and 99.9th percentiles. 
+That is, if we process 100k events per second, and show performance for 5-minute windows (e.g. 300-second windows), this would require storing data for at least 300*100,000=30,000,000 values, sorting it whenever we add data for a new second (and figuring out how to remove data from the outgoing second), and then picking two values by index, the 99th, and 99.9th percentiles.
 
 For the histogram approach, we store histograms (holding a bin value and a population count value for each bin—two integers per bin), which are small, and we can add them as well as subtract them. This means we can maintain a window histogram, and add the incoming period's histogram as well as subtract the outgoing period's histogram very efficiently without recomputing the sum of the entire set from all the histograms in the window.
 
@@ -187,10 +187,10 @@ So we chose to use a latency histogram for each _step_, _worker_, and _pipeline_
 
 ## Options and Performance Optimizations
 
-You might be thinking about other places where similar conclusions come up. Theo Schlossnagle's excellent posts at circonus.com are excellent examples (see [The Uphill Battle for Visibility](https://www.circonus.com/2016/07/uphill-battle-visibility/), [The Problem with Math: Why Your Monitoring Solution is Wrong](https://www.circonus.com/2015/02/problem-math/), and [Percentages Aren’t People](https://www.circonus.com/2016/06/percentages-arent-people/)). 
+You might be thinking about other places where similar conclusions come up. Theo Schlossnagle's excellent posts at circonus.com are excellent examples (see [The Uphill Battle for Visibility](https://www.circonus.com/2016/07/uphill-battle-visibility/), [The Problem with Math: Why Your Monitoring Solution is Wrong](https://www.circonus.com/2015/02/problem-math/), and [Percentages Aren’t People](https://www.circonus.com/2016/06/percentages-arent-people/)).
 
 You may also be thinking, "Gee, this sounds a lot like an [HdrHistogram](http://hdrhistogram.github.io/HdrHistogram/)!" Have you looked into using an HdrHistogram? And indeed, we have.
-But in the end, we prefer a different approach for several reasons: 
+But in the end, we prefer a different approach for several reasons:
 
 1. While HdrHistograms are amazing, they are more expensive in both time and space than a basic histogram with a small number of fixed bins.
 2. While the added resolution is handy if one needs to answer arbitrary percentile questions, this isn't currently the case for Wallaroo. The current situation requires answers to very explicit questions, such as _"is the 99th percentile latency below 1ms?"_
@@ -201,8 +201,8 @@ But in the end, we prefer a different approach for several reasons:
 
 The binary representation of numbers offers a very useful optimization: one can obtain the nearest power of 2 that is greater than a current number by counting the leading zeros in a fixed width integer representation of that number. More importantly, nearly all modern CPUs have hardware support for this operation, which we can leverage.
 
-For example, if the 32-bit big-endian representation of the number `100,000` is `00000000000000011000011010100000`, which has 15 leading zeros, then its nearest power of 2 which is greater or equal to it can be calculated as   
-2^(32-15) = 2^17 = 131072.  
+For example, if the 32-bit big-endian representation of the number `100,000` is `00000000000000011000011010100000`, which has 15 leading zeros, then its nearest power of 2 which is greater or equal to it can be calculated as
+2^(32-15) = 2^17 = 131072.
 This comes in handy since we can use a single instruction to count the leading zeros of an unsigned integer.
 
 ## Implementation
@@ -238,24 +238,8 @@ Index    Bin min (ns)    Bin Max (ns)    Bin Width (ns)
 
 
 
-Our powers-of-2 histogram is quite simple, and you may find the code for the implementation at https://github.com/WallarooLabs/wallaroo/blob/0.4.0/lib/wallaroo/core/metrics/histogram.pony. 
+Our powers-of-2 histogram is quite simple, and you may find the code for the implementation at https://github.com/WallarooLabs/wallaroo/blob/0.4.0/lib/wallaroo/core/metrics/histogram.pony.
 
 ## Conclusion
 
 Since visibility into the performance bottlenecks is a key factor when working on low-latency application, it was imperative to maintain the lowest overhead we could achieve when collecting Wallaroo's performance metrics. We found that the use of histogram counters, and the powers-of-2 histogram in particular, struck the right balance in terms of producing a good level of performance visibility without adding a lot of expensive overhead. This enables our users to fine tune their applications without adding much of an impact, so it's a win-win situation.
-
-
-## Give Wallaroo a try
-
-We hope that this post has piqued your interest in Wallaroo!
-
-If you are just getting started, we recommend you try our [Docker image](https://docs.wallaroolabs.com/book/getting-started/docker-setup.html), which allows you to get Wallaroo up and running in only a few minutes.
-
-Some other great ways to learn about Wallaroo:
-
-* [Follow us on Twitter](https://twitter.com/wallaroolabs)
-* [Join our Developer Mailing List](https://groups.io/g/wallaroo)
-* [Chat with us on IRC](https://webchat.freenode.net/?channels=#wallaroo)
-* [Wallaroo Community](https://www.wallaroolabs.com/community)
-
-Thank you! We always appreciate your candid feedback (and a [GitHub star](https://github.com/WallarooLabs/wallaroo))!

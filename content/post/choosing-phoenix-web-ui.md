@@ -110,20 +110,3 @@ In the scenario where we ran into unexpected errors, we felt best to follow the 
 In the end, we've been happy with the benefits provided by Phoenix and Elixir to power our metrics monitoring system. The Channels abstraction exceeded our needs and allowed for rapid development of this system.
 
 The [Monitoring Hub](https://github.com/WallarooLabs/wallaroo/tree/master/monitoring_hub) and the [Phoenix TCP Transport](https://github.com/WallarooLabs/phoenix_tcp) layer are both open source, feel free to take a look at the codebases for each and give feedback if you'd like.
-
-## Give Wallaroo a try
-
-We hope that this post has piqued your interest in Wallaroo!
-
-If you are just getting started, we recommend you try our [Docker image](https://docs.wallaroolabs.com/book/getting-started/docker-setup.html), which allows you to get Wallaroo up and running in only a few minutes.
-
-Some other great ways to learn about Wallaroo:
-
-* [Follow us on Twitter](https://twitter.com/wallaroolabs)
-* [Join our Developer Mailing List](https://groups.io/g/wallaroo)
-* [Chat with us on IRC](https://webchat.freenode.net/?channels=#wallaroo)
-* [Wallaroo Community](https://www.wallaroolabs.com/community)
-
-Thank you! We always appreciate your candid feedback (and a [GitHub star](https://github.com/WallarooLabs/wallaroo))!
-
-

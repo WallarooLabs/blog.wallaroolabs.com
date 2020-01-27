@@ -207,18 +207,3 @@ The important thing to remember is that Wallaroo runs the Python API application
 ## Conclusion
 
 We were able to take advantage of some useful features of Pony's FFI and pointer types, as well as Python's C API, to build a system for creating Wallaroo applications in Python. It was an interesting technical challenge that was made easier by the design of Wallaroo itself. Overall, Pony and Python work remarkably well together. I hope this blog post gave you enough insight into how we did it that you can start thinking about how you might use Pony together Python and with other languages.
-
-## Give Wallaroo a try
-
-We hope that this post has piqued your interest in Wallaroo!
-
-If you are just getting started, we recommend you try our [Docker image](https://docs.wallaroolabs.com/book/getting-started/docker-setup.html), which allows you to get Wallaroo up and running in only a few minutes.
-
-Some other great ways to learn about Wallaroo:
-
-* [Follow us on Twitter](https://twitter.com/wallaroolabs)
-* [Join our Developer Mailing List](https://groups.io/g/wallaroo)
-* [Chat with us on IRC](https://webchat.freenode.net/?channels=#wallaroo)
-* [Wallaroo Community](https://www.wallaroolabs.com/community)
-
-Thank you! We always appreciate your candid feedback (and a [GitHub star](https://github.com/WallarooLabs/wallaroo))!

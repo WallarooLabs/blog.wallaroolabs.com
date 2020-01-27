@@ -231,7 +231,7 @@ the end of the pipeline and working backward, we have:
 3. From Wallaroo's `TCPSource` actor to the source's TCP socket, also
    by reducing TCP's advertise window to zero.  (Recall, the `TCPSource`
    actor stops reading from the source socket when that actor is muted.)
-  
+
 The `mute` protocol between Wallaroo actors is
 software, and software tends to have bugs.  It would
 be good to replace the artisanal, hand-crafted `mute` protocol
@@ -368,7 +368,7 @@ to fully integrate and test the back-pressure system.
 * Reactive Streams initiative: [Introduction to JDK9 java.util.concurrent.Flow](http://www.reactive-streams.org)
 * Zach Tellman: [Everything Will Flow](https://www.youtube.com/watch?time_continue=1&v=1bNOO3xxMc0),
   an overview of Clojure's `core.async` library.
-* Wikipedia: 
+* Wikipedia:
 [Back-Pressure](https://en.wikipedia.org/wiki/Back_pressure),
 [TCP Flow Control](https://en.wikipedia.org/wiki/Transmission_Control_Protocol#Flow_control),
 and
@@ -380,18 +380,3 @@ by Douglas Comer (Purdue University) and Pearson Education.
 I used #25 as the basis for
 all of the following figures.  I hope my unorthodox
 numbering scheme didn't lead you on a goosechase to try to find Figure 3.
-
-## Give Wallaroo a Try
-
-We hope that this post has piqued your interest in Wallaroo!
-
-If you are just getting started, we recommend you try our [Docker image](https://docs.wallaroolabs.com/book/getting-started/docker-setup.html), which allows you to get Wallaroo up and running in only a few minutes.
-
-Some other great ways to learn about Wallaroo:
-
-* [Follow us on Twitter](https://twitter.com/wallaroolabs)
-* [Join our Developer Mailing List](https://groups.io/g/wallaroo)
-* [Chat with us on IRC](https://webchat.freenode.net/?channels=#wallaroo)
-* [Wallaroo Community](https://www.wallaroolabs.com/community)
-
-Thank you! We always appreciate your candid feedback (and a [GitHub star](https://github.com/WallarooLabs/wallaroo))!
