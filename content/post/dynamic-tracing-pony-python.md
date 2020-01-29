@@ -919,7 +919,7 @@ then I add `/usr/local/pony/master/bin` instead.
 [pony-readme]: https://github.com/ponylang/ponyc#building-ponyc-from-source
 [wallaroo]: https://github.com/WallarooLabs/wallaroo#wallaroo
 [hello-wallaroo]: https://blog.wallaroolabs.com/2017/03/hello-wallaroo/
-[pony]: https://www.ponylang.org/
+[pony]: https://www.ponylang.io/
 [python]: https://www.python.org/
 [pony-examples]: https://github.com/ponylang/ponyc/tree/master/examples
 [ebpf]: http://www.brendangregg.com/blog/2016-10-27/dtrace-for-linux-2016.html

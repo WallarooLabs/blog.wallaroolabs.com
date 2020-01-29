@@ -97,10 +97,3 @@ ab.to_stateful(sum_sentiment, Sentiment, "Sentiment")
 
 ## Conclusion
 The preprocessing pattern is one of the most commonly used patterns that you will come across when building your streaming application.  As you can see, Wallaroo's lightweight API gives you the ability to construct your data processing pipeline and run whatever application logic you need to power your application.
-
-## Give Wallaroo a try
-We hope that this post has piqued your interest in Wallaroo!
-
-If you are just getting started, we recommend you try our [Docker image](https://docs.wallaroolabs.com/book/getting-started/docker-setup.html), which allows you to get Wallaroo up and running in only a few minutes.
-
-Wallaroo provides a robust platform that enables developers to implement business logic within a streaming data pipeline quickly. Wondering if Wallaroo is right for your use case? Please reach out to us at [hello@wallaroolabs.com](hello@wallaroolabs.com), and we’d love to chat.

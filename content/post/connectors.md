@@ -23,7 +23,7 @@ If you're familiar with what Wallaroo is feel free to [skip the next section](#s
 
 ## What is Wallaroo
 
-Wallaroo is a framework designed to make it easier for developers to build and operate high-performance applications written in Python. It handles the complexity of building distributed data processing applications so all that you need to worry about is the domain logic.
+Wallaroo is a framework designed to make it easier for developers to build and operate high-performance applications. It handles the complexity of building distributed data processing applications so all that you need to worry about is the domain logic.
 
 Our goal is to make sure regardless of where you data is coming from you can scale your application logic horizontally. All while removing the challenges that otherwise come with distributed applications.
 

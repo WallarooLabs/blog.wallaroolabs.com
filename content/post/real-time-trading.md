@@ -15,15 +15,15 @@ categories = [
 
 ## Introduction
 
-Many of you have been reading our engineering blog and enjoy our deep technical dives. You know that we are excited to talk about how we are going about building Wallaroo, hard distributed systems problems, our approach to testing etc. 
+Many of you have been reading our engineering blog and enjoy our deep technical dives. You know that we are excited to talk about how we are going about building Wallaroo, hard distributed systems problems, our approach to testing etc.
 
 We think that a another great way to introduce developers to Wallaroo and get them inspired and considering how to apply our technology to their particular use cases is by jumping right in and digging into some examples.
 
-The Wallaroo [repo](https://github.com/WallarooLabs/wallaroo) contains several example applications that give you an idea of how Wallaroo works and how to build out topologies to handle specific use cases. 
+The Wallaroo [repo](https://github.com/WallarooLabs/wallaroo) contains several example applications that give you an idea of how Wallaroo works and how to build out topologies to handle specific use cases.
 
 If you don’t see an example that fits your needs, or if you have any questions about implementation or Wallaroo best practices, please reach out to us.  We enjoy speaking with development folks about use cases and how Wallaroo can help.  Email us  to get the conversation started. [hello@wallaroolabs.com](mailto:hello@wallaroolabs.com).
 
-In this post, we will be going through one such example in detail and talk about the use case that inspired it. Currently, we have both Python and Go APIs, this blog post covers the Python version. 
+In this post, we will be going through one such example in detail and talk about the use case that inspired it. Currently, we have both Python and Go APIs, this blog post covers the Python version.
 
 The Python version can respond within a millisecond. For much lower latencies, check out our Golang version which can respond in under 100 microseconds.
 
@@ -33,7 +33,7 @@ Before we step through the use case, we’ll give you a little background on Wal
 
 Wallaroo is a modern framework that makes it simple to build, deploy, and scale data applications that react to events in real-time.
 
-Writing stateful streaming applications in Wallaroo is easy.  We like to say that Wallaroo makes it as easy as writing a Python script! 
+Writing stateful streaming applications in Wallaroo is easy.  We like to say that Wallaroo makes it as easy as writing a Python script!
 
 Wallaroo manages streaming data applications with state on a distributed infrastructure for the application programmer. This allows Wallaroo applications to run on any number of workers without having to make any code changes.  We generally refer to this as ["scale-independent" computing](https://vimeo.com/270509076).
 
@@ -45,7 +45,7 @@ Electronic trading requires fast and reliable processing of trade requests and p
 
 You want to minimize any work that happens between the trade request and trading venue.
 
-For this reason, even though applications that support the trading activity need to run at high volumes and low-latency, they are generally not placed in the execution path of the trade where latency would be introduced. 
+For this reason, even though applications that support the trading activity need to run at high volumes and low-latency, they are generally not placed in the execution path of the trade where latency would be introduced.
 
 Generally, these supporting applications run in parallel to the execution path and will read messages off the common messaging bus infrastructure, [TIBCO Messaging](https://www.tibco.com/products/tibco-messaging) is one such messaging bus that is commonly used.
 
@@ -77,7 +77,7 @@ Wallaroo's application builder defines the application's topology and is a great
 ab = wallaroo.ApplicationBuilder("market-spread")
 ab.new_pipeline(
             "Orders",
-            wallaroo.TCPSourceConfig(order_host, order_port, 
+            wallaroo.TCPSourceConfig(order_host, order_port,
                                      order_decoder)
         )
 ab.to_state_partition_u64(
@@ -104,14 +104,14 @@ return ab.build()
 
 Pipelines start with a call to new_pipeline that includes the "source" of the data and end with a call to either a sink or "done" (when the data processing is complete.)
 
-This application has two pipelines, "Orders" and "Market Data."  
+This application has two pipelines, "Orders" and "Market Data."
 
 Each pipeline has a beginning, end, and one computation. The respective beginnings look like this:
 
 ```python
 ab.new_pipeline(
             "Orders",
-            wallaroo.TCPSourceConfig(order_host, order_port, 
+            wallaroo.TCPSourceConfig(order_host, order_port,
                                      order_decoder)
         )
 ```
@@ -124,7 +124,7 @@ ab.new_pipeline(
         )
 ```
 
-The pipeline has a stateful partition computation and shares a stateful object called "symbol-data." 
+The pipeline has a stateful partition computation and shares a stateful object called "symbol-data."
 
 
 ```python
@@ -148,9 +148,3 @@ For stateful partitioning you can either use to_state_partition or to_state_part
 For the market data pipeline, the state is updated by executing the [update_market_data](https://github.com/WallarooLabs/wallaroo/blob/0.4.3/examples/python/market_spread/market_spread.py#L197) function.  The update logs the last bid and ask price for a particular symbol and sets a true/false flag based on if the security violates our global trading constraint.
 
 For the orders pipeline, the state is read by executing the "check_order" function, and a "rejected order" message is generated and passed along if the order should be rejected.
-
-## Conclusion
-
-Wallaroo provides a robust platform that enables developers to implement business logic within a streaming data pipeline quickly.  This tour of the Wallaroo application builder for the "Market Spread" use case should give you a good idea of how to make use of Wallaroo for your own use cases.
-
-If you would like to talk to use about your use case, or  have any questions and want to find out how to best fit Wallaroo to your use case, please reach out to us at [hello@wallaroolabs.com](mailto:hello@wallaroolabs.com).

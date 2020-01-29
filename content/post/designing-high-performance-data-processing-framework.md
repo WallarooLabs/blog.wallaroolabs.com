@@ -58,7 +58,7 @@ These concepts map to actor types in internal Wallaroo code (though Wallaroo use
 
 When we had built the Pony prototype, we used a `Message` class to encapsulate message data and metadata that was processed by a series of `Steps`. This makes conceptual sense when you think about passing messages down a chain of processing steps. But Wallaroo Jr. revealed a number of serious performance problems with this approach.
 
-We knew there would be a performance impact from allocating a new `Message` at every `Step`, but we hadn’t yet tested how significant that impact would be. We tried breaking the `Message` fields out into parameters passed into Wallaroo Jr.’s `Step`’s `process` [behavior](https://tutorial.ponylang.org/types/actors.html). Our tests revealed that this simple change created a surprisingly large performance speedup. We discovered something similar with primitive boxing when passing messages between actors (you can read the [Pony Performance Cheatsheet](https://www.ponylang.org/reference/pony-performance-cheatsheet) for more information on [allocations](https://www.ponylang.org/reference/pony-performance-cheatsheet/#avoid-allocations) and [primitive boxing](https://www.ponylang.org/reference/pony-performance-cheatsheet/#boxing-machine-words) in Pony).
+We knew there would be a performance impact from allocating a new `Message` at every `Step`, but we hadn’t yet tested how significant that impact would be. We tried breaking the `Message` fields out into parameters passed into Wallaroo Jr.’s `Step`’s `process` [behavior](https://tutorial.ponylang.io/types/actors.html). Our tests revealed that this simple change created a surprisingly large performance speedup. We discovered something similar with primitive boxing when passing messages between actors (you can read the [Pony Performance Cheatsheet](https://www.ponylang.io/reference/pony-performance-cheatsheet) for more information on [allocations](https://www.ponylang.io/reference/pony-performance-cheatsheet/#avoid-allocations) and [primitive boxing](https://www.ponylang.io/reference/pony-performance-cheatsheet/#boxing-machine-words) in Pony).
 
 ### Further Improvements
 
@@ -90,4 +90,4 @@ One strategy you can follow is to create small examples to isolate variables. Sm
 
 Even if you’re making your test changes directly to the codebase itself, it’s often a good idea to make small changes and performance test each one if you’re changing code in the hot path. That’s where otherwise small performance hits can add up quickly.
 
-If you're interested in learning more about performance strategies for building software written in Pony, check out the [Pony Performance Cheatsheet](https://www.ponylang.org/reference/pony-performance-cheatsheet).
+If you're interested in learning more about performance strategies for building software written in Pony, check out the [Pony Performance Cheatsheet](https://www.ponylang.io/reference/pony-performance-cheatsheet).

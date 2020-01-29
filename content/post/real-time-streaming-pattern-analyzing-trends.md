@@ -94,11 +94,3 @@ There are many different use-cases for stream processing and I hope this provide
 If you're interested in running the example application from the [Identifying Trending Twitter Hashtags in Real-time with Wallaroo](https://blog.wallaroolabs.com/2017/11/identifying-trending-twitter-hashtags-in-real-time-with-wallaroo) example you can find the repository [here](https://github.com/WallarooLabs/wallaroo_blog_examples/tree/8b91484b19e6b5a058e04b8f9448f979950f9ba3/twitter-trending-hashtags).
 
 Wallaroo's lightweight API gives you the ability to construct your data processing pipeline and run whatever application logic you need to power your application.
-
-## Give Wallaroo a try
-
-We hope that this post has piqued your interest in Wallaroo!
-
-If you are just getting started, we recommend you try our [Docker image](https://docs.wallaroolabs.com/book/getting-started/docker-setup.html), which allows you to get Wallaroo up and running in only a few minutes.
-
-Wallaroo provides a robust platform that enables developers to implement business logic within a streaming data pipeline quickly. Wondering if Wallaroo is right for your use case? Please reach out to us at [hello@wallaroolabs.com](hello@wallaroolabs.com), and we’d love to chat.

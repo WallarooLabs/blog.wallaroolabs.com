@@ -105,15 +105,3 @@ What do we mean when we say that Wallaroo provides "effectively-once processing"
 Imagine a simple counting application. It takes in numbers and adds their value to its internal state. If we send in the values 5, 10, 15 and it runs without error, we would expect the final value to be 30. Errors do, however, happen. Imagine that we sent in 5 and 10 and then an error occurs. Further, we have only acknowledged that 5 was received and processed. What do we do? If we resend 10 and it was already processed, then our final value will be 40 instead of 30. If we don’t resend and it wasn’t processed, then our final value will be 20 instead of 30.
 
 What we want to do is ensure that each message has been delivered at least once while also ensuring that it is processed only once. In distributed system lingo this is "at-least-once message delivery" + "idempotence". By combining the two, we can guarantee that results in Wallaroo are correct even in the face of failures.
-
-## Give Wallaroo a try
-
-If you are interested in learning more about Wallaroo, you can [join the Wallaroo mailing list](http://eepurl.com/cnE5Cv) or [follow us on twitter](https://twitter.com/wallaroolabs) to stay up to date on the news about Wallaroo. We have some more technically in-depth blog posts planned including:
-
-- Design principles and architecture
-- Wallaroo basics including what a Wallaroo application looks like
-- A deeper dive into Wallaroo performance
-- Effectively-once processing
-- How we used Lineage-driven Fault Injection to test Wallaroo
-
-If you would like a demo or to talk about how Wallaroo can help your business today, please get in touch by emailing [hello@wallaroolabs.com](mailto:hello@wallaroolabs.com).

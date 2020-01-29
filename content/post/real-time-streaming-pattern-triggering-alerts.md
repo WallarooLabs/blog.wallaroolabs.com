@@ -53,7 +53,7 @@ In this example, I will be looking at a series of events that represent the temp
 
 For this example we will assume that our Wallaroo cluster is receiving a data stream of temperature readings via Kafka and that the data contains a device_id, zone_id, and temperature reading for each message received.
 
-For any given zone, we will keep the last 500 readings in Wallaroo’s in-memory state and trigger an alert if the latest temperature reading is outside of three standard deviations or if the latest temperature is above 89 degrees.  
+For any given zone, we will keep the last 500 readings in Wallaroo’s in-memory state and trigger an alert if the latest temperature reading is outside of three standard deviations or if the latest temperature is above 89 degrees.
 
 ## Wallaroo Application Builder
 
@@ -87,7 +87,7 @@ ab.to_state_partition(check_tempature, ZoneTotals, "zone totals",
 
 The only processing step in this example is a stateful partition that calls a function `check_tempature`. Since this is a partitioning step, the data for Zone A would be routed automatically by Wallaroo to where the state for Zone A resized, the same fr ones B...Z etc. The partition routing is defined in `zone_partitions` and executed via `partition`.
 
-When the message is routed to the correct partition, the state object `ZoneTotals` would be updated with the latest tempature reading, then the `check_tempature` function would run to execute our business logic. 
+When the message is routed to the correct partition, the state object `ZoneTotals` would be updated with the latest tempature reading, then the `check_tempature` function would run to execute our business logic.
 
 ```python
 ab.to_sink(wallaroo.DefaultKafkaSinkCLIParser(encoder))
@@ -100,11 +100,3 @@ If an alert was triggered in the previous step a message would be generated and 
 Triggering alerts is one of the most common patterns you will see when thinking about and building event-triggered applications.
 
 As you can see, Wallaroo's lightweight API gives you the ability to construct your data processing pipeline and run whatever application logic you need to power your application.
-
-
-## Give Wallaroo a try
-We hope that this post has piqued your interest in Wallaroo!
-
-If you are just getting started, we recommend you try our [Docker image](https://docs.wallaroolabs.com/book/getting-started/docker-setup.html), which allows you to get Wallaroo up and running in only a few minutes.
-
-Wallaroo provides a robust platform that enables developers to implement business logic within a streaming data pipeline quickly. Wondering if Wallaroo is right for your use case? Please reach out to us at [hello@wallaroolabs.com](hello@wallaroolabs.com), and we’d love to chat.

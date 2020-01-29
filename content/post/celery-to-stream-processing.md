@@ -103,6 +103,6 @@ As you can see while there are a few differences between our Celery logic and ou
 
 Wallaroo allows us to avoid all the problems we first talked about. We went from running somewhat simple logic every ten minutes to being able to react to prices in real-time. Which is great if we wanted to add more functionality to our application, like buying and selling on our behalf or viewing real-time charts of this data.
 
-There are many different use-cases for wanting to use a stream processor over batch processing. Many of which have been covered as examples in our blog. If you're interested in learning more about Wallaroo for a personal project or for use at your company, send us an [email](hello@wallaroolabs.com).
+There are many different use-cases for wanting to use a stream processor over batch processing. Many of which have been covered as examples in our blog. If you're interested in learning more about Wallaroo for a personal project or for use at your company, send us an [email](mailto:hello@wallaroolabs.com).
 
 Thanks to my coworkers Simon, Nisan, Andy and Jonathan for providing feedback on both the blog post and the application.

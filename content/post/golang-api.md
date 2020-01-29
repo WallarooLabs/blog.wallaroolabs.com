@@ -22,7 +22,7 @@ Whether you're using Python or Go, Wallaroo is designed to let you focus on your
 
 ### A Few Words About Go and Wallaroo
 
-Wallaroo is written in a language called [Pony](https://blog.wallaroolabs.com/2017/10/why-we-used-pony-to-write-wallaroo/). Wallaroo interacts with Go code using [Pony's foreign function interface](https://tutorial.ponylang.org/c-ffi/). A Wallaroo application that uses the Go API is compiled into a library and then the application itself is built by linking using this library. Wallaroo calls into specific functions that are exported from the application code. In this post we will focus on the Go code required to create a Wallaroo application, but you can find more information about the structure of an application [in our documentation](https://docs.wallaroolabs.com/book/go/api/start-a-project.html).
+Wallaroo is written in a language called [Pony](https://blog.wallaroolabs.com/2017/10/why-we-used-pony-to-write-wallaroo/). Wallaroo interacts with Go code using [Pony's foreign function interface](https://tutorial.ponylang.io/c-ffi/). A Wallaroo application that uses the Go API is compiled into a library and then the application itself is built by linking using this library. Wallaroo calls into specific functions that are exported from the application code. In this post we will focus on the Go code required to create a Wallaroo application, but you can find more information about the structure of an application [in our documentation](https://docs.wallaroolabs.com/book/go/api/start-a-project.html).
 
 ### A Motivating Example
 
