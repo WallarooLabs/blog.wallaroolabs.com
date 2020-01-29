@@ -184,15 +184,3 @@ In general, your mileage will vary and you need to do your own benchmarking on p
 ## What’s next?
 
 We're working on a series of performance improvements for Wallaroo Go applications. Over the next few weeks, I'll have a few more post on the topic. Check back next week for [part 2](https://blog.wallaroolabs.com/2018/04/adventures-with-cgo-part-2--locks-and-other-things-that-go-bump-in-the-night/) of our series, I’ll cover how we can further improve on the concurrent map solution above. In the meantime, you can give the [preview release of Wallaroo a test spin](https://docs.wallaroolabs.com/book/go/getting-started/setup.html).
-
-I've submitted this post to Hacker News, feel free to head over and [join the discussion](https://news.ycombinator.com/item?id=16877124).
-
-Some other great ways to learn about Wallaroo:
-
-* [Follow us on Twitter](https://twitter.com/wallaroolabs)
-* [Join our Developer Mailing List](https://groups.io/g/wallaroo)
-* [Chat with us on IRC](https://webchat.freenode.net/?channels=#wallaroo)
-* [Wallaroo Community](https://www.wallaroolabs.com/community)
-
-Thank you! We always appreciate your candid feedback (and a [GitHub star](https://github.com/WallarooLabs/wallaroo))!
-

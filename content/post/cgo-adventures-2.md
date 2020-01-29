@@ -193,13 +193,4 @@ The point of my highlighting this isn't to spread [FUD](https://en.wikipedia.org
 
 ## What’s next?
 
-Check back in a couple of weeks for part 3 of our series. I'll be covering a performance issue in the Go runtime that impacts on applications that call Go from other languages. In the meantime, you can give the [preview release of Wallaroo a test spin](https://docs.wallaroolabs.com/book/go/getting-started/setup.html).
-
-Some other great ways to learn about Wallaroo:
-
-* [Follow us on Twitter](https://twitter.com/wallaroolabs)
-* [Join our Developer Mailing List](https://groups.io/g/wallaroo)
-* [Chat with us on IRC](https://webchat.freenode.net/?channels=#wallaroo)
-* [Wallaroo Community](https://www.wallaroolabs.com/community)
-
-Thank you! We always appreciate your candid feedback (and a [GitHub star](https://github.com/WallarooLabs/wallaroo))!
+Check back in a couple of weeks for part 3 of our series. I'll be covering a performance issue in the Go runtime that impacts on applications that call Go from other languages.

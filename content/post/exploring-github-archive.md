@@ -189,12 +189,3 @@ If you want to get your hands a little more dirty, check out the event type defi
 There's more to show but this hopefully gives an idea of what Wallaroo is like in practice. There were a few things we didn't have time or space to dive into like testing and clustering which we'll follow up on in future blog posts.
 
 For those who read and or skipped to the bottom, you can browse the repository [here](https://github.com/WallarooLabs/wallaroo-python-example). We'll be keeping this up to date as a starting point for those who want a quick way to dive into Wallaroo using Python so it'll be worth bookmarking or staring.
-
-In the meantime, here are some links to learn if you want to learn more:
-
-* [Follow us on Twitter](https://twitter.com/wallaroolabs)
-* [Join our Developer Mailing List](https://groups.io/g/wallaroo)
-* [Chat with us on IRC](https://webchat.freenode.net/?channels=#wallaroo)
-* [Wallaroo Community](https://www.wallaroolabs.com/community)
-
-Thank you! We always appreciate your candid feedback (and a [GitHub star](https://github.com/WallarooLabs/wallaroo))!

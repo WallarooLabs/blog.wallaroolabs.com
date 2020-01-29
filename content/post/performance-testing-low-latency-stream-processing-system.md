@@ -82,18 +82,3 @@ The above is a summary of how we currently performance test Wallaroo. We still h
 ## Conclusion
 
 We hope this blog post about how we performance test Wallaroo has been informative. For more details on some of the performance gains we've managed with our performance testing process, take a look at our recent blog post on [how we built Wallaroo to process millions of messages/sec with microsecond latencies](https://blog.wallaroolabs.com/2018/02/how-we-built-wallaroo-to-process-millions-of-messages/sec-with-microsecond-latencies/). While some of the specifics may not apply to other systems, every system should be able to benefit from the techniques involved to isolate and minimize impact of the operating environment from the application being tested along with the details of optimizing the CPU resources by controlling CPU C-States and P-States.
-
-## Give Wallaroo a try
-
-We hope that this post has piqued your interest in Wallaroo!
-
-If you are just getting started, we recommend you try our [Docker image](https://docs.wallaroolabs.com/book/getting-started/docker-setup.html), which allows you to get Wallaroo up and running in only a few minutes.
-
-Some other great ways to learn about Wallaroo:
-
-* [Follow us on Twitter](https://twitter.com/wallaroolabs)
-* [Join our Developer Mailing List](https://groups.io/g/wallaroo)
-* [Chat with us on IRC](https://webchat.freenode.net/?channels=#wallaroo)
-* [Wallaroo Community](https://www.wallaroolabs.com/community)
-
-Thank you! We always appreciate your candid feedback (and a [GitHub star](https://github.com/WallarooLabs/wallaroo))!

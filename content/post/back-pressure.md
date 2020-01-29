@@ -323,19 +323,3 @@ The queue network figures in this article are excerpts from the book
 "Quantitative System Performance" by Lazowska, Jahorjan, Graham, and
 Sevcik, Prentice-Hall, Inc., 1984.
 [Full text of this book is available online.](https://homes.cs.washington.edu/~lazowska/qsp/)
-
-
-## Give Wallaroo a Try
-
-We hope that this post has piqued your interest in Wallaroo!
-
-If you are just getting started, we recommend you try our [Docker image](https://docs.wallaroolabs.com/book/getting-started/docker-setup.html), which allows you to get Wallaroo up and running in only a few minutes.
-
-Some other great ways to learn about Wallaroo:
-
-* [Follow us on Twitter](https://twitter.com/wallaroolabs)
-* [Join our Developer Mailing List](https://groups.io/g/wallaroo)
-* [Chat with us on IRC](https://webchat.freenode.net/?channels=#wallaroo)
-* [Wallaroo Community](https://www.wallaroolabs.com/community)
-
-Thank you! We always appreciate your candid feedback (and a [GitHub star](https://github.com/WallarooLabs/wallaroo))!
